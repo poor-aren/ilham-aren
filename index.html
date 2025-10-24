@@ -29,6 +29,8 @@
         
         .tech-box {
             background: #343639;
+            position: relative;
+            overflow: hidden;
         }
         
         .art-box {
@@ -413,6 +415,69 @@
             }
         }
 
+        .hover-sparkle {
+            position: absolute;
+            pointer-events: none;
+            font-size: 20px;
+            opacity: 0;
+            z-index: 100;
+        }
+
+        @media (min-width: 768px) {
+            .hover-sparkle {
+                font-size: 30px;
+            }
+        }
+
+        .art-box:hover .hover-sparkle {
+            animation: sparkle-burst 1s ease-out forwards;
+        }
+
+        @keyframes sparkle-burst {
+            0% {
+                opacity: 0;
+                transform: translate(0, 0) scale(0) rotate(0deg);
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(1.5) rotate(360deg);
+            }
+        }
+
+        .glass-shine {
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 50%;
+            height: 300%;
+            background: linear-gradient(120deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.3) 40%, 
+                rgba(255, 255, 255, 0.5) 50%, 
+                rgba(255, 255, 255, 0.3) 60%, 
+                transparent
+            );
+            transform: rotate(25deg);
+            pointer-events: none;
+            z-index: 60;
+        }
+
+        .art-box:hover .glass-shine {
+            animation: shine-sweep 1.5s ease-in-out;
+        }
+
+        @keyframes shine-sweep {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 150%;
+            }
+        }
+
         /* Navigation Styles */
         .nav-link {
             position: relative;
@@ -460,6 +525,71 @@
             }
             50% {
                 text-shadow: 0 0 20px rgba(0, 255, 65, 0.8), 0 0 30px rgba(0, 255, 65, 0.5);
+            }
+        }
+
+        /* Tech Glass Shine Effect */
+        .tech-glass-shine {
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 50%;
+            height: 300%;
+            background: linear-gradient(115deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.2) 40%, 
+                rgba(255, 255, 255, 0.4) 50%, 
+                rgba(255, 255, 255, 0.2) 60%, 
+                transparent
+            );
+            transform: rotate(25deg);
+            pointer-events: none;
+            z-index: 60;
+        }
+
+        .tech-box:hover .tech-glass-shine {
+            animation: tech-shine-sweep 1.5s ease-in-out;
+        }
+
+        @keyframes tech-shine-sweep {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 150%;
+            }
+        }
+
+        /* Art Sparkle Hover Effect */
+        .art-sparkle {
+            position: absolute;
+            pointer-events: none;
+            font-size: 20px;
+            opacity: 0;
+            z-index: 100;
+        }
+
+        @media (min-width: 768px) {
+            .art-sparkle {
+                font-size: 30px;
+            }
+        }
+
+        .art-box:hover .art-sparkle {
+            animation: art-sparkle-burst 1s ease-out forwards;
+        }
+
+        @keyframes art-sparkle-burst {
+            0% {
+                opacity: 0;
+                transform: translate(0, 0) scale(0) rotate(0deg);
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(1.5) rotate(360deg);
             }
         }
     </style>
@@ -522,7 +652,11 @@
                 
                 <!-- Tech and Research Card -->
                 <a href="./tech.html" class="block world-card group">
-                    <div class="tech-box rounded-xl md:rounded-3xl p-3 md:p-6 relative overflow-hidden shadow-lg" style="min-height: 320px;">
+                    <div class="tech-box rounded-xl md:rounded-3xl p-3 md:p-6 relative overflow-hidden shadow-lg" style="min-height: 373px;">
+                        
+                        <!-- Glass Shine Effect -->
+                        <div class="tech-glass-shine"></div>
+                        
                         <div class="relative z-10 h-full flex flex-col">
                             <h3 class="text-base md:text-3xl font-black mb-2 md:mb-3 text-white">TECH AND RESEARCH</h3>
                             
@@ -562,7 +696,17 @@
 
                 <!-- Art and Creative Card -->
                 <a href="./art.html" class="block world-card group">
-                    <div class="art-box art-card rounded-xl md:rounded-3xl p-3 md:p-6 relative shadow-lg min-h-[220px] md:min-h-[280px]">
+                    <div class="art-box art-card rounded-xl md:rounded-3xl p-3 md:p-6 relative shadow-lg" style="min-height: 373px;">
+                        
+                        <!-- Sparkle Glitter Effects (8 sparkles) -->
+                        <div class="art-sparkle" style="top: 10%; left: 20%; --tx: -60px; --ty: -60px; animation-delay: 0s;">✨</div>
+                        <div class="art-sparkle" style="top: 15%; left: 80%; --tx: 70px; --ty: -50px; animation-delay: 0.1s;">⭐</div>
+                        <div class="art-sparkle" style="top: 30%; left: 10%; --tx: -50px; --ty: 30px; animation-delay: 0.2s;">❤️</div>
+                        <div class="art-sparkle" style="top: 50%; left: 90%; --tx: 60px; --ty: 40px; animation-delay: 0.3s;">🌀</div>
+                        <div class="art-sparkle" style="top: 60%; left: 25%; --tx: -40px; --ty: 50px; animation-delay: 0.4s;">❄️</div>
+                        <div class="art-sparkle" style="top: 70%; left: 75%; --tx: 50px; --ty: 60px; animation-delay: 0.5s;">🏵️</div>
+                        <div class="art-sparkle" style="top: 20%; left: 50%; --tx: 0px; --ty: -70px; animation-delay: 0.6s;">🍀</div>
+                        <div class="art-sparkle" style="top: 80%; left: 50%; --tx: 0px; --ty: 70px; animation-delay: 0.7s;">🍀</div>
                         
                         <div class="floating-shape hidden md:block" style="width: 120px; height: 120px; background: rgba(251, 198, 5, 0.2); top: 5%; left: 10%; animation-delay: 0s;"></div>
                         <div class="floating-shape hidden md:block" style="width: 80px; height: 80px; background: rgba(239, 68, 68, 0.15); top: 40%; left: 5%; animation-delay: 2s;"></div>
@@ -589,23 +733,23 @@
                             <img 
                                 src="./assets/chibi.gif" 
                                 alt="Chibi Character" 
-                                class="chibi-character w-52 h-52 md:w-56 md:h-56 object-contain"
+                                class="chibi-character w-60 h-60 md:w-64 md:h-64 object-contain"
                                 onerror="this.style.display='none'"
                             >
-                            <div class="chibi-character w-52 h-52 md:w-56 md:h-56 flex items-center justify-center text-7xl md:text-6xl" style="display: none;" id="chibi-fallback">
+                            <div class="chibi-character w-60 h-60 md:w-64 md:h-64 flex items-center justify-center text-7xl md:text-6xl" style="display: none;" id="chibi-fallback">
                                 🎨
                             </div>
                         </div>
                         
                         <div class="relative content-wrapper" style="z-index: 10;">
-                            <div class="absolute top-0 right-0 inline-block p-1.5 md:p-3 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg md:rounded-2xl shadow-xl art-icon-bounce">
-                                <svg class="w-6 h-6 md:w-14 md:h-14 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="absolute top-0 right-0 inline-block p-2 md:p-4 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg md:rounded-2xl shadow-xl art-icon-bounce">
+                                <svg class="w-8 h-8 md:w-16 md:h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
                                 </svg>
                             </div>
                             
-                            <div class="text-right pr-10 md:pr-20">
-                                <h3 class="text-base md:text-3xl font-black text-gray-900 mb-1 md:mb-2">
+                            <div class="text-right pr-16 md:pr-28">
+                                <h3 class="text-xl md:text-4xl font-black text-gray-900 mb-1 md:mb-2">
                                     <span class="title-wave" style="animation-delay: 0s;">A</span><span class="title-wave" style="animation-delay: 0.1s;">R</span><span class="title-wave" style="animation-delay: 0.2s;">T</span> 
                                     <span class="title-wave" style="animation-delay: 0.3s;">A</span><span class="title-wave" style="animation-delay: 0.4s;">N</span><span class="title-wave" style="animation-delay: 0.5s;">D</span>
                                     <br>
@@ -653,6 +797,11 @@
                         <a href="mailto:iil.ilham241@gmail.com" class="text-gray-600 hover:text-red-500 transition-colors">
                             <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                        </a>
+                        <a href="https://github.com/poor-aren" target="_blank" class="text-gray-600 hover:text-gray-900 transition-colors">
+                            <svg class="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                             </svg>
                         </a>
                     </div>
@@ -811,6 +960,3 @@
     </script>
 </body>
 </html>
-                        <a href="https://github.com/poor-aren" target="_blank" class="text-gray-600 hover:text-gray-900 transition-colors">
-                            <svg class="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
