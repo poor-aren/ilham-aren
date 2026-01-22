@@ -328,32 +328,46 @@
                 </nav>
             </div>
 
-            <!-- Hero Section -->
-            <div class="hero-section p-16 text-center relative">
-                <div class="relative z-10">
-                    <!-- Floating emojis -->
-                    <div style="position: absolute; top: 20%; left: 10%; font-size: 40px; animation: float-emoji 4s ease-in-out infinite;">📸</div>
-                    <div style="position: absolute; top: 30%; right: 12%; font-size: 35px; animation: float-emoji 4s ease-in-out infinite 0.5s;">🎉</div>
-                    <div style="position: absolute; bottom: 25%; left: 15%; font-size: 38px; animation: float-emoji 4s ease-in-out infinite 1s;">🚀</div>
-                    <div style="position: absolute; bottom: 30%; right: 10%; font-size: 36px; animation: float-emoji 4s ease-in-out infinite 1.5s;">💡</div>
-                    
-                    <h1 class="text-5xl font-black text-white mb-3">
-                        MY <span class="name-highlight" style="text-decoration: underline; text-decoration-style: wavy; text-decoration-color: #FBC605;">ACTIVITIES</span>
-                    </h1>
-                    <p class="text-white text-xl font-medium mb-3">
-                        <span style="background: linear-gradient(90deg, #FBC605, #ff6b6b, #FBC605); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900;">Events • Projects • Moments</span>
-                    </p>
-                    <div style="display: inline-block; background: rgba(251, 198, 5, 0.2); border: 2px dashed #FBC605; border-radius: 50px; padding: 12px 24px; margin-top: 10px;">
-                        <p class="text-white text-sm font-bold opacity-90">
-                            🌟 Documenting my journey through tech & creativity 🌟
+            <!-- Hero Section - Horizontal Split Layout -->
+            <div class="hero-section relative" style="display: flex; align-items: center; min-height: 400px;">
+                <!-- Left Side - Text Content -->
+                <div class="relative z-10" style="flex: 1; padding: 3rem 4rem;">
+                    <div style="background: rgba(251, 198, 5, 0.1); border-left: 5px solid #FBC605; padding: 2rem; border-radius: 0 20px 20px 0;">
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 1rem;">
+                            <span style="font-size: 50px;">📸</span>
+                            <h1 class="text-4xl font-black text-white" style="margin: 0;">
+                                MY <span class="name-highlight">ACTIVITIES</span>
+                            </h1>
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                            <span style="background: #FBC605; color: #343639; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 0.875rem;">🎉 Events</span>
+                            <span style="background: #FBC605; color: #343639; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 0.875rem;">🚀 Projects</span>
+                            <span style="background: #FBC605; color: #343639; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 0.875rem;">💡 Moments</span>
+                        </div>
+                        
+                        <p class="text-white text-base font-medium" style="line-height: 1.6; margin: 0;">
+                            Documenting my journey through tech events, workshops, and creative projects. Every moment is a learning experience! 🌟
                         </p>
                     </div>
                 </div>
-                <!-- Animated circles -->
-                <div class="circle-deco" style="top: 8%; left: 8%; width: 50px; height: 50px;"></div>
-                <div class="circle-deco" style="top: 12%; right: 12%; width: 70px; height: 70px; animation-delay: 2s;"></div>
-                <div class="circle-deco" style="bottom: 12%; left: 18%; width: 60px; height: 60px; animation-delay: 4s;"></div>
-                <div class="circle-deco" style="bottom: 8%; right: 8%; width: 80px; height: 80px; animation-delay: 6s;"></div>
+                
+                <!-- Right Side - Decorative Elements -->
+                <div style="flex: 1; position: relative; height: 100%; display: flex; align-items: center; justify-content: center; padding: 3rem;">
+                    <!-- Large animated emoji -->
+                    <div style="font-size: 200px; opacity: 0.15; animation: float-emoji 6s ease-in-out infinite;">📷</div>
+                    
+                    <!-- Floating small emojis -->
+                    <div style="position: absolute; top: 15%; left: 20%; font-size: 40px; animation: float-emoji 4s ease-in-out infinite;">🎯</div>
+                    <div style="position: absolute; top: 25%; right: 15%; font-size: 35px; animation: float-emoji 4s ease-in-out infinite 0.5s;">✨</div>
+                    <div style="position: absolute; bottom: 20%; left: 25%; font-size: 38px; animation: float-emoji 4s ease-in-out infinite 1s;">🎨</div>
+                    <div style="position: absolute; bottom: 30%; right: 20%; font-size: 36px; animation: float-emoji 4s ease-in-out infinite 1.5s;">🔧</div>
+                </div>
+                
+                <!-- Animated circles background -->
+                <div class="circle-deco" style="top: 10%; left: 5%; width: 60px; height: 60px;"></div>
+                <div class="circle-deco" style="top: 70%; right: 8%; width: 80px; height: 80px; animation-delay: 2s;"></div>
+                <div class="circle-deco" style="bottom: 15%; left: 45%; width: 70px; height: 70px; animation-delay: 4s;"></div>
             </div>
 
             <!-- Activities Grid -->
