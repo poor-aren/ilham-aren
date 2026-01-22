@@ -1,0 +1,22 @@
+[
+  {
+    "images": ["pimnas-1.jpg", "pimnas-2.jpg", "pimnas-3.jpg"],
+    "title": "PIMNAS 38 - Universitas Hasanuddin",
+    "description": "Participated in the National Student Scientific Week presenting our IoT-based smart home automation project. Great experience competing with teams from across Indonesia!"
+  },
+  {
+    "images": ["workshop-iot-1.jpg", "workshop-iot-2.jpg"],
+    "title": "IoT Workshop & Hackathon 2024",
+    "description": "Hands-on workshop on building IoT devices with ESP32 and sensors. Learned about MQTT protocols and cloud integration for smart device communication."
+  },
+  {
+    "images": ["project-presentation.jpg"],
+    "title": "Final Year Project Presentation",
+    "description": "Presenting my capstone project on machine learning-based traffic monitoring system using computer vision and embedded systems."
+  },
+  {
+    "images": ["tech-meetup-1.jpg", "tech-meetup-2.jpg", "tech-meetup-3.jpg", "tech-meetup-4.jpg"],
+    "title": "Tech Community Meetup Banda Aceh",
+    "description": "Monthly tech meetup discussing latest trends in AI, IoT, and web development. Networking with fellow developers and sharing knowledge about embedded systems."
+  }
+]
