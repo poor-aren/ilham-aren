@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1524, initial-scale=1.0, minimum-scale=0.2, maximum-scale=2.0, user-scalable=yes">
+    <title>My Activities - Muhammad Ilham | Aren</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            min-width: 1024px;
+            zoom: 0.67;
+        }
+        
+        .nav-link {
+            position: relative;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #4b5563;
+        }
+
+        .nav-link:hover {
+            color: #1f2937;
+        }
+
+        .nav-link.active {
+            color: #1f2937;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: #FBC605;
+            transform: translateX(-50%);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 80%;
+        }
+
+        .hero-section {
+            background: #343639;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(251, 198, 5, 0.15) 0%, transparent 70%);
+            animation: pulse-glow 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        .name-highlight {
+            color: #FBC605;
+        }
+
+        .activity-card {
+            background: white;
+            border: 3px solid #343639;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .activity-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: #FBC605;
+            box-shadow: 0 20px 40px rgba(251, 198, 5, 0.25);
+        }
+
+        .slideshow-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            background: #f3f4f6;
+            cursor: pointer;
+        }
+
+        .slideshow-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out;
+        }
+
+        .slideshow-img.active {
+            opacity: 1;
+        }
+
+        .slide-dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            border: 2px solid #343639;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: #FBC605;
+            transform: scale(1.3);
+        }
+
+        .activity-title {
+            font-weight: 800;
+            color: #343639;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .activity-description {
+            color: #6b7280;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        .photo-count {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(52, 54, 57, 0.9);
+            color: #FBC605;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            z-index: 10;
+            border: 2px solid #FBC605;
+        }
+
+        /* Lightbox styles */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .lightbox.active .lightbox-content {
+            transform: scale(1);
+        }
+
+        .lightbox-img {
+            max-width: 100%;
+            max-height: 90vh;
+            border: 4px solid #FBC605;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(251, 198, 5, 0.3);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            background: #FBC605;
+            color: #343639;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 3px solid #343639;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            transform: rotate(90deg) scale(1.1);
+            background: #343639;
+            color: #FBC605;
+        }
+
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(251, 198, 5, 0.9);
+            color: #343639;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 3px solid #343639;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: #343639;
+            color: #FBC605;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .nav-btn.prev {
+            left: -70px;
+        }
+
+        .nav-btn.next {
+            right: -70px;
+        }
+
+        /* Bounce animation for activity cards */
+        @keyframes bounce-activity {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .activity-card:nth-child(odd) {
+            animation: bounce-activity 5s ease-in-out infinite;
+        }
+
+        .activity-card:nth-child(even) {
+            animation: bounce-activity 5s ease-in-out infinite 0.3s;
+        }
+
+        /* Circle decorations */
+        .circle-deco {
+            position: absolute;
+            border-radius: 50%;
+            border: 3px solid #FBC605;
+            opacity: 0.2;
+            animation: rotate-circle 20s linear infinite;
+        }
+
+        @keyframes rotate-circle {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        /* Floating emoji animation */
+        @keyframes float-emoji {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg); 
+            }
+            25% { 
+                transform: translateY(-15px) rotate(-10deg); 
+            }
+            50% { 
+                transform: translateY(-25px) rotate(10deg); 
+            }
+            75% { 
+                transform: translateY(-15px) rotate(-5deg); 
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-900 min-h-screen" style="background-image: url('./assets/background.jpg'); background-size: cover; background-position: center;">
+    
+    <div class="max-w-6xl mx-auto px-6 py-12">
+        
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden mb-12" style="max-width: 1152px; margin-left: auto; margin-right: auto;">
+            
+            <!-- Navigation -->
+            <div style="background: white;">
+                <nav class="flex justify-end gap-1 px-8 py-4">
+                    <a href="./index.html" class="nav-link text-base">HOME</a>
+                    <a href="./certificates.html" class="nav-link text-base">MY CERTIFICATES</a>
+                    <a href="./activities.html" class="nav-link active text-base">MY ACTIVITIES</a>
+                    <a href="./aboutme.html" class="nav-link text-base">ABOUT ME</a>
+                </nav>
+            </div>
+
+            <!-- Hero Section -->
+            <div class="hero-section p-16 text-center relative">
+                <div class="relative z-10">
+                    <!-- Floating emojis -->
+                    <div style="position: absolute; top: 20%; left: 10%; font-size: 40px; animation: float-emoji 4s ease-in-out infinite;">📸</div>
+                    <div style="position: absolute; top: 30%; right: 12%; font-size: 35px; animation: float-emoji 4s ease-in-out infinite 0.5s;">🎉</div>
+                    <div style="position: absolute; bottom: 25%; left: 15%; font-size: 38px; animation: float-emoji 4s ease-in-out infinite 1s;">🚀</div>
+                    <div style="position: absolute; bottom: 30%; right: 10%; font-size: 36px; animation: float-emoji 4s ease-in-out infinite 1.5s;">💡</div>
+                    
+                    <h1 class="text-5xl font-black text-white mb-3">
+                        MY <span class="name-highlight" style="text-decoration: underline; text-decoration-style: wavy; text-decoration-color: #FBC605;">ACTIVITIES</span>
+                    </h1>
+                    <p class="text-white text-xl font-medium mb-3">
+                        <span style="background: linear-gradient(90deg, #FBC605, #ff6b6b, #FBC605); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900;">Events • Projects • Moments</span>
+                    </p>
+                    <div style="display: inline-block; background: rgba(251, 198, 5, 0.2); border: 2px dashed #FBC605; border-radius: 50px; padding: 12px 24px; margin-top: 10px;">
+                        <p class="text-white text-sm font-bold opacity-90">
+                            🌟 Documenting my journey through tech & creativity 🌟
+                        </p>
+                    </div>
+                </div>
+                <!-- Animated circles -->
+                <div class="circle-deco" style="top: 8%; left: 8%; width: 50px; height: 50px;"></div>
+                <div class="circle-deco" style="top: 12%; right: 12%; width: 70px; height: 70px; animation-delay: 2s;"></div>
+                <div class="circle-deco" style="bottom: 12%; left: 18%; width: 60px; height: 60px; animation-delay: 4s;"></div>
+                <div class="circle-deco" style="bottom: 8%; right: 8%; width: 80px; height: 80px; animation-delay: 6s;"></div>
+            </div>
+
+            <!-- Activities Grid -->
+            <div class="p-12">
+                <div id="activities-container" class="grid grid-cols-2 gap-8">
+                    <!-- Activities will be loaded here -->
+                </div>
+
+                <!-- Empty state -->
+                <div id="empty-state" class="text-center py-20" style="display: none;">
+                    <div class="text-6xl mb-4">📸</div>
+                    <h3 class="text-2xl font-black mb-2" style="color: #343639;">No Activities Yet</h3>
+                    <p class="text-gray-600">Activities will appear here once added to activities.json</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox">
+        <div class="lightbox-content">
+            <div class="close-btn" onclick="closeLightbox()">×</div>
+            <div class="nav-btn prev" onclick="navigateLightbox(-1)">‹</div>
+            <div class="nav-btn next" onclick="navigateLightbox(1)">›</div>
+            <img id="lightbox-img" class="lightbox-img" src="" alt="">
+        </div>
+    </div>
+
+    <script>
+        let activitiesData = [];
+        let currentLightboxActivity = null;
+        let currentLightboxIndex = 0;
+        let slideshowIntervals = {};
+
+        // Load activities from JSON
+        async function loadActivities() {
+            try {
+                const response = await fetch('./assets/activities/activities.json');
+                activitiesData = await response.json();
+                
+                const container = document.getElementById('activities-container');
+                const emptyState = document.getElementById('empty-state');
+                
+                if (activitiesData.length === 0) {
+                    container.style.display = 'none';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+                
+                container.innerHTML = '';
+                
+                activitiesData.forEach((activity, activityIndex) => {
+                    const activityCard = document.createElement('div');
+                    activityCard.className = 'activity-card';
+                    activityCard.style.animationDelay = `${activityIndex * 0.1}s`;
+                    
+                    // Create slideshow HTML
+                    let slideshowHTML = '';
+                    activity.images.forEach((img, imgIndex) => {
+                        slideshowHTML += `
+                            <img src="./assets/activities/${img}" 
+                                 alt="${activity.title}" 
+                                 class="slideshow-img ${imgIndex === 0 ? 'active' : ''}"
+                                 onerror="this.src='https://via.placeholder.com/600x300?text=Activity'">
+                        `;
+                    });
+
+                    // Create dots HTML
+                    let dotsHTML = '';
+                    if (activity.images.length > 1) {
+                        activity.images.forEach((img, imgIndex) => {
+                            dotsHTML += `<div class="dot ${imgIndex === 0 ? 'active' : ''}" onclick="goToSlide(${activityIndex}, ${imgIndex})"></div>`;
+                        });
+                    }
+                    
+                    activityCard.innerHTML = `
+                        <div class="slideshow-container" onclick="openLightbox(${activityIndex}, 0)">
+                            ${slideshowHTML}
+                            ${activity.images.length > 1 ? `<div class="photo-count">📸 ${activity.images.length} photos</div>` : ''}
+                            ${activity.images.length > 1 ? `<div class="slide-dots">${dotsHTML}</div>` : ''}
+                        </div>
+                        <div class="p-6">
+                            <h3 class="activity-title">${activity.title}</h3>
+                            <p class="activity-description">${activity.description}</p>
+                        </div>
+                    `;
+                    
+                    container.appendChild(activityCard);
+
+                    // Start slideshow if more than 1 image
+                    if (activity.images.length > 1) {
+                        startSlideshow(activityIndex);
+                    }
+                });
+                
+            } catch (error) {
+                console.error('Error loading activities:', error);
+                document.getElementById('empty-state').style.display = 'block';
+                document.getElementById('activities-container').style.display = 'none';
+            }
+        }
+
+        // Slideshow functions
+        function startSlideshow(activityIndex) {
+            let currentSlide = 0;
+            const activity = activitiesData[activityIndex];
+            const totalSlides = activity.images.length;
+
+            slideshowIntervals[activityIndex] = setInterval(() => {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                goToSlide(activityIndex, currentSlide);
+            }, 3000); // Change slide every 3 seconds
+        }
+
+        function goToSlide(activityIndex, slideIndex) {
+            const container = document.getElementById('activities-container');
+            const activityCard = container.children[activityIndex];
+            const slideshow = activityCard.querySelector('.slideshow-container');
+            const images = slideshow.querySelectorAll('.slideshow-img');
+            const dots = slideshow.querySelectorAll('.dot');
+
+            images.forEach((img, idx) => {
+                img.classList.toggle('active', idx === slideIndex);
+            });
+
+            dots.forEach((dot, idx) => {
+                dot.classList.toggle('active', idx === slideIndex);
+            });
+        }
+
+        // Lightbox functions
+        function openLightbox(activityIndex, imageIndex) {
+            currentLightboxActivity = activityIndex;
+            currentLightboxIndex = imageIndex;
+            
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            
+            lightboxImg.src = `./assets/activities/${activitiesData[activityIndex].images[imageIndex]}`;
+            lightbox.classList.add('active');
+            
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            
+            // Re-enable body scroll
+            document.body.style.overflow = 'auto';
+            
+            currentLightboxActivity = null;
+            currentLightboxIndex = 0;
+        }
+
+        function navigateLightbox(direction) {
+            if (currentLightboxActivity === null) return;
+            
+            const activity = activitiesData[currentLightboxActivity];
+            currentLightboxIndex = (currentLightboxIndex + direction + activity.images.length) % activity.images.length;
+            
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = `./assets/activities/${activity.images[currentLightboxIndex]}`;
+        }
+
+        // Close lightbox on clicking background
+        document.getElementById('lightbox').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeLightbox();
+            }
+        });
+
+        // Close lightbox with ESC key, navigate with arrow keys
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            } else if (e.key === 'ArrowLeft') {
+                navigateLightbox(-1);
+            } else if (e.key === 'ArrowRight') {
+                navigateLightbox(1);
+            }
+        });
+
+        // Load activities on page load
+        loadActivities();
+    </script>
+
+</body>
+</html>
