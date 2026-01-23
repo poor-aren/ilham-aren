@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=1200, initial-scale=0.35, minimum-scale=0.2, maximum-scale=2.0, user-scalable=yes">
+    <meta name="viewport" content="width=1524, initial-scale=1.0, minimum-scale=0.2, maximum-scale=2.0, user-scalable=yes">
     <title>My Activities - Muhammad Ilham | Aren</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,22 +24,9 @@
         }
         .nav-link:hover::after, .nav-link.active::after { width: 80%; }
 
-        /* Grid pattern background */
         .scrapbook-page {
             background: #fef9f3;
-            background-image: 
-                repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(251, 198, 5, 0.1) 49px, rgba(251, 198, 5, 0.1) 50px),
-                repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(251, 198, 5, 0.1) 49px, rgba(251, 198, 5, 0.1) 50px);
             padding: 60px 50px;
-            position: relative;
-        }
-
-        /* Floating doodles */
-        .doodle-shape {
-            position: absolute;
-            opacity: 0.15;
-            pointer-events: none;
-            font-size: 80px;
         }
 
         .scrapbook-card {
@@ -53,19 +40,25 @@
         }
 
         .scrapbook-card:hover {
-            transform: translateY(-8px) rotate(2deg);
+            transform: translateY(-12px) rotate(2deg);
             box-shadow: 0 20px 40px rgba(251, 198, 5, 0.25);
             border-color: #FBC605;
         }
 
         .scrapbook-card:nth-child(even):hover {
-            transform: translateY(-8px) rotate(-2deg);
+            transform: translateY(-12px) rotate(-2deg);
         }
 
-        /* Colorful washi tape variations */
         .washi-tape {
             position: absolute;
             height: 30px;
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(251, 198, 5, 0.7),
+                rgba(251, 198, 5, 0.7) 10px,
+                rgba(251, 198, 5, 0.5) 10px,
+                rgba(251, 198, 5, 0.5) 20px
+            );
             top: 20px;
             left: -10px;
             right: -10px;
@@ -74,45 +67,17 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .washi-yellow {
-            background: repeating-linear-gradient(
-                45deg,
-                rgba(251, 198, 5, 0.7),
-                rgba(251, 198, 5, 0.7) 10px,
-                rgba(251, 198, 5, 0.5) 10px,
-                rgba(251, 198, 5, 0.5) 20px
-            );
-        }
 
-        .washi-pink {
-            background: repeating-linear-gradient(
-                -45deg,
-                rgba(236, 72, 153, 0.6),
-                rgba(236, 72, 153, 0.6) 8px,
-                rgba(236, 72, 153, 0.4) 8px,
-                rgba(236, 72, 153, 0.4) 16px
-            );
-        }
-
-        .washi-blue {
-            background: repeating-linear-gradient(
-                90deg,
-                rgba(59, 130, 246, 0.6),
-                rgba(59, 130, 246, 0.6) 12px,
-                rgba(59, 130, 246, 0.4) 12px,
-                rgba(59, 130, 246, 0.4) 24px
-            );
-        }
-
+            50% { transform: rotate(-5deg); }
         }
 
         .photo-gallery {
             position: relative;
             height: 280px;
             overflow: hidden;
-            background: linear-gradient(135deg, #fef9f3 0%, #fef3e2 100%);
+            background: #f9fafb;
             margin: 15px;
-            border: 3px dashed #343639;
+            border: 2px dashed #e5e7eb;
             border-radius: 12px;
         }
 
@@ -162,10 +127,6 @@
             transform: translateX(-50%);
             display: flex;
             gap: 6px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 6px 10px;
-            border-radius: 20px;
-            border: 2px solid #343639;
             z-index: 10;
         }
 
@@ -176,97 +137,51 @@
             border-radius: 50%;
             cursor: pointer;
             transition: all 0.3s ease;
+            border: 2px solid white;
         }
 
         .cute-dot.active {
             background: #FBC605;
             transform: scale(1.4);
+            border-color: #343639;
         }
 
         .cute-photo-count {
             position: absolute;
             top: 10px;
-            right: 10px;
+            left: 10px;
             background: white;
             color: #343639;
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 800;
             border: 2px solid #343639;
             z-index: 10;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
 
-        .card-content { 
-            padding: 25px;
-            background: white;
-            position: relative;
-        }
+        .card-content { padding: 25px; }
 
-        /* Hand-drawn box around title */
         .event-title-cute {
             font-size: 1.35rem;
             font-weight: 900;
             color: #343639;
-            margin-bottom: 15px;
-            display: inline-block;
-            padding: 8px 15px;
-            position: relative;
-        }
-
-        .event-title-cute::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border: 3px solid #FBC605;
-            border-radius: 8px;
-            transform: rotate(-1deg);
-        }
-
-        .event-title-cute span {
-            position: relative;
-            z-index: 1;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .event-desc-cute {
             color: #6b7280;
             line-height: 1.7;
             font-size: 0.95rem;
-            padding-left: 5px;
-            border-left: 4px solid #FBC605;
-            margin-left: 10px;
         }
 
         .cute-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 40px;
-        }
-
-        /* Corner decorations */
-        .corner-deco {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            opacity: 0.3;
-        }
-
-        .corner-deco.top-left {
-            top: 5px;
-            left: 5px;
-            border-top: 4px solid #FBC605;
-            border-left: 4px solid #FBC605;
-        }
-
-        .corner-deco.bottom-right {
-            bottom: 5px;
-            right: 5px;
-            border-bottom: 4px solid #FBC605;
-            border-right: 4px solid #FBC605;
         }
 
         .lightbox {
@@ -310,12 +225,22 @@
         .lightbox-nav:hover { background: #FBC605; transform: translateY(-50%) scale(1.15); }
         .lightbox-nav.prev { left: -70px; }
         .lightbox-nav.next { right: -70px; }
+
+        @keyframes gentle-bounce {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .scrapbook-card {
+            animation: gentle-bounce 4s ease-in-out infinite;
+        }
+        .scrapbook-card:nth-child(even) { animation-delay: 0.3s; }
     </style>
 </head>
 <body class="text-gray-900 min-h-screen" style="background-image: url('./assets/background.jpg'); background-size: cover; background-position: center;">
     
-    <div class="max-w-6xl mx-auto px-6 py-12">
-        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden mb-12" style="max-width: 1152px; margin-left: auto; margin-right: auto;">
+    <div class="max-w-7xl mx-auto px-6 py-12">
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden mb-12">
             
             <!-- Navigation -->
             <div style="background: white;">
@@ -327,14 +252,8 @@
                 </nav>
             </div>
 
-            <!-- Header -->
-            <div style="background: white; padding: 50px 40px; text-align: center; border-bottom: 4px solid #FBC605; position: relative;">
-                <!-- Corner decorations -->
-                <div style="position: absolute; top: 15px; left: 30px; width: 40px; height: 40px; border-top: 4px solid #FBC605; border-left: 4px solid #FBC605; opacity: 0.4;"></div>
-                <div style="position: absolute; top: 15px; right: 30px; width: 40px; height: 40px; border-top: 4px solid #FBC605; border-right: 4px solid #FBC605; opacity: 0.4;"></div>
-                <div style="position: absolute; bottom: 15px; left: 30px; width: 40px; height: 40px; border-bottom: 4px solid #FBC605; border-left: 4px solid #FBC605; opacity: 0.4;"></div>
-                <div style="position: absolute; bottom: 15px; right: 30px; width: 40px; height: 40px; border-bottom: 4px solid #FBC605; border-right: 4px solid #FBC605; opacity: 0.4;"></div>
-                
+            <!-- Cute Header -->
+            <div style="background: white; padding: 50px 40px; text-align: center; border-bottom: 4px solid #FBC605;">
                 <h1 class="text-5xl font-black mb-4" style="color: #343639;">
                     MY <span style="color: #FBC605; position: relative;">
                         ADVENTURES
@@ -350,12 +269,6 @@
 
             <!-- Scrapbook -->
             <div class="scrapbook-page">
-                <!-- Floating doodles -->
-                <div class="doodle-shape" style="top: 5%; left: 3%;">✏️</div>
-                <div class="doodle-shape" style="top: 15%; right: 5%;">📌</div>
-                <div class="doodle-shape" style="bottom: 20%; left: 8%;">✂️</div>
-                <div class="doodle-shape" style="bottom: 10%; right: 4%;">🎨</div>
-                
                 <div id="activities-container" class="cute-grid"></div>
                 <div id="empty-state" class="text-center py-20" style="display: none;">
                     <div class="text-6xl mb-4">📸</div>
@@ -379,7 +292,6 @@
     <script>
         let activitiesData = [], currentLightboxActivity = null, currentLightboxIndex = 0;
         let slideshowIntervals = {}, currentSlides = {};
-        const washiStyles = ['washi-yellow', 'washi-pink', 'washi-blue'];
 
         async function loadActivities() {
             try {
@@ -402,7 +314,7 @@
                     let galleryHTML = activity.images.map((img, j) => 
                         `<img src="./assets/activities/${img}" alt="${activity.title}" 
                               class="gallery-photo ${j === 0 ? 'active' : ''}"
-                              onerror="this.style.background='#e5e7eb'; this.alt='Photo';">`
+                              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27600%27 height=%27280%27%3E%3Crect fill=%27%23e5e7eb%27 width=%27600%27 height=%27280%27/%3E%3Ctext fill=%27%236b7280%27 font-family=%27Arial%27 font-size=%2720%27 x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 dominant-baseline=%27middle%27%3EPhoto%3C/text%3E%3C/svg%3E'">`
                     ).join('');
 
                     let dotsHTML = activity.images.length > 1 ? 
@@ -414,18 +326,15 @@
                         `<div class="nav-bubble prev" onclick="event.stopPropagation(); changeSlide(${i}, -1)">‹</div>
                          <div class="nav-bubble next" onclick="event.stopPropagation(); changeSlide(${i}, 1)">›</div>` : '';
                     
-                    const washiClass = washiStyles[i % washiStyles.length];
-                    
                     card.innerHTML = `
-                        <div class="washi-tape ${washiClass}"></div>
-                        <div class="corner-deco top-left"></div>
-                        <div class="corner-deco bottom-right"></div>
+                        <div class="washi-tape"></div>
+                        
                         <div class="photo-gallery" onclick="openLightbox(${i}, ${currentSlides[i] || 0})">
                             ${galleryHTML}${navHTML}
                             ${activity.images.length > 1 ? `<div class="cute-photo-count">📸 ${activity.images.length}</div><div class="dot-row">${dotsHTML}</div>` : ''}
                         </div>
                         <div class="card-content">
-                            <div class="event-title-cute"><span>📍 ${activity.title}</span></div>
+                            <div class="event-title-cute"><span>📍</span><span>${activity.title}</span></div>
                             <div class="event-desc-cute">${activity.description}</div>
                         </div>
                     `;
