@@ -161,8 +161,33 @@
         }
 
         .card-content { padding: 25px; }
+        .card-content {
+            background: white;
+            position: relative;
+        }
 
         .event-title-cute {
+        }
+
+        .event-title-cute::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 3px solid #FBC605;
+            border-radius: 8px;
+            transform: rotate(-1deg);
+        }
+
+        .event-title-cute span {
+            position: relative;
+            z-index: 1;
+            position: relative;
+            display: inline-block;
+            padding: 8px 15px;
+            margin-bottom: 15px;
             font-size: 1.35rem;
             font-weight: 900;
             color: #343639;
@@ -173,6 +198,9 @@
         }
 
         .event-desc-cute {
+            padding-left: 5px;
+            border-left: 4px solid #FBC605;
+            margin-left: 10px;
             color: #6b7280;
             line-height: 1.7;
             font-size: 0.95rem;
