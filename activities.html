@@ -104,21 +104,6 @@
             );
         }
 
-        .sticker-badge {
-            position: absolute;
-            top: -15px;
-            right: 20px;
-            background: white;
-            border: 3px solid #343639;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-            z-index: 15;
         }
 
         .photo-gallery {
@@ -394,7 +379,6 @@
     <script>
         let activitiesData = [], currentLightboxActivity = null, currentLightboxIndex = 0;
         let slideshowIntervals = {}, currentSlides = {};
-        const stickers = ['🎉', '⭐', '🏆', '✨', '🎯', '🎨', '📸', '🚀'];
         const washiStyles = ['washi-yellow', 'washi-pink', 'washi-blue'];
 
         async function loadActivities() {
@@ -434,7 +418,6 @@
                     
                     card.innerHTML = `
                         <div class="washi-tape ${washiClass}"></div>
-                        <div class="sticker-badge">${stickers[i % stickers.length]}</div>
                         <div class="corner-deco top-left"></div>
                         <div class="corner-deco bottom-right"></div>
                         <div class="photo-gallery" onclick="openLightbox(${i}, ${currentSlides[i] || 0})">
