@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1524, initial-scale=1.0, minimum-scale=0.2, maximum-scale=2.0, user-scalable=yes">
+    <title>My Activities - Muhammad Ilham | Aren</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { min-width: 1024px; zoom: 0.67; }
+        
+        .nav-link {
+            position: relative; padding: 0.5rem 1rem; transition: all 0.3s ease;
+            font-weight: 600; color: #4b5563;
+        }
+        .nav-link:hover { color: #1f2937; }
+        .nav-link.active { color: #1f2937; }
+        .nav-link::after {
+            content: ''; position: absolute; bottom: 0; left: 50%; width: 0; height: 3px;
+            background: #FBC605; transform: translateX(-50%); transition: width 0.3s ease;
+        }
+        .nav-link:hover::after, .nav-link.active::after { width: 80%; }
+
+        .scrapbook-page {
+            background: #fef9f3;
+            padding: 60px 50px;
+        }
+
+        .scrapbook-card {
+            background: white;
+            border: 3px solid #343639;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            transition: all 0.4s ease;
+        }
+
+        .scrapbook-card:hover {
+            transform: translateY(-12px) rotate(2deg);
+            box-shadow: 0 20px 40px rgba(251, 198, 5, 0.25);
+            border-color: #FBC605;
+        }
+
+        .scrapbook-card:nth-child(even):hover {
+            transform: translateY(-12px) rotate(-2deg);
+        }
+
+        .washi-tape {
+            position: absolute;
+            height: 30px;
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(251, 198, 5, 0.7),
+                rgba(251, 198, 5, 0.7) 10px,
+                rgba(251, 198, 5, 0.5) 10px,
+                rgba(251, 198, 5, 0.5) 20px
+            );
+            top: 20px;
+            left: -10px;
+            right: -10px;
+            transform: rotate(-1deg);
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+
+            50% { transform: rotate(-5deg); }
+        }
+
+        .photo-gallery {
+            position: relative;
+            height: 280px;
+            overflow: hidden;
+            background: #f9fafb;
+            margin: 15px;
+            border: 2px dashed #e5e7eb;
+            border-radius: 12px;
+        }
+
+        .gallery-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        .gallery-photo.active { opacity: 1; }
+
+        .nav-bubble {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            color: #343639;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+            border: 3px solid #343639;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .nav-bubble:hover {
+            background: #FBC605;
+            transform: translateY(-50%) scale(1.15);
+        }
+
+        .nav-bubble.prev { left: 10px; }
+        .nav-bubble.next { right: 10px; }
+
+        .dot-row {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            z-index: 10;
+        }
+
+        .cute-dot {
+            width: 10px;
+            height: 10px;
+            background: rgba(52, 54, 57, 0.3);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid white;
+        }
+
+        .cute-dot.active {
+            background: #FBC605;
+            transform: scale(1.4);
+            border-color: #343639;
+        }
+
+        .cute-photo-count {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: white;
+            color: #343639;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            border: 2px solid #343639;
+            z-index: 10;
+        }
+
+        .card-content { padding: 25px; }
+
+        .event-title-cute {
+            font-size: 1.35rem;
+            font-weight: 900;
+            color: #343639;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .event-desc-cute {
+            color: #6b7280;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .cute-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+        }
+
+        .lightbox {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.92); display: none;
+            align-items: center; justify-content: center; z-index: 9999;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .lightbox.active { display: flex; opacity: 1; }
+
+        .lightbox-content {
+            position: relative; max-width: 90%; max-height: 90%;
+            transform: scale(0.9); transition: transform 0.3s ease;
+        }
+        .lightbox.active .lightbox-content { transform: scale(1); }
+
+        .lightbox-img {
+            max-width: 100%; max-height: 90vh;
+            border: 6px solid white; border-radius: 8px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .close-btn {
+            position: absolute; top: -50px; right: 0;
+            background: white; color: #343639;
+            width: 45px; height: 45px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 26px; font-weight: bold; cursor: pointer;
+            border: 3px solid #343639; transition: all 0.3s ease;
+        }
+        .close-btn:hover { transform: rotate(90deg) scale(1.1); background: #FBC605; }
+
+        .lightbox-nav {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: white; color: #343639;
+            width: 50px; height: 50px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; font-weight: bold; cursor: pointer;
+            border: 3px solid #343639; transition: all 0.3s ease;
+        }
+        .lightbox-nav:hover { background: #FBC605; transform: translateY(-50%) scale(1.15); }
+        .lightbox-nav.prev { left: -70px; }
+        .lightbox-nav.next { right: -70px; }
+
+        @keyframes gentle-bounce {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .scrapbook-card {
+            animation: gentle-bounce 4s ease-in-out infinite;
+        }
+        .scrapbook-card:nth-child(even) { animation-delay: 0.3s; }
+    </style>
+</head>
+<body class="text-gray-900 min-h-screen" style="background-image: url('./assets/background.jpg'); background-size: cover; background-position: center;">
+    
+    <div class="max-w-7xl mx-auto px-6 py-12">
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden mb-12">
+            
+            <!-- Navigation -->
+            <div style="background: white;">
+                <nav class="flex justify-end gap-1 px-8 py-4">
+                    <a href="./index.html" class="nav-link text-base">HOME</a>
+                    <a href="./certificates.html" class="nav-link text-base">MY CERTIFICATES</a>
+                    <a href="./activities.html" class="nav-link active text-base">MY ACTIVITIES</a>
+                    <a href="./aboutme.html" class="nav-link text-base">ABOUT ME</a>
+                </nav>
+            </div>
+
+            <!-- Cute Header -->
+            <div style="background: white; padding: 50px 40px; text-align: center; border-bottom: 4px solid #FBC605;">
+                <h1 class="text-5xl font-black mb-4" style="color: #343639;">
+                    MY <span style="color: #FBC605; position: relative;">
+                        ADVENTURES
+                        <svg style="position: absolute; bottom: -10px; left: 0; width: 100%;" height="8" viewBox="0 0 200 8">
+                            <path d="M2 5C50 2 100 6 198 3" stroke="#FBC605" stroke-width="4" stroke-linecap="round"/>
+                        </svg>
+                    </span>
+                </h1>
+                <p class="text-gray-600 text-lg font-medium">
+                    📸 Events • 🏆 Competitions • ✈️ Conferences
+                </p>
+            </div>
+
+            <!-- Scrapbook -->
+            <div class="scrapbook-page">
+                <div id="activities-container" class="cute-grid"></div>
+                <div id="empty-state" class="text-center py-20" style="display: none;">
+                    <div class="text-6xl mb-4">📸</div>
+                    <h3 class="text-2xl font-black mb-2" style="color: #343639;">No Activities Yet</h3>
+                    <p class="text-gray-600">Activities will appear here once added to activities.json</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox">
+        <div class="lightbox-content">
+            <div class="close-btn" onclick="closeLightbox()">×</div>
+            <div class="lightbox-nav prev" onclick="navigateLightbox(-1)">‹</div>
+            <div class="lightbox-nav next" onclick="navigateLightbox(1)">›</div>
+            <img id="lightbox-img" class="lightbox-img" src="" alt="">
+        </div>
+    </div>
+
+    <script>
+        let activitiesData = [], currentLightboxActivity = null, currentLightboxIndex = 0;
+        let slideshowIntervals = {}, currentSlides = {};
+
+        async function loadActivities() {
+            try {
+                const response = await fetch('./assets/activities/activities.json');
+                activitiesData = await response.json();
+                
+                const container = document.getElementById('activities-container');
+                if (activitiesData.length === 0) {
+                    container.style.display = 'none';
+                    document.getElementById('empty-state').style.display = 'block';
+                    return;
+                }
+                
+                container.innerHTML = '';
+                
+                activitiesData.forEach((activity, i) => {
+                    const card = document.createElement('div');
+                    card.className = 'scrapbook-card';
+                    
+                    let galleryHTML = activity.images.map((img, j) => 
+                        `<img src="./assets/activities/${img}" alt="${activity.title}" 
+                              class="gallery-photo ${j === 0 ? 'active' : ''}"
+                              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27600%27 height=%27280%27%3E%3Crect fill=%27%23e5e7eb%27 width=%27600%27 height=%27280%27/%3E%3Ctext fill=%27%236b7280%27 font-family=%27Arial%27 font-size=%2720%27 x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 dominant-baseline=%27middle%27%3EPhoto%3C/text%3E%3C/svg%3E'">`
+                    ).join('');
+
+                    let dotsHTML = activity.images.length > 1 ? 
+                        activity.images.map((_, j) => 
+                            `<div class="cute-dot ${j === 0 ? 'active' : ''}" onclick="goToSlide(${i}, ${j})"></div>`
+                        ).join('') : '';
+
+                    let navHTML = activity.images.length > 1 ? 
+                        `<div class="nav-bubble prev" onclick="event.stopPropagation(); changeSlide(${i}, -1)">‹</div>
+                         <div class="nav-bubble next" onclick="event.stopPropagation(); changeSlide(${i}, 1)">›</div>` : '';
+                    
+                    card.innerHTML = `
+                        <div class="washi-tape"></div>
+                        
+                        <div class="photo-gallery" onclick="openLightbox(${i}, ${currentSlides[i] || 0})">
+                            ${galleryHTML}${navHTML}
+                            ${activity.images.length > 1 ? `<div class="cute-photo-count">📸 ${activity.images.length}</div><div class="dot-row">${dotsHTML}</div>` : ''}
+                        </div>
+                        <div class="card-content">
+                            <div class="event-title-cute"><span>📍</span><span>${activity.title}</span></div>
+                            <div class="event-desc-cute">${activity.description}</div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(card);
+
+                    if (activity.images.length > 1) {
+                        currentSlides[i] = 0;
+                        startSlideshow(i);
+                    }
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('empty-state').style.display = 'block';
+            }
+        }
+
+        function startSlideshow(i) {
+            slideshowIntervals[i] = setInterval(() => changeSlide(i, 1), 4000);
+        }
+
+        function changeSlide(i, dir) {
+            const activity = activitiesData[i];
+            const card = document.getElementById('activities-container').children[i];
+            const images = card.querySelectorAll('.gallery-photo');
+            const dots = card.querySelectorAll('.cute-dot');
+            
+            if (!currentSlides[i]) currentSlides[i] = 0;
+            
+            images[currentSlides[i]].classList.remove('active');
+            if (dots.length) dots[currentSlides[i]].classList.remove('active');
+            
+            currentSlides[i] = (currentSlides[i] + dir + activity.images.length) % activity.images.length;
+            
+            images[currentSlides[i]].classList.add('active');
+            if (dots.length) dots[currentSlides[i]].classList.add('active');
+        }
+
+        function goToSlide(i, j) {
+            const card = document.getElementById('activities-container').children[i];
+            const images = card.querySelectorAll('.gallery-photo');
+            const dots = card.querySelectorAll('.cute-dot');
+            
+            images[currentSlides[i]].classList.remove('active');
+            dots[currentSlides[i]].classList.remove('active');
+            
+            currentSlides[i] = j;
+            
+            images[currentSlides[i]].classList.add('active');
+            dots[currentSlides[i]].classList.add('active');
+        }
+
+        function openLightbox(i, j) {
+            currentLightboxActivity = i;
+            currentLightboxIndex = j;
+            document.getElementById('lightbox-img').src = `./assets/activities/${activitiesData[i].images[j]}`;
+            document.getElementById('lightbox').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+            document.body.style.overflow = 'auto';
+            currentLightboxActivity = null;
+            currentLightboxIndex = 0;
+        }
+
+        function navigateLightbox(dir) {
+            if (currentLightboxActivity === null) return;
+            const activity = activitiesData[currentLightboxActivity];
+            currentLightboxIndex = (currentLightboxIndex + dir + activity.images.length) % activity.images.length;
+            document.getElementById('lightbox-img').src = `./assets/activities/${activity.images[currentLightboxIndex]}`;
+        }
+
+        document.getElementById('lightbox').addEventListener('click', e => { if (e.target === e.currentTarget) closeLightbox(); });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeLightbox();
+            else if (e.key === 'ArrowLeft') navigateLightbox(-1);
+            else if (e.key === 'ArrowRight') navigateLightbox(1);
+        });
+
+        loadActivities();
+    </script>
+</body>
+</html>
