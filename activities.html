@@ -402,7 +402,7 @@
                     let galleryHTML = activity.images.map((img, j) => 
                         `<img src="./assets/activities/${img}" alt="${activity.title}" 
                               class="gallery-photo ${j === 0 ? 'active' : ''}"
-                              onerror="this.src='https://via.placeholder.com/600x280?text=Activity'">`
+                              onerror="this.style.background='#e5e7eb'; this.alt='Photo';">`
                     ).join('');
 
                     let dotsHTML = activity.images.length > 1 ? 
