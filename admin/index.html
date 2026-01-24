@@ -4,8 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Panel - Portfolio</title>
-  <!-- Netlify CMS -->
-  <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+  
+  <!-- Netlify Identity Widget -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  
   <style>
     body {
       margin: 0;
@@ -14,6 +16,24 @@
   </style>
 </head>
 <body>
-  <!-- Admin panel will be injected here -->
+  <!-- Netlify CMS -->
+  <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+  
+  <script>
+    // Redirect to home after logout
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", user => {
+        if (!user) {
+          window.netlifyIdentity.on("login", () => {
+            document.location.href = "/admin/";
+          });
+        }
+      });
+      
+      window.netlifyIdentity.on("logout", () => {
+        document.location.href = "/";
+      });
+    }
+  </script>
 </body>
 </html>
