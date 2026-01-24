@@ -1,6 +1,5 @@
 backend:
-  name: github
-  repo: poor-aren/ilham-aren  # GANTI INI dengan username/repo lo!
+  name: git-gateway
   branch: main
 
 # GitHub OAuth (nanti lo setup di GitHub Settings)
