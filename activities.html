@@ -325,7 +325,8 @@
         async function loadActivities() {
             try {
                 const response = await fetch('./assets/activities/activities.json');
-                activitiesData = await response.json();
+                const data = await response.json();
+                activitiesData = data.activities || data; // Support both formats
                 
                 const container = document.getElementById('activities-container');
                 if (activitiesData.length === 0) {
