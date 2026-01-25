@@ -2,68 +2,45 @@ backend:
   name: git-gateway
   branch: main
 
-# GitHub OAuth (nanti lo setup di GitHub Settings)
-# Atau pake test-repo untuk testing tanpa OAuth
-# backend:
-#   name: test-repo
-
 media_folder: "assets/certificates"
 public_folder: "/assets/certificates"
 
-# Ini supaya CMS bisa edit file JSON yang udah ada
 collections:
   # ========================================
   # CERTIFICATES COLLECTION
   # ========================================
-  - name: "certificates"
+  - name: "certificates_data"
     label: "Certificates"
-    label_singular: "Certificate"
-    description: "Manage your certificates here"
-    
-    # Edit file JSON yang udah ada!
     files:
-      - name: "certificates"
+      - name: "all_certificates"
         label: "All Certificates"
         file: "assets/certificates/certificates.json"
         fields:
-          - name: certificates
-            label: Certificates
-            label_singular: Certificate
-            widget: list
+          - label: "Certificates List"
+            name: "certificates"
+            widget: "list"
             fields:
-              - {label: "Title", name: "title", widget: "string", required: true}
-              - {label: "Description", name: "description", widget: "text", required: true}
-              - {label: "Image", name: "image", widget: "image", required: true, media_folder: "/assets/certificates", public_folder: "/assets/certificates"}
+              - {label: "Image Filename", name: "image", widget: "string", hint: "e.g., pimnas38.jpg"}
+              - {label: "Title", name: "title", widget: "string"}
+              - {label: "Description", name: "description", widget: "text"}
 
   # ========================================
   # ACTIVITIES COLLECTION  
   # ========================================
-  - name: "activities"
+  - name: "activities_data"
     label: "Activities"
-    label_singular: "Activity"
-    description: "Manage your activities here"
-    
-    # Edit file JSON yang udah ada!
     files:
-      - name: "activities"
+      - name: "all_activities"
         label: "All Activities"
         file: "assets/activities/activities.json"
         fields:
-          - name: activities
-            label: Activities
-            label_singular: Activity
-            widget: list
+          - label: "Activities List"
+            name: "activities"
+            widget: "list"
             fields:
-              - {label: "Title", name: "title", widget: "string", required: true}
-              - {label: "Description", name: "description", widget: "text", required: true}
               - label: "Images"
                 name: "images"
                 widget: "list"
-                field: 
-                  label: Image
-                  name: image
-                  widget: image
-                  media_folder: "/assets/activities"
-                  public_folder: "/assets/activities"
-                min: 1
-                max: 5
+                field: {label: "Image Filename", name: "image", widget: "string", hint: "e.g., photo1.jpg"}
+              - {label: "Title", name: "title", widget: "string"}
+              - {label: "Description", name: "description", widget: "text"}
