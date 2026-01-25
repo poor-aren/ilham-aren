@@ -400,7 +400,8 @@
         async function loadCertificates() {
             try {
                 const response = await fetch('./assets/certificates/certificates.json');
-                const certificates = await response.json();
+                const data = await response.json();
+                const certificates = data.certificates || data; // Support both formats;
                 
                 const container = document.getElementById('certificates-container');
                 const emptyState = document.getElementById('empty-state');
