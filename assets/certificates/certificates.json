@@ -1,22 +1,24 @@
-[
-  {
-    "image": "pimnas38.jpg",
-    "title": "PIMNAS 38 UNHAS",
-    "description": "Sertifikat telah mengikuti Program Kreativitas Mahasiswa pada Pekan Ilmiah Mahasiswa Nasional ke-38 di Universitas Hasanuddin"
-  },
-  {
-    "image": "iot-workshop.jpg",
-    "title": "IoT Workshop 2024",
-    "description": "Peserta workshop Internet of Things dan implementasi sistem embedded untuk smart home automation"
-  },
-  {
-    "image": "web-development.jpg",
-    "title": "Web Development Bootcamp",
-    "description": "Completion certificate for full-stack web development bootcamp covering HTML, CSS, JavaScript, and modern frameworks"
-  },
-  {
-    "image": "machine-learning.jpg",
-    "title": "Machine Learning Fundamentals",
-    "description": "Certificate of completion for machine learning course covering supervised and unsupervised learning algorithms"
-  }
-]
+{
+  "certificates": [
+    {
+      "image": "pimnas38.jpg",
+      "title": "PIMNAS 38 UNHAS",
+      "description": "Sertifikat telah mengikuti Program Kreativitas Mahasiswa pada Pekan Ilmiah Mahasiswa Nasional ke-38 di Universitas Hasanuddin"
+    },
+    {
+      "image": "iot-workshop.jpg",
+      "title": "IoT Workshop 2024",
+      "description": "Peserta workshop Internet of Things dan implementasi sistem embedded untuk smart home automation"
+    },
+    {
+      "image": "web-development.jpg",
+      "title": "Web Development Bootcamp",
+      "description": "Completion certificate for full-stack web development bootcamp covering HTML, CSS, JavaScript, and modern frameworks"
+    },
+    {
+      "image": "machine-learning.jpg",
+      "title": "Machine Learning Fundamentals",
+      "description": "Certificate of completion for machine learning course covering supervised and unsupervised learning algorithms"
+    }
+  ]
+}
