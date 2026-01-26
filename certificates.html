@@ -55,7 +55,7 @@
         .polaroid-card {
             background: white;
             padding: 15px;
-            padding-bottom: 60px;
+            padding-bottom: 80px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
@@ -69,7 +69,7 @@
             left: 50%;
             transform: translateX(-50%);
             width: calc(100% - 30px);
-            height: 50px;
+            height: 70px;
             background: white;
             border-top: 2px solid #e5e7eb;
         }
@@ -111,8 +111,16 @@
         .cert-title-polaroid {
             font-weight: 900;
             color: #343639;
-            font-size: 1.1rem;
+            font-size: 1rem;
             margin-bottom: 0.25rem;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            line-height: 1.3;
+            max-height: 2.6em;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         .cert-desc-polaroid {
