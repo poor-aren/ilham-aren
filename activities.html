@@ -434,7 +434,7 @@
         function openLightbox(i, j) {
             currentLightboxActivity = i;
             currentLightboxIndex = j;
-            document.getElementById('lightbox-img').src = activitiesData[i].images[j];
+            document.getElementById('lightbox-img').src = `./assets/activities/${activitiesData[i].images[j]}`;
             document.getElementById('lightbox').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
@@ -450,7 +450,7 @@
             if (currentLightboxActivity === null) return;
             const activity = activitiesData[currentLightboxActivity];
             currentLightboxIndex = (currentLightboxIndex + dir + activity.images.length) % activity.images.length;
-            document.getElementById('lightbox-img').src = activity.images[currentLightboxIndex];
+            document.getElementById('lightbox-img').src = `./assets/activities/${activity.images[currentLightboxIndex]}`;
         }
 
         document.getElementById('lightbox').addEventListener('click', e => { if (e.target === e.currentTarget) closeLightbox(); });
