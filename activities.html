@@ -79,6 +79,7 @@
             margin: 15px;
             border: 2px dashed #e5e7eb;
             border-radius: 12px;
+            z-index: 1;
         }
 
         .gallery-photo {
@@ -86,11 +87,17 @@
             height: 100%;
             object-fit: cover;
             position: absolute;
+            top: 0;
+            left: 0;
             opacity: 0;
             transition: opacity 0.6s ease;
+            z-index: 1;
         }
 
-        .gallery-photo.active { opacity: 1; }
+        .gallery-photo.active { 
+            opacity: 1; 
+            z-index: 2;
+        }
 
         .nav-bubble {
             position: absolute;
@@ -160,7 +167,11 @@
             z-index: 10;
         }
 
-        .card-content { padding: 25px; }
+        .card-content { 
+            padding: 25px; 
+            position: relative;
+            z-index: 5;
+        }
         .card-content {
             background: white;
             position: relative;
@@ -327,7 +338,6 @@
 
         async function loadActivities() {
             try {
-                // GANTI INI DENGAN API KEY & BIN ID KAMU!
                 const JSONBIN_API_KEY = '$2a$10$0p5f.8.7MaVHfCRw6y28wuozbrEphXg0vBuLRVccJXXZgGIL0kpD.';
                 const JSONBIN_BIN_ID = '6989f92bd0ea881f40ad5b6c';
                 
