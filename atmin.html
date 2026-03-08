@@ -736,8 +736,13 @@ function uploadImg(urlField, previewBoxId, folder, autoAdd=false) {
                 document.getElementById(previewBoxId).innerHTML = `<img src="${url}">`;
             }
             if (autoAdd) {
-                actImgs.push(url);
-                renderActImgs();
+                if (folder === 'activities') {
+                    actImgs.push(url);
+                    renderActImgs();
+                } else if (folder === 'tech') {
+                    techImgs.push(url);
+                    renderTechImgs();
+                }
                 document.getElementById(urlField).value = '';
             }
         }
