@@ -541,6 +541,7 @@
                 </div>
                 <div class="btn-row">
                     <button class="btn btn-yellow" onclick="addProject()">+ Add Project</button>
+                    <button class="btn btn-ghost btn-sm" id="cancel-edit-btn" style="display:none;" onclick="cancelEdit()">Cancel</button>
                 </div>
             </div>
 
@@ -916,6 +917,96 @@ function deleteProject(i) {
     db.projects.splice(i, 1);
     saveData();
 }
+let editingIndex = -1;
+function editProject(i) {
+    editingIndex = i;
+    const p = db.projects[i];
+    
+    // Populate form
+    document.getElementById('tech-title').value = p.title || '';
+    document.getElementById('tech-desc').value = p.description || '';
+    document.getElementById('tech-link').value = p.link || '';
+    
+    // Load images
+    techImgs = [...(p.images || (p.image ? [p.image] : []))];
+    renderTechImgs();
+    
+    // Load tags
+    currentTags = [...(p.tags || [])];
+    renderTagsUI();
+    
+    // Change button text
+    const btn = document.querySelector('.btn-yellow');
+    btn.textContent = '💾 Update Project';
+    btn.onclick = () => updateProject(i);
+    
+    // Show cancel button
+    document.getElementById('cancel-edit-btn').style.display = 'inline-block';
+    
+    // Scroll to form
+    document.querySelector('#section-tech .card').scrollIntoView({ behavior: 'smooth' });
+    
+    toast('Editing project. Click "Update Project" to save changes.', 'success');
+}
+function cancelEdit() {
+    // Clear form
+    document.getElementById('tech-title').value = '';
+    document.getElementById('tech-desc').value = '';
+    document.getElementById('tech-link').value = '';
+    document.getElementById('tech-img-url').value = '';
+    techImgs = [];
+    renderTechImgs();
+    currentTags = [];
+    renderTagsUI();
+    
+    // Reset button
+    const btn = document.querySelector('.btn-yellow');
+    btn.textContent = '+ Add Project';
+    btn.onclick = addProject;
+    
+    // Hide cancel button
+    document.getElementById('cancel-edit-btn').style.display = 'none';
+    
+    editingIndex = -1;
+    toast('Edit cancelled', 'success');
+}
+function updateProject(i) {
+    const title = document.getElementById('tech-title').value.trim();
+    const desc  = document.getElementById('tech-desc').value.trim();
+    const link  = document.getElementById('tech-link').value.trim();
+    const extra = document.getElementById('tech-img-url').value.trim();
+    const tagIn = document.getElementById('tag-input');
+    
+    if (extra) techImgs.push(extra);
+    if (tagIn && tagIn.value.trim()) addTag(tagIn.value.trim());
+    if (!title || !techImgs.length) { toast('Title and at least 1 image required!', 'error'); return; }
+    
+    // Update existing project
+    db.projects[i] = { title, description: desc, tags: [...currentTags], images: [...techImgs], link };
+    
+    // Clear form
+    document.getElementById('tech-title').value = '';
+    document.getElementById('tech-desc').value = '';
+    document.getElementById('tech-link').value = '';
+    document.getElementById('tech-img-url').value = '';
+    techImgs = [];
+    renderTechImgs();
+    currentTags = [];
+    renderTagsUI();
+    
+    // Reset button
+    const btn = document.querySelector('.btn-yellow');
+    btn.textContent = '+ Add Project';
+    btn.onclick = addProject;
+    
+    // Hide cancel button
+    document.getElementById('cancel-edit-btn').style.display = 'none';
+    
+    editingIndex = -1;
+    
+    saveData();
+    toast('Project updated!', 'success');
+}
 function renderTechList() {
     const el = document.getElementById('list-tech');
     if (!db.projects.length) { el.innerHTML = '<div class="empty-msg">No projects yet.</div>'; return; }
@@ -926,7 +1017,10 @@ function renderTechList() {
                 <div class="item-title">${p.title}</div>
                 <div class="item-sub">${(p.tags||[]).join(', ')||'No tags'} · ${p.images ? p.images.length : 1} image(s)</div>
             </div>
-            <button class="btn btn-red btn-sm" onclick="deleteProject(${i})">Delete</button>
+            <div style="display:flex;gap:6px;">
+                <button class="btn btn-ghost btn-sm" onclick="editProject(${i})">✏️ Edit</button>
+                <button class="btn btn-red btn-sm" onclick="deleteProject(${i})">Delete</button>
+            </div>
         </div>
     `).join('');
 }
