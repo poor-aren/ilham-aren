@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <script src="https://upload-widget.cloudinary.com/global/all.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: #f5f5f5; color: #1a1a1a; }
+
+        /* TOP BAR */
+        .topbar {
+            background: white;
+            border-bottom: 3px solid #FBC605;
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .topbar-title {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .topbar-title span {
+            background: #FBC605;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            border-radius: 4px;
+        }
+        .sync-btn {
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: opacity 0.2s;
+        }
+        .sync-btn:hover { opacity: 0.8; }
+
+        /* LAYOUT */
+        .layout {
+            display: flex;
+            min-height: calc(100vh - 57px);
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 200px;
+            background: white;
+            border-right: 1px solid #e8e8e8;
+            padding: 20px 0;
+            flex-shrink: 0;
+        }
+        .sidebar-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #aaa;
+            letter-spacing: 1.5px;
+            padding: 0 18px;
+            margin-bottom: 6px;
+            margin-top: 16px;
+            text-transform: uppercase;
+        }
+        .sidebar-label:first-child { margin-top: 0; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 18px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #555;
+            cursor: pointer;
+            border-right: 3px solid transparent;
+            transition: all 0.15s;
+            text-decoration: none;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            border-right: 3px solid transparent;
+        }
+        .nav-item:hover { background: #fafafa; color: #1a1a1a; }
+        .nav-item.active {
+            background: #fffbea;
+            color: #1a1a1a;
+            font-weight: 700;
+            border-right: 3px solid #FBC605;
+        }
+        .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+        .nav-count {
+            margin-left: auto;
+            background: #f0f0f0;
+            color: #888;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 1px 7px;
+            border-radius: 10px;
+        }
+        .nav-item.active .nav-count { background: #FBC605; color: #1a1a1a; }
+
+        /* MAIN CONTENT */
+        .main { flex: 1; padding: 28px; overflow-y: auto; }
+
+        /* STATUS TOAST */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: none;
+            z-index: 999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .toast.success { background: #1a1a1a; color: white; display: flex; align-items: center; gap: 8px; }
+        .toast.error   { background: #e74c3c; color: white; display: flex; align-items: center; gap: 8px; }
+        .toast.loading { background: #FBC605; color: #1a1a1a; display: flex; align-items: center; gap: 8px; }
+
+        /* SECTION */
+        .section { display: none; }
+        .section.active { display: block; }
+
+        .page-title {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: #1a1a1a;
+            margin-bottom: 6px;
+        }
+        .page-sub {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 24px;
+        }
+
+        /* CARDS */
+        .card {
+            background: white;
+            border: 1px solid #e8e8e8;
+            border-radius: 10px;
+            padding: 22px;
+            margin-bottom: 20px;
+        }
+        .card-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #888;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #f0f0f0;
+        }
+
+        /* FORM */
+        .form-group { margin-bottom: 14px; }
+        .form-label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 7px;
+            padding: 9px 12px;
+            font-size: 0.88rem;
+            color: #1a1a1a;
+            outline: none;
+            transition: border-color 0.15s;
+            background: white;
+        }
+        .form-input:focus, .form-textarea:focus { border-color: #FBC605; box-shadow: 0 0 0 3px rgba(251,198,5,0.1); }
+        .form-textarea { min-height: 80px; resize: vertical; }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        /* BUTTONS */
+        .btn {
+            padding: 9px 18px;
+            border-radius: 7px;
+            font-weight: 700;
+            font-size: 0.83rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.15s;
+        }
+        .btn-yellow { background: #FBC605; color: #1a1a1a; }
+        .btn-yellow:hover { background: #e6b400; }
+        .btn-dark { background: #1a1a1a; color: white; }
+        .btn-dark:hover { background: #333; }
+        .btn-ghost { background: transparent; color: #888; border: 1.5px solid #e0e0e0; }
+        .btn-ghost:hover { border-color: #FBC605; color: #1a1a1a; }
+        .btn-red { background: transparent; color: #e74c3c; border: 1.5px solid #fdd; }
+        .btn-red:hover { background: #e74c3c; color: white; border-color: #e74c3c; }
+        .btn-sm { padding: 5px 12px; font-size: 0.75rem; }
+
+        .btn-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 16px; }
+
+        /* IMG PREVIEW */
+        .img-preview-box {
+            width: 100%;
+            height: 120px;
+            border: 2px dashed #e0e0e0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ccc;
+            font-size: 0.85rem;
+            overflow: hidden;
+            margin-bottom: 10px;
+            background: #fafafa;
+        }
+        .img-preview-box img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* Multi-image preview */
+        .multi-img-preview { min-height: 100px; border: 2px dashed #e0e0e0; border-radius: 8px; padding: 8px; margin-bottom: 10px; background: #fafafa; }
+        .multi-img-wrap, .multi-img-item { position: relative; display: inline-block; margin: 4px; }
+        .multi-img-wrap img { width: 80px; height: 80px; object-fit: cover; border: 2px solid #ddd; border-radius: 6px; }
+        .multi-img-del { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%; background: #ef4444; color: white; border: none; cursor: pointer; font-size: 0.7rem; line-height: 1; }
+        
+        /* Image reorder controls */
+        .img-controls { position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); display: flex; gap: 2px; background: white; border-radius: 12px; padding: 2px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+        .img-arrow { width: 20px; height: 20px; border: none; background: #FBC605; color: #1a1a1a; border-radius: 50%; cursor: pointer; font-size: 0.65rem; line-height: 1; transition: all 0.2s; }
+        .img-arrow:hover { background: #e0a800; transform: scale(1.1); }
+        .img-arrow-space { width: 20px; height: 20px; display: inline-block; }
+        .img-number { position: absolute; top: -6px; left: -6px; width: 18px; height: 18px; border-radius: 50%; background: #1a1a1a; color: white; font-size: 0.65rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
+        /* ITEMS */
+        .items-list { display: flex; flex-direction: column; gap: 10px; }
+        .item-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #fafafa;
+            border: 1px solid #efefef;
+            border-radius: 8px;
+        }
+        .item-thumb {
+            width: 52px; height: 52px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            flex-shrink: 0;
+            background: #f0f0f0;
+        }
+        .item-info { flex: 1; min-width: 0; }
+        .item-title { font-weight: 700; font-size: 0.88rem; color: #1a1a1a; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .item-sub { font-size: 0.75rem; color: #999; }
+
+        /* TAGS */
+        .tags-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            padding: 8px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 7px;
+            min-height: 42px;
+            cursor: text;
+            background: white;
+            transition: border-color 0.15s;
+        }
+        .tags-wrap:focus-within { border-color: #FBC605; box-shadow: 0 0 0 3px rgba(251,198,5,0.1); }
+        .tag-chip {
+            background: #FBC605;
+            color: #1a1a1a;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .tag-chip-del {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #1a1a1a;
+            font-size: 0.9rem;
+            padding: 0;
+            line-height: 1;
+        }
+        .tag-text-input {
+            border: none;
+            outline: none;
+            font-size: 0.85rem;
+            flex: 1;
+            min-width: 80px;
+            color: #1a1a1a;
+            background: transparent;
+        }
+
+        .suggested {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 8px;
+        }
+        .sug-chip {
+            padding: 3px 10px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #666;
+            background: white;
+            transition: all 0.15s;
+        }
+        .sug-chip:hover { border-color: #FBC605; background: #fffbea; color: #1a1a1a; }
+
+        /* IMG PREVIEW MULTI */
+        .multi-imgs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+        .multi-img-item { position: relative; }
+        .multi-img-item img { width: 56px; height: 56px; object-fit: cover; border-radius: 6px; border: 1px solid #e0e0e0; }
+        .multi-img-del {
+            position: absolute; top: -5px; right: -5px;
+            width: 18px; height: 18px;
+            background: #e74c3c; color: white;
+            border: none; border-radius: 50%;
+            cursor: pointer; font-size: 0.65rem;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* EMPTY */
+        .empty-msg { color: #bbb; font-size: 0.85rem; padding: 16px 0; }
+
+        /* DIVIDER */
+        hr { border: none; border-top: 1px solid #f0f0f0; margin: 20px 0; }
+
+        /* ART info badges */
+        .komis-badge {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: #fafafa;
+            border: 1px solid #efefef;
+            border-radius: 7px;
+            margin-bottom: 8px;
+        }
+        .komis-badge-name { font-weight: 600; font-size: 0.88rem; }
+        .komis-badge-price { font-weight: 700; font-size: 0.82rem; color: #888; }
+    </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+    <div class="topbar-title">
+        Admin Panel <span>aren-portfolio</span>
+    </div>
+    <div style="display:flex; gap:10px; align-items:center;">
+        <span id="save-status" style="font-size:0.8rem; color:#aaa;"></span>
+        <button class="sync-btn" onclick="fetchData()">↻ Refresh</button>
+    </div>
+</div>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-label">Content</div>
+        <button class="nav-item active" onclick="switchSection('certificates', this)">
+            <span class="nav-icon">🏆</span> Certificates
+            <span class="nav-count" id="count-certs">0</span>
+        </button>
+        <button class="nav-item" onclick="switchSection('activities', this)">
+            <span class="nav-icon">📸</span> Activities
+            <span class="nav-count" id="count-acts">0</span>
+        </button>
+        <button class="nav-item" onclick="switchSection('tech', this)">
+            <span class="nav-icon">⚡</span> Tech Projects
+            <span class="nav-count" id="count-tech">0</span>
+        </button>
+
+        <div class="sidebar-label">Art</div>
+        <button class="nav-item" onclick="switchSection('art', this)">
+            <span class="nav-icon">🎨</span> Commissions
+        </button>
+        <button class="nav-item" onclick="switchSection('portfolio', this)">
+            <span class="nav-icon">🖼️</span> Portfolio
+            <span class="nav-count" id="count-portfolio">0</span>
+        </button>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <!-- ========== CERTIFICATES ========== -->
+        <div class="section active" id="section-certificates">
+            <div class="page-title">🏆 Certificates</div>
+            <div class="page-sub">Add and manage your certificates.</div>
+
+            <div class="card">
+                <div class="card-title">Add New Certificate</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Title *</label>
+                        <input class="form-input" id="cert-title" placeholder="e.g. AWS Certified Developer">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <input class="form-input" id="cert-desc" placeholder="e.g. Amazon Web Services, 2024">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Image *</label>
+                    <div class="img-preview-box" id="cert-preview-box">
+                        <span>No image yet</span>
+                    </div>
+                    <input class="form-input" id="cert-img" placeholder="Image URL" style="margin-bottom:8px;">
+                    <button class="btn btn-ghost btn-sm" onclick="uploadImg('cert-img', 'cert-preview-box', 'certificates')">📤 Upload Image</button>
+                </div>
+                <div class="btn-row">
+                    <button class="btn btn-yellow" onclick="addCertificate()">+ Add Certificate</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">All Certificates</div>
+                <div class="items-list" id="list-certs">
+                    <div class="empty-msg">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== ACTIVITIES ========== -->
+        <div class="section" id="section-activities">
+            <div class="page-title">📸 Activities</div>
+            <div class="page-sub">Add activities with multiple images.</div>
+
+            <div class="card">
+                <div class="card-title">Add New Activity</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Title *</label>
+                        <input class="form-input" id="act-title" placeholder="e.g. Hackathon 2024">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <input class="form-input" id="act-desc" placeholder="Short description">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Images * (bisa banyak)</label>
+                    <div class="multi-imgs" id="act-imgs-preview"></div>
+                    <div style="display:flex; gap:8px;">
+                        <input class="form-input" id="act-img-url" placeholder="URL setelah upload" style="margin-bottom:0;">
+                        <button class="btn btn-ghost btn-sm" style="white-space:nowrap;" onclick="uploadImg('act-img-url', null, 'activities', true)">📤 Upload</button>
+                        <button class="btn btn-ghost btn-sm" style="white-space:nowrap;" onclick="addActImg()">+ Add</button>
+                    </div>
+                </div>
+                <div class="btn-row">
+                    <button class="btn btn-yellow" onclick="addActivity()">+ Add Activity</button>
+                    <button class="btn btn-ghost btn-sm" onclick="clearActImgs()">Clear Images</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">All Activities</div>
+                <div class="items-list" id="list-acts">
+                    <div class="empty-msg">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== TECH PROJECTS ========== -->
+        <div class="section" id="section-tech">
+            <div class="page-title">⚡ Tech Projects</div>
+            <div class="page-sub">Manage your tech portfolio projects.</div>
+
+            <div class="card">
+                <div class="card-title">Add New Project</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Project Title *</label>
+                        <input class="form-input" id="tech-title" placeholder="e.g. Smart Garden IoT">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Link (GitHub / demo)</label>
+                        <input class="form-input" id="tech-link" placeholder="https://github.com/...">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" id="tech-desc" placeholder="Brief description..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tags</label>
+                    <div class="suggested">
+                        <button class="sug-chip" onclick="addTag('IoT')">IoT</button>
+                        <button class="sug-chip" onclick="addTag('Embedded')">Embedded</button>
+                        <button class="sug-chip" onclick="addTag('Machine Learning')">ML</button>
+                        <button class="sug-chip" onclick="addTag('Web Dev')">Web Dev</button>
+                        <button class="sug-chip" onclick="addTag('3D Design')">3D Design</button>
+                        <button class="sug-chip" onclick="addTag('Computer Vision')">CV</button>
+                        <button class="sug-chip" onclick="addTag('Arduino')">Arduino</button>
+                        <button class="sug-chip" onclick="addTag('ESP32')">ESP32</button>
+                        <button class="sug-chip" onclick="addTag('Python')">Python</button>
+                        <button class="sug-chip" onclick="addTag('Blender')">Blender</button>
+                        <button class="sug-chip" onclick="addTag('OpenCV')">OpenCV</button>
+                        <button class="sug-chip" onclick="addTag('MQTT')">MQTT</button>
+                    </div>
+                    <div class="tags-wrap" id="tags-wrap" onclick="document.getElementById('tag-input').focus()">
+                        <input type="text" class="tag-text-input" id="tag-input" placeholder="Ketik tag lalu Enter..." onkeydown="handleTagKey(event)">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Images (multiple)</label>
+                    <div class="multi-img-preview" id="tech-imgs-preview"></div>
+                    <input class="form-input" id="tech-img-url" placeholder="Image URL" style="margin-bottom:8px;">
+                    <div style="display:flex;gap:8px;">
+                        <button class="btn btn-ghost btn-sm" onclick="uploadImg('tech-img-url', null, 'tech', true)">📤 Upload</button>
+                        <button class="btn btn-ghost btn-sm" onclick="addTechImg()">+ Add</button>
+                        <button class="btn btn-ghost btn-sm" onclick="clearTechImgs()">🗑️ Clear All</button>
+                    </div>
+                </div>
+                <div class="btn-row">
+                    <button class="btn btn-yellow" onclick="addProject()">+ Add Project</button>
+                    <button class="btn btn-ghost btn-sm" id="cancel-edit-btn" style="display:none;" onclick="cancelEdit()">Cancel</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">All Projects</div>
+                <div class="items-list" id="list-tech">
+                    <div class="empty-msg">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== ART / COMMISSIONS ========== -->
+        <div class="section" id="section-art">
+            <div class="page-title">🎨 Commissions</div>
+            <div class="page-sub">Upload sample images untuk tiap jenis komis di art.html. Auto-saved!</div>
+
+            <div class="card">
+                <div class="card-title">Commission Poster (1×1 large image)</div>
+                <p style="font-size:0.83rem; color:#888; margin-bottom:14px;">Gambar besar di tengah mading board.</p>
+                <div class="img-preview-box" id="poster-preview-box"><span>No image yet</span></div>
+                <input class="form-input" id="poster-url" placeholder="URL poster" style="margin-bottom:8px;">
+                <button class="btn btn-ghost btn-sm" onclick="uploadKomis('poster')">📤 Upload Poster</button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Commission Sample Images</div>
+                <p style="font-size:0.83rem; color:#888; margin-bottom:16px;">Upload 1 sample per commission type. Auto-save setelah upload!</p>
+
+                <div id="komis-list"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Active Commission Links</div>
+                <div class="komis-badge"><span class="komis-badge-name">🎬 Animated Chibi Loop</span><span class="komis-badge-price">From $25</span></div>
+                <div class="komis-badge"><span class="komis-badge-name">✏️ Lineart Illustration</span><span class="komis-badge-price">From $20</span></div>
+                <div class="komis-badge"><span class="komis-badge-name">🖌️ Fullbody Rendered</span><span class="komis-badge-price">From $40</span></div>
+                <div class="komis-badge"><span class="komis-badge-name">🎭 Halfbody Rendered</span><span class="komis-badge-price">From $30</span></div>
+                <div class="komis-badge"><span class="komis-badge-name">📋 Character Design Sheet</span><span class="komis-badge-price">From $55</span></div>
+                <div class="komis-badge"><span class="komis-badge-name">🌟 Chibi Illustration</span><span class="komis-badge-price">From $15</span></div>
+            </div>
+        </div>
+
+
+        <!-- ========== PORTFOLIO ========== -->
+        <div class="section" id="section-portfolio">
+            <div class="page-title">🖼️ Portfolio Gallery</div>
+            <div class="page-sub">Upload portfolio images with categories. Auto-saved!</div>
+
+            <div class="card">
+                <div class="card-title">Add Portfolio Image</div>
+                <div class="form-group">
+                    <label class="form-label">Category *</label>
+                    <select class="form-select" id="portfolio-category">
+                        <option value="">-- Select Category --</option>
+                        <option value="fullbody">Fullbody Rendered</option>
+                        <option value="halfbody">Halfbody Rendered</option>
+                        <option value="lineart">Lineart</option>
+                        <option value="chibi-illus">Chibi Illustration</option>
+                        <option value="charsheet">Character Sheet</option>
+                        <option value="chibi-anim">Animated Chibi</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Title (Optional)</label>
+                    <input class="form-input" id="portfolio-title" placeholder="e.g. OC Commission 2024">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Image *</label>
+                    <div class="img-preview-box" id="portfolio-preview-box"><span>No image yet</span></div>
+                    <input class="form-input" id="portfolio-img" placeholder="Image URL" style="margin-bottom:8px;">
+                    <button class="btn btn-ghost btn-sm" onclick="uploadPortfolio()">📤 Upload Image</button>
+                </div>
+                <div class="btn-row">
+                    <button class="btn btn-yellow" onclick="addPortfolio()">+ Add to Portfolio</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Portfolio Images</div>
+                <div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;">
+                    <button class="btn btn-ghost btn-sm" onclick="filterPortfolio('all')">All</button>
+                    <button class="btn btn-ghost btn-sm" onclick="filterPortfolio('fullbody')">Fullbody</button>
+                    <button class="btn btn-ghost btn-sm" onclick="filterPortfolio('halfbody')">Halfbody</button>
+                    <button class="btn btn-ghost btn-sm" onclick="filterPortfolio('lineart')">Lineart</button>
+                    <button class="btn btn-ghost btn-sm" onclick="filterPortfolio('chibi-illus')">Chibi</button>
+                    <button class="btn btn-ghost btn-sm" onclick="filterPortfolio('charsheet')">Char Sheet</button>
+                    <button class="btn btn-ghost btn-sm" onclick="filterPortfolio('chibi-anim')">Animated</button>
+                </div>
+                <div class="items-list" id="list-portfolio">
+                    <div class="empty-msg">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const API_KEY = '$2a$10$0p5f.8.7MaVHfCRw6y28wuozbrEphXg0vBuLRVccJXXZgGIL0kpD.';
+const BIN_ID  = '6989f92bd0ea881f40ad5b6c';
+const CLD_CLOUD  = 'ddjznnout';
+const CLD_PRESET = 'portfolio_unsigned';
+
+let db = { certificates: [], activities: [], projects: [], komisImages: {}, portfolio: [] };
+let currentTags = [];
+let actImgs = [];
+let techImgs = [];
+
+const komisList = [
+    { key: 'chibi-anim',  label: '🎬 Animated Chibi Loop' },
+    { key: 'lineart',     label: '✏️ Lineart Illustration' },
+    { key: 'fullbody',    label: '🖌️ Fullbody Rendered' },
+    { key: 'halfbody',    label: '🎭 Halfbody Rendered' },
+    { key: 'charsheet',   label: '📋 Character Design Sheet' },
+    { key: 'chibi-illus', label: '🌟 Chibi Illustration' },
+];
+
+// ===== TOAST =====
+function toast(msg, type='success') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast ' + type;
+    setTimeout(() => el.className = 'toast', 2800);
+}
+
+// ===== SECTION SWITCH =====
+function switchSection(id, btn) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    document.getElementById('section-' + id).classList.add('active');
+    btn.classList.add('active');
+}
+
+// ===== FETCH =====
+async function fetchData() {
+    document.getElementById('save-status').textContent = 'Loading...';
+    try {
+        const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+            headers: { 'X-Master-Key': API_KEY }
+        });
+        const data = await res.json();
+        db = {
+            certificates: data.record.certificates || [],
+            activities:   data.record.activities   || [],
+            projects:     data.record.projects     || [],
+            komisImages:  data.record.komisImages  || {},
+            portfolio:    data.record.portfolio    || []
+        };
+        renderAll();
+        document.getElementById('save-status').textContent = 'Synced ✓';
+        setTimeout(() => document.getElementById('save-status').textContent = '', 2000);
+    } catch(e) {
+        document.getElementById('save-status').textContent = 'Error';
+        toast('Failed to load data', 'error');
+    }
+}
+
+// ===== SAVE =====
+async function saveData() {
+    document.getElementById('save-status').textContent = 'Saving...';
+    try {
+        await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
+            body: JSON.stringify(db)
+        });
+        renderAll();
+        toast('✓ Saved!', 'success');
+        document.getElementById('save-status').textContent = 'Saved ✓';
+        setTimeout(() => document.getElementById('save-status').textContent = '', 2000);
+    } catch(e) {
+        toast('✗ Save failed', 'error');
+        document.getElementById('save-status').textContent = 'Error';
+    }
+}
+
+// ===== UPLOAD =====
+function uploadImg(urlField, previewBoxId, folder, autoAdd=false) {
+    const widget = cloudinary.createUploadWidget({
+        cloudName: CLD_CLOUD,
+        uploadPreset: CLD_PRESET,
+        folder,
+        sources: ['local','url','camera'],
+        multiple: false,
+    }, (err, result) => {
+        if (!err && result.event === 'success') {
+            const url = result.info.secure_url;
+            document.getElementById(urlField).value = url;
+            if (previewBoxId) {
+                document.getElementById(previewBoxId).innerHTML = `<img src="${url}">`;
+            }
+            if (autoAdd) {
+                if (folder === 'activities') {
+                    actImgs.push(url);
+                    renderActImgs();
+                } else if (folder === 'tech') {
+                    techImgs.push(url);
+                    renderTechImgs();
+                }
+                document.getElementById(urlField).value = '';
+            }
+        }
+    });
+    widget.open();
+}
+
+// ===== RENDER ALL =====
+function renderAll() {
+    renderCerts();
+    renderActs();
+    renderTechList();
+    renderKomisList();
+    renderPortfolioList();
+    document.getElementById('count-certs').textContent = db.certificates.length;
+    document.getElementById('count-acts').textContent = db.activities.length;
+    document.getElementById('count-tech').textContent = db.projects.length;
+    document.getElementById('count-portfolio').textContent = db.portfolio.length;
+}
+
+// ===== CERTIFICATES =====
+function addCertificate() {
+    const title = document.getElementById('cert-title').value.trim();
+    const desc  = document.getElementById('cert-desc').value.trim();
+    const img   = document.getElementById('cert-img').value.trim();
+    if (!title || !img) { toast('Title and image required!', 'error'); return; }
+    db.certificates.push({ title, description: desc, image: img });
+    document.getElementById('cert-title').value = '';
+    document.getElementById('cert-desc').value = '';
+    document.getElementById('cert-img').value = '';
+    document.getElementById('cert-preview-box').innerHTML = '<span>No image yet</span>';
+    saveData();
+}
+function deleteCert(i) {
+    if (!confirm('Delete?')) return;
+    db.certificates.splice(i, 1);
+    saveData();
+}
+function renderCerts() {
+    const el = document.getElementById('list-certs');
+    if (!db.certificates.length) { el.innerHTML = '<div class="empty-msg">No certificates yet.</div>'; return; }
+    el.innerHTML = db.certificates.map((c,i) => `
+        <div class="item-row">
+            <img class="item-thumb" src="${c.image}" onerror="this.style.background='#f0f0f0'">
+            <div class="item-info">
+                <div class="item-title">${c.title}</div>
+                <div class="item-sub">${c.description || '—'}</div>
+            </div>
+            <button class="btn btn-red btn-sm" onclick="deleteCert(${i})">Delete</button>
+        </div>
+    `).join('');
+}
+
+// ===== ACTIVITIES =====
+function addActImg() {
+    const url = document.getElementById('act-img-url').value.trim();
+    if (!url) return;
+    actImgs.push(url);
+    document.getElementById('act-img-url').value = '';
+    renderActImgs();
+}
+function clearActImgs() { actImgs = []; renderActImgs(); }
+function moveActImg(i, dir) {
+    const newIndex = i + dir;
+    if (newIndex < 0 || newIndex >= actImgs.length) return;
+    [actImgs[i], actImgs[newIndex]] = [actImgs[newIndex], actImgs[i]];
+    renderActImgs();
+}
+function renderActImgs() {
+    document.getElementById('act-imgs-preview').innerHTML = actImgs.map((url,i) => `
+        <div class="multi-img-item">
+            <img src="${url}" style="width:56px;height:56px;object-fit:cover;border-radius:6px;border:1px solid #e0e0e0;">
+            <div class="img-controls">
+                ${i > 0 ? `<button class="img-arrow" onclick="moveActImg(${i},-1)" title="Move left">◀</button>` : '<span class="img-arrow-space"></span>'}
+                ${i < actImgs.length-1 ? `<button class="img-arrow" onclick="moveActImg(${i},1)" title="Move right">▶</button>` : '<span class="img-arrow-space"></span>'}
+            </div>
+            <button class="multi-img-del" onclick="actImgs.splice(${i},1); renderActImgs();">×</button>
+            <div class="img-number">${i+1}</div>
+        </div>
+    `).join('');
+}
+function addActivity() {
+    const title = document.getElementById('act-title').value.trim();
+    const desc  = document.getElementById('act-desc').value.trim();
+    const extra = document.getElementById('act-img-url').value.trim();
+    if (extra) actImgs.push(extra);
+    if (!title || !actImgs.length) { toast('Title and image required!', 'error'); return; }
+    db.activities.push({ title, description: desc, images: [...actImgs] });
+    document.getElementById('act-title').value = '';
+    document.getElementById('act-desc').value = '';
+    document.getElementById('act-img-url').value = '';
+    actImgs = [];
+    renderActImgs();
+    saveData();
+}
+function deleteAct(i) {
+    if (!confirm('Delete?')) return;
+    db.activities.splice(i, 1);
+    saveData();
+}
+function renderActs() {
+    const el = document.getElementById('list-acts');
+    if (!db.activities.length) { el.innerHTML = '<div class="empty-msg">No activities yet.</div>'; return; }
+    el.innerHTML = db.activities.map((a,i) => `
+        <div class="item-row">
+            <img class="item-thumb" src="${a.images[0]}" onerror="this.style.background='#f0f0f0'">
+            <div class="item-info">
+                <div class="item-title">${a.title}</div>
+                <div class="item-sub">${a.description || '—'} · ${a.images.length} image(s)</div>
+            </div>
+            <button class="btn btn-red btn-sm" onclick="deleteAct(${i})">Delete</button>
+        </div>
+    `).join('');
+}
+
+// ===== TAGS =====
+function addTag(t) {
+    if (!t || currentTags.includes(t)) return;
+    currentTags.push(t);
+    renderTagsUI();
+}
+function removeTag(t) {
+    currentTags = currentTags.filter(x => x !== t);
+    renderTagsUI();
+}
+function renderTagsUI() {
+    const wrap = document.getElementById('tags-wrap');
+    wrap.innerHTML = currentTags.map(t => `
+        <span class="tag-chip">${t}<button class="tag-chip-del" onclick="removeTag('${t}')">×</button></span>
+    `).join('') + `<input type="text" class="tag-text-input" id="tag-input" placeholder="${currentTags.length?'':'Ketik tag lalu Enter...'}" onkeydown="handleTagKey(event)">`;
+}
+function handleTagKey(e) {
+    if (e.key === 'Enter' || e.key === ',') {
+        e.preventDefault();
+        const v = e.target.value.trim();
+        if (v) addTag(v);
+        e.target.value = '';
+    }
+}
+
+// ===== TECH PROJECTS =====
+function addTechImg() {
+    const url = document.getElementById('tech-img-url').value.trim();
+    if (!url) { toast('Enter image URL!', 'error'); return; }
+    techImgs.push(url);
+    document.getElementById('tech-img-url').value = '';
+    renderTechImgs();
+    toast('Image added!');
+}
+function clearTechImgs() { techImgs = []; renderTechImgs(); }
+function moveTechImg(i, dir) {
+    const newIndex = i + dir;
+    if (newIndex < 0 || newIndex >= techImgs.length) return;
+    [techImgs[i], techImgs[newIndex]] = [techImgs[newIndex], techImgs[i]];
+    renderTechImgs();
+}
+function renderTechImgs() {
+    document.getElementById('tech-imgs-preview').innerHTML = techImgs.map((url,i) => `
+        <div class="multi-img-wrap">
+            <img src="${url}">
+            <div class="img-controls">
+                ${i > 0 ? `<button class="img-arrow" onclick="moveTechImg(${i},-1)" title="Move left">◀</button>` : '<span class="img-arrow-space"></span>'}
+                ${i < techImgs.length-1 ? `<button class="img-arrow" onclick="moveTechImg(${i},1)" title="Move right">▶</button>` : '<span class="img-arrow-space"></span>'}
+            </div>
+            <button class="multi-img-del" onclick="techImgs.splice(${i},1); renderTechImgs();">×</button>
+            <div class="img-number">${i+1}</div>
+        </div>
+    `).join('') || '<div style="color:#999;padding:12px;font-size:0.85rem;">No images yet</div>';
+}
+
+function addProject() {
+    const title = document.getElementById('tech-title').value.trim();
+    const desc  = document.getElementById('tech-desc').value.trim();
+    const link  = document.getElementById('tech-link').value.trim();
+    const extra = document.getElementById('tech-img-url').value.trim();
+    const tagIn = document.getElementById('tag-input');
+    if (extra) techImgs.push(extra);
+    if (tagIn && tagIn.value.trim()) addTag(tagIn.value.trim());
+    if (!title || !techImgs.length) { toast('Title and at least 1 image required!', 'error'); return; }
+    db.projects.push({ title, description: desc, tags: [...currentTags], images: [...techImgs], link });
+    document.getElementById('tech-title').value = '';
+    document.getElementById('tech-desc').value = '';
+    document.getElementById('tech-link').value = '';
+    document.getElementById('tech-img-url').value = '';
+    techImgs = [];
+    renderTechImgs();
+    currentTags = [];
+    renderTagsUI();
+    saveData();
+}
+function deleteProject(i) {
+    if (!confirm('Delete?')) return;
+    db.projects.splice(i, 1);
+    saveData();
+}
+let editingIndex = -1;
+function editProject(i) {
+    editingIndex = i;
+    const p = db.projects[i];
+    
+    // Populate form
+    document.getElementById('tech-title').value = p.title || '';
+    document.getElementById('tech-desc').value = p.description || '';
+    document.getElementById('tech-link').value = p.link || '';
+    
+    // Load images
+    techImgs = [...(p.images || (p.image ? [p.image] : []))];
+    renderTechImgs();
+    
+    // Load tags
+    currentTags = [...(p.tags || [])];
+    renderTagsUI();
+    
+    // Change button text
+    const btn = document.querySelector('.btn-yellow');
+    btn.textContent = '💾 Update Project';
+    btn.onclick = () => updateProject(i);
+    
+    // Show cancel button
+    document.getElementById('cancel-edit-btn').style.display = 'inline-block';
+    
+    // Scroll to form
+    document.querySelector('#section-tech .card').scrollIntoView({ behavior: 'smooth' });
+    
+    toast('Editing project. Click "Update Project" to save changes.', 'success');
+}
+function cancelEdit() {
+    // Clear form
+    document.getElementById('tech-title').value = '';
+    document.getElementById('tech-desc').value = '';
+    document.getElementById('tech-link').value = '';
+    document.getElementById('tech-img-url').value = '';
+    techImgs = [];
+    renderTechImgs();
+    currentTags = [];
+    renderTagsUI();
+    
+    // Reset button
+    const btn = document.querySelector('.btn-yellow');
+    btn.textContent = '+ Add Project';
+    btn.onclick = addProject;
+    
+    // Hide cancel button
+    document.getElementById('cancel-edit-btn').style.display = 'none';
+    
+    editingIndex = -1;
+    toast('Edit cancelled', 'success');
+}
+function updateProject(i) {
+    const title = document.getElementById('tech-title').value.trim();
+    const desc  = document.getElementById('tech-desc').value.trim();
+    const link  = document.getElementById('tech-link').value.trim();
+    const extra = document.getElementById('tech-img-url').value.trim();
+    const tagIn = document.getElementById('tag-input');
+    
+    if (extra) techImgs.push(extra);
+    if (tagIn && tagIn.value.trim()) addTag(tagIn.value.trim());
+    if (!title || !techImgs.length) { toast('Title and at least 1 image required!', 'error'); return; }
+    
+    // Update existing project
+    db.projects[i] = { title, description: desc, tags: [...currentTags], images: [...techImgs], link };
+    
+    // Clear form
+    document.getElementById('tech-title').value = '';
+    document.getElementById('tech-desc').value = '';
+    document.getElementById('tech-link').value = '';
+    document.getElementById('tech-img-url').value = '';
+    techImgs = [];
+    renderTechImgs();
+    currentTags = [];
+    renderTagsUI();
+    
+    // Reset button
+    const btn = document.querySelector('.btn-yellow');
+    btn.textContent = '+ Add Project';
+    btn.onclick = addProject;
+    
+    // Hide cancel button
+    document.getElementById('cancel-edit-btn').style.display = 'none';
+    
+    editingIndex = -1;
+    
+    saveData();
+    toast('Project updated!', 'success');
+}
+function renderTechList() {
+    const el = document.getElementById('list-tech');
+    if (!db.projects.length) { el.innerHTML = '<div class="empty-msg">No projects yet.</div>'; return; }
+    el.innerHTML = db.projects.map((p,i) => `
+        <div class="item-row">
+            <img class="item-thumb" src="${p.images ? p.images[0] : (p.image||'')}" onerror="this.style.background='#f0f0f0'; this.src='';">
+            <div class="item-info">
+                <div class="item-title">${p.title}</div>
+                <div class="item-sub">${(p.tags||[]).join(', ')||'No tags'} · ${p.images ? p.images.length : 1} image(s)</div>
+            </div>
+            <div style="display:flex;gap:6px;">
+                <button class="btn btn-ghost btn-sm" onclick="editProject(${i})">✏️ Edit</button>
+                <button class="btn btn-red btn-sm" onclick="deleteProject(${i})">Delete</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// ===== ART / KOMIS — AUTO-SAVE =====
+function renderKomisList() {
+    // Render komisList + load existing images from db.komisImages
+    document.getElementById('komis-list').innerHTML = komisList.map(k => {
+        const existingUrl = db.komisImages[k.key] || '';
+        return `
+        <div style="margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid #f0f0f0;">
+            <div style="font-weight:700; font-size:0.88rem; margin-bottom:8px;">${k.label}</div>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <div style="width:70px;height:70px;border:1px solid #e0e0e0;border-radius:7px;overflow:hidden;background:#fafafa;flex-shrink:0;" id="box-${k.key}">
+                    <img id="img-${k.key}" src="${existingUrl}" style="width:100%;height:100%;object-fit:cover;display:${existingUrl?'block':'none'};">
+                </div>
+                <div style="flex:1;">
+                    <input class="form-input" id="url-${k.key}" placeholder="Upload atau paste URL..." value="${existingUrl}" style="margin-bottom:6px;" oninput="previewKomis('${k.key}')">
+                    <button class="btn btn-ghost btn-sm" onclick="uploadKomis('${k.key}')">📤 Upload</button>
+                </div>
+            </div>
+        </div>
+    `}).join('');
+    
+    // Render poster separately
+    const posterUrl = db.komisImages['poster'] || '';
+    if (posterUrl) {
+        document.getElementById('poster-url').value = posterUrl;
+        document.getElementById('poster-preview-box').innerHTML = `<img src="${posterUrl}">`;
+    }
+}
+
+function previewKomis(key) {
+    const url = document.getElementById('url-' + key).value.trim();
+    const img = document.getElementById('img-' + key);
+    if (url) { 
+        img.src = url; 
+        img.style.display = 'block'; 
+        // Auto-save on manual paste
+        db.komisImages[key] = url;
+        saveData();
+    }
+    else { img.style.display = 'none'; }
+}
+
+function uploadKomis(key) {
+    const widget = cloudinary.createUploadWidget({
+        cloudName: CLD_CLOUD,
+        uploadPreset: CLD_PRESET,
+        folder: 'art',
+        sources: ['local','url'],
+        multiple: false,
+    }, (err, result) => {
+        if (!err && result.event === 'success') {
+            const url = result.info.secure_url;
+            
+            // Update UI
+            if (key === 'poster') {
+                document.getElementById('poster-url').value = url;
+                document.getElementById('poster-preview-box').innerHTML = `<img src="${url}">`;
+            } else {
+                document.getElementById('url-' + key).value = url;
+                const img = document.getElementById('img-' + key);
+                img.src = url;
+                img.style.display = 'block';
+            }
+            
+            // AUTO-SAVE to JSONBin
+            db.komisImages[key] = url;
+            saveData();
+        }
+    });
+    widget.open();
+}
+
+
+// ===== PORTFOLIO =====
+let portfolioFilter = 'all';
+
+function uploadPortfolio() {
+    const widget = cloudinary.createUploadWidget({
+        cloudName: CLD_CLOUD,
+        uploadPreset: CLD_PRESET,
+        folder: 'portfolio',
+        sources: ['local','url'],
+        multiple: false,
+    }, (err, result) => {
+        if (!err && result.event === 'success') {
+            const url = result.info.secure_url;
+            document.getElementById('portfolio-img').value = url;
+            document.getElementById('portfolio-preview-box').innerHTML = `<img src="${url}">`;
+        }
+    });
+    widget.open();
+}
+
+function addPortfolio() {
+    const category = document.getElementById('portfolio-category').value.trim();
+    const title = document.getElementById('portfolio-title').value.trim();
+    const img = document.getElementById('portfolio-img').value.trim();
+    
+    if (!category || !img) { toast('Category and image required!', 'error'); return; }
+    
+    const id = 'p_' + Date.now();
+    db.portfolio.push({ id, category, title, image: img });
+    
+    document.getElementById('portfolio-category').value = '';
+    document.getElementById('portfolio-title').value = '';
+    document.getElementById('portfolio-img').value = '';
+    document.getElementById('portfolio-preview-box').innerHTML = '<span>No image yet</span>';
+    
+    saveData();
+}
+
+function deletePortfolio(id) {
+    if (!confirm('Delete this portfolio image?')) return;
+    db.portfolio = db.portfolio.filter(p => p.id !== id);
+    saveData();
+}
+
+function filterPortfolio(cat) {
+    portfolioFilter = cat;
+    renderPortfolioList();
+}
+
+function renderPortfolioList() {
+    const el = document.getElementById('list-portfolio');
+    let filtered = db.portfolio;
+    if (portfolioFilter !== 'all') {
+        filtered = db.portfolio.filter(p => p.category === portfolioFilter);
+    }
+    
+    if (!filtered.length) { 
+        el.innerHTML = '<div class="empty-msg">No portfolio images yet.</div>'; 
+        return; 
+    }
+    
+    el.innerHTML = filtered.map(p => `
+        <div class="item-row">
+            <img class="item-thumb" src="${p.image}" onerror="this.style.background='#f0f0f0'">
+            <div class="item-info">
+                <div class="item-title">${p.title || 'Untitled'}</div>
+                <div class="item-sub">${p.category}</div>
+            </div>
+            <button class="btn btn-red btn-sm" onclick="deletePortfolio('${p.id}')">Delete</button>
+        </div>
+    `).join('');
+}
+
+
+// INIT
+fetchData();
+</script>
+</body>
+</html>
