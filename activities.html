@@ -371,15 +371,17 @@
                         <div class="corner-deco top-left"></div>
                         <div class="corner-deco bottom-right"></div>
                         
-                        <div class="photo-gallery" onclick="openLightbox(${i}, ${currentSlides[i] || 0})" style="position: relative; height: 280px; overflow: hidden; background: #f9fafb;">
+                        <div class="photo-gallery" onclick="openLightbox(${i}, ${currentSlides[i] || 0})" style="position: relative; height: 280px; overflow: hidden; background: #f9fafb; cursor: pointer;">
                             ${galleryHTML}${navHTML}
                             ${activity.images.length > 1 ? `<div class="cute-photo-count">📸 ${activity.images.length}</div><div class="dot-row">${dotsHTML}</div>` : ''}
                         </div>
                         <div class="card-content" style="padding: 25px; background: white; position: relative;">
                             <div class="event-title-cute"><span>📍</span><span>${activity.title}</span></div>
                             <div class="event-desc-cute">${activity.description}</div>
-                            ${activity.link ? `<a href="${activity.link}" target="_blank" onclick="event.stopPropagation()" style="display:inline-block;margin-top:12px;padding:8px 16px;background:#FBC605;color:#1a1a1a;font-weight:700;font-size:0.85rem;text-decoration:none;border-radius:8px;transition:all 0.2s;" onmouseover="this.style.background='#e0a800'" onmouseout="this.style.background='#FBC605'">🔗 View Link</a>` : ''}
                         </div>
+                        ${activity.link ? `<div style="padding: 0 25px 20px 25px; background: white;">
+                            <a href="${activity.link}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:10px 20px;background:#FBC605;color:#1a1a1a;font-weight:700;font-size:0.85rem;text-decoration:none;border-radius:8px;transition:all 0.2s;box-shadow:0 2px 4px rgba(0,0,0,0.1);" onmouseover="this.style.background='#e0a800';this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 8px rgba(0,0,0,0.15)'" onmouseout="this.style.background='#FBC605';this.style.transform='translateY(0)';this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)'">🔗 View Link</a>
+                        </div>` : ''}
                     `;
                     
                     container.appendChild(card);
