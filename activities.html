@@ -344,6 +344,9 @@
                     return;
                 }
                 
+                // Show container and hide empty state when there is data
+                container.style.display = 'grid';
+                document.getElementById('empty-state').style.display = 'none';
                 container.innerHTML = '';
                 
                 activitiesData.forEach((activity, i) => {
