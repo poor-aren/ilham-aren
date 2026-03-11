@@ -455,9 +455,13 @@
                         <input class="form-input" id="act-title" placeholder="e.g. Hackathon 2024">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Description</label>
-                        <input class="form-input" id="act-desc" placeholder="Short description">
+                        <label class="form-label">Link (opsional)</label>
+                        <input class="form-input" id="act-link" placeholder="https://instagram.com/... atau YouTube, etc">
                     </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" id="act-desc" placeholder="Short description" rows="2"></textarea>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Images * (bisa banyak)</label>
@@ -811,12 +815,14 @@ function renderActImgs() {
 function addActivity() {
     const title = document.getElementById('act-title').value.trim();
     const desc  = document.getElementById('act-desc').value.trim();
+    const link  = document.getElementById('act-link').value.trim();
     const extra = document.getElementById('act-img-url').value.trim();
     if (extra) actImgs.push(extra);
     if (!title || !actImgs.length) { toast('Title and image required!', 'error'); return; }
-    db.activities.push({ title, description: desc, images: [...actImgs] });
+    db.activities.push({ title, description: desc, link, images: [...actImgs] });
     document.getElementById('act-title').value = '';
     document.getElementById('act-desc').value = '';
+    document.getElementById('act-link').value = '';
     document.getElementById('act-img-url').value = '';
     actImgs = [];
     renderActImgs();
@@ -841,7 +847,10 @@ function renderActs() {
                 <div class="item-title">${a.title}</div>
                 <div class="item-sub">${a.description || '—'} · ${a.images.length} image(s)</div>
             </div>
-            <button class="btn btn-red btn-sm" onclick="deleteAct(${i})">Delete</button>
+            <div style="display:flex;gap:6px;">
+                <button class="btn btn-ghost btn-sm" onclick="editAct(${i})">✏️ Edit</button>
+                <button class="btn btn-red btn-sm" onclick="deleteAct(${i})">Delete</button>
+            </div>
         </div>
     `).join('');
 }
@@ -850,6 +859,43 @@ function moveAct(i, dir) {
     if (newIndex < 0 || newIndex >= db.activities.length) return;
     [db.activities[i], db.activities[newIndex]] = [db.activities[newIndex], db.activities[i]];
     saveData();
+}
+let editingActIndex = -1;
+function editAct(i) {
+    editingActIndex = i;
+    const a = db.activities[i];
+    document.getElementById('act-title').value = a.title || '';
+    document.getElementById('act-desc').value = a.description || '';
+    document.getElementById('act-link').value = a.link || '';
+    actImgs = [...a.images];
+    renderActImgs();
+    
+    const btn = document.querySelector('#section-acts .btn-yellow');
+    btn.textContent = '💾 Update Activity';
+    btn.onclick = () => updateAct(i);
+    document.querySelector('#section-acts .card').scrollIntoView({ behavior: 'smooth' });
+    toast('Editing activity. Update to save changes.', 'success');
+}
+function updateAct(i) {
+    const title = document.getElementById('act-title').value.trim();
+    const desc = document.getElementById('act-desc').value.trim();
+    const link = document.getElementById('act-link').value.trim();
+    const extra = document.getElementById('act-img-url').value.trim();
+    if (extra) actImgs.push(extra);
+    if (!title || !actImgs.length) { toast('Title and image required!', 'error'); return; }
+    db.activities[i] = { title, description: desc, link, images: [...actImgs] };
+    document.getElementById('act-title').value = '';
+    document.getElementById('act-desc').value = '';
+    document.getElementById('act-link').value = '';
+    document.getElementById('act-img-url').value = '';
+    actImgs = [];
+    renderActImgs();
+    const btn = document.querySelector('#section-acts .btn-yellow');
+    btn.textContent = '+ Add Activity';
+    btn.onclick = addActivity;
+    editingActIndex = -1;
+    saveData();
+    toast('Activity updated!', 'success');
 }
 
 // ===== TAGS =====
@@ -915,7 +961,10 @@ function renderTechList() {
                 <div class="item-title">${p.title}</div>
                 <div class="item-sub">${(p.tags||[]).join(', ')||'No tags'}</div>
             </div>
-            <button class="btn btn-red btn-sm" onclick="deleteProject(${i})">Delete</button>
+            <div style="display:flex;gap:6px;">
+                <button class="btn btn-ghost btn-sm" onclick="editProject(${i})">✏️ Edit</button>
+                <button class="btn btn-red btn-sm" onclick="deleteProject(${i})">Delete</button>
+            </div>
         </div>
     `).join('');
 }
@@ -924,6 +973,47 @@ function moveProject(i, dir) {
     if (newIndex < 0 || newIndex >= db.projects.length) return;
     [db.projects[i], db.projects[newIndex]] = [db.projects[newIndex], db.projects[i]];
     saveData();
+}
+let editingProjectIndex = -1;
+function editProject(i) {
+    editingProjectIndex = i;
+    const p = db.projects[i];
+    document.getElementById('tech-title').value = p.title || '';
+    document.getElementById('tech-desc').value = p.description || '';
+    document.getElementById('tech-link').value = p.link || '';
+    
+    // Load tags
+    currentTags = [...(p.tags || [])];
+    renderTagsUI();
+    
+    const btn = document.querySelector('#section-tech .btn-yellow');
+    btn.textContent = '💾 Update Project';
+    btn.onclick = () => updateProject(i);
+    document.querySelector('#section-tech .card').scrollIntoView({ behavior: 'smooth' });
+    toast('Editing project. Update to save changes.', 'success');
+}
+function updateProject(i) {
+    const title = document.getElementById('tech-title').value.trim();
+    const desc = document.getElementById('tech-desc').value.trim();
+    const link = document.getElementById('tech-link').value.trim();
+    const img = document.getElementById('tech-img').value.trim();
+    const tagIn = document.getElementById('tag-input');
+    if (tagIn && tagIn.value.trim()) addTag(tagIn.value.trim());
+    if (!title) { toast('Project title required!', 'error'); return; }
+    db.projects[i] = { title, description: desc, tags: [...currentTags], image: img, link };
+    document.getElementById('tech-title').value = '';
+    document.getElementById('tech-desc').value = '';
+    document.getElementById('tech-link').value = '';
+    document.getElementById('tech-img').value = '';
+    document.getElementById('tech-preview-box').innerHTML = '<span>No image yet</span>';
+    currentTags = [];
+    renderTagsUI();
+    const btn = document.querySelector('#section-tech .btn-yellow');
+    btn.textContent = '+ Add Project';
+    btn.onclick = addProject;
+    editingProjectIndex = -1;
+    saveData();
+    toast('Project updated!', 'success');
 }
 
 // ===== ART / KOMIS — AUTO-SAVE =====

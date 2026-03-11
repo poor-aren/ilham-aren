@@ -825,6 +825,7 @@ function renderProjects() {
                             ${p.tags.slice(0,3).map(tag => `<span class="photo-tag">${tag}</span>`).join('')}
                         </div>
                     ` : ''}
+                    ${p.link ? `<a href="${p.link}" target="_blank" onclick="event.stopPropagation()" style="display:inline-block;margin-top:8px;padding:5px 12px;background:#1a1a1a;color:#fbbf24;font-family:'Courier Prime',monospace;font-size:0.7rem;font-weight:700;text-decoration:none;border:2px solid #fbbf24;border-radius:4px;transition:all 0.2s;" onmouseover="this.style.background='#fbbf24';this.style.color='#1a1a1a'" onmouseout="this.style.background='#1a1a1a';this.style.color='#fbbf24'">🔗 SOURCE</a>` : ''}
                 </div>
             </div>
         `;
