@@ -675,11 +675,11 @@ async function fetchData() {
         });
         const data = await res.json();
         db = {
-            certificates: data.record.certificates || [],
-            activities:   data.record.activities   || [],
-            projects:     data.record.projects     || [],
+            certificates: (data.record.certificates || []).filter(c => c !== null),
+            activities:   (data.record.activities   || []).filter(a => a !== null),
+            projects:     (data.record.projects     || []).filter(p => p !== null),
             komisImages:  data.record.komisImages  || {},
-            portfolio:    data.record.portfolio    || []
+            portfolio:    (data.record.portfolio    || []).filter(p => p !== null)
         };
         renderAll();
         document.getElementById('save-status').textContent = 'Synced ✓';
@@ -687,6 +687,7 @@ async function fetchData() {
     } catch(e) {
         document.getElementById('save-status').textContent = 'Error';
         toast('Failed to load data', 'error');
+        console.error('Fetch error:', e);
     }
 }
 
@@ -770,6 +771,10 @@ function renderCerts() {
     if (!db.certificates.length) { el.innerHTML = '<div class="empty-msg">No certificates yet.</div>'; return; }
     el.innerHTML = db.certificates.map((c,i) => `
         <div class="item-row">
+            <div style="display:flex;gap:4px;margin-right:8px;">
+                ${i > 0 ? `<button class="btn btn-ghost btn-sm" onclick="moveCert(${i},-1)" title="Move up">▲</button>` : '<span style="width:28px;display:inline-block;"></span>'}
+                ${i < db.certificates.length-1 ? `<button class="btn btn-ghost btn-sm" onclick="moveCert(${i},1)" title="Move down">▼</button>` : '<span style="width:28px;display:inline-block;"></span>'}
+            </div>
             <img class="item-thumb" src="${c.image}" onerror="this.style.background='#f0f0f0'">
             <div class="item-info">
                 <div class="item-title">${c.title}</div>
@@ -778,6 +783,12 @@ function renderCerts() {
             <button class="btn btn-red btn-sm" onclick="deleteCert(${i})">Delete</button>
         </div>
     `).join('');
+}
+function moveCert(i, dir) {
+    const newIndex = i + dir;
+    if (newIndex < 0 || newIndex >= db.certificates.length) return;
+    [db.certificates[i], db.certificates[newIndex]] = [db.certificates[newIndex], db.certificates[i]];
+    saveData();
 }
 
 // ===== ACTIVITIES =====
@@ -821,6 +832,10 @@ function renderActs() {
     if (!db.activities.length) { el.innerHTML = '<div class="empty-msg">No activities yet.</div>'; return; }
     el.innerHTML = db.activities.map((a,i) => `
         <div class="item-row">
+            <div style="display:flex;gap:4px;margin-right:8px;">
+                ${i > 0 ? `<button class="btn btn-ghost btn-sm" onclick="moveAct(${i},-1)" title="Move up">▲</button>` : '<span style="width:28px;display:inline-block;"></span>'}
+                ${i < db.activities.length-1 ? `<button class="btn btn-ghost btn-sm" onclick="moveAct(${i},1)" title="Move down">▼</button>` : '<span style="width:28px;display:inline-block;"></span>'}
+            </div>
             <img class="item-thumb" src="${a.images[0]}" onerror="this.style.background='#f0f0f0'">
             <div class="item-info">
                 <div class="item-title">${a.title}</div>
@@ -829,6 +844,12 @@ function renderActs() {
             <button class="btn btn-red btn-sm" onclick="deleteAct(${i})">Delete</button>
         </div>
     `).join('');
+}
+function moveAct(i, dir) {
+    const newIndex = i + dir;
+    if (newIndex < 0 || newIndex >= db.activities.length) return;
+    [db.activities[i], db.activities[newIndex]] = [db.activities[newIndex], db.activities[i]];
+    saveData();
 }
 
 // ===== TAGS =====
@@ -885,6 +906,10 @@ function renderTechList() {
     if (!db.projects.length) { el.innerHTML = '<div class="empty-msg">No projects yet.</div>'; return; }
     el.innerHTML = db.projects.map((p,i) => `
         <div class="item-row">
+            <div style="display:flex;gap:4px;margin-right:8px;">
+                ${i > 0 ? `<button class="btn btn-ghost btn-sm" onclick="moveProject(${i},-1)" title="Move up">▲</button>` : '<span style="width:28px;display:inline-block;"></span>'}
+                ${i < db.projects.length-1 ? `<button class="btn btn-ghost btn-sm" onclick="moveProject(${i},1)" title="Move down">▼</button>` : '<span style="width:28px;display:inline-block;"></span>'}
+            </div>
             <img class="item-thumb" src="${p.image||''}" onerror="this.style.background='#f0f0f0'; this.src='';">
             <div class="item-info">
                 <div class="item-title">${p.title}</div>
@@ -893,6 +918,12 @@ function renderTechList() {
             <button class="btn btn-red btn-sm" onclick="deleteProject(${i})">Delete</button>
         </div>
     `).join('');
+}
+function moveProject(i, dir) {
+    const newIndex = i + dir;
+    if (newIndex < 0 || newIndex >= db.projects.length) return;
+    [db.projects[i], db.projects[newIndex]] = [db.projects[newIndex], db.projects[i]];
+    saveData();
 }
 
 // ===== ART / KOMIS — AUTO-SAVE =====

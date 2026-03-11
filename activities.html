@@ -335,7 +335,7 @@
                 });
                 
                 const data = await response.json();
-                activitiesData = data.record.activities || [];
+                activitiesData = (data.record.activities || []).filter(a => a !== null);
                 
                 const container = document.getElementById('activities-container');
                 if (activitiesData.length === 0) {
@@ -344,9 +344,6 @@
                     return;
                 }
                 
-                // Show container and hide empty state when there is data
-                container.style.display = 'grid';
-                document.getElementById('empty-state').style.display = 'none';
                 container.innerHTML = '';
                 
                 activitiesData.forEach((activity, i) => {
