@@ -918,6 +918,11 @@ const JSONBIN_KEY   = '$2a$10$0p5f.8.7MaVHfCRw6y28wuozbrEphXg0vBuLRVccJXXZgGIL0k
 const JSONBIN_BIN   = '6989f92bd0ea881f40ad5b6c';
 const PIN_COLORS    = ['', 'yellow', 'blue', 'green', 'orange'];
 
+function cldOpt(url) {
+  if (!url || !url.includes('res.cloudinary.com')) return url;
+  return url.replace('/upload/', '/upload/f_auto,q_auto/');
+}
+
 async function loadCerts() {
   try {
     const res  = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN}/latest`, {
@@ -940,13 +945,13 @@ async function loadCerts() {
       const pin   = PIN_COLORS[i % PIN_COLORS.length];
       const item  = document.createElement('div');
       item.className = 'cert-item';
-      const safeImg   = cert.image.replace(/'/g,"\\'");
+      const safeImg   = cldOpt(cert.image).replace(/'/g,"\\'");
       const safeTitle = cert.title.replace(/'/g,"\\'");
       const safeDesc  = cert.description.replace(/'/g,"\\'");
       item.innerHTML = `
         <div class="polaroid" onclick="openLB('${safeImg}','${safeTitle}','${safeDesc}')">
           <div class="pin ${pin}"></div>
-          <img src="${cert.image}"
+          <img src="${cldOpt(cert.image)}"
                alt="${cert.title}"
                onerror="this.outerHTML='<div class=\\'polaroid-placeholder\\'>📜</div>'">
           <div class="polaroid-caption">

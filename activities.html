@@ -814,6 +814,11 @@ const JSONBIN_KEY = '$2a$10$0p5f.8.7MaVHfCRw6y28wuozbrEphXg0vBuLRVccJXXZgGIL0kpD
 const JSONBIN_BIN = '6989f92bd0ea881f40ad5b6c';
 const WASHI      = ['washi-yellow','washi-pink','washi-blue'];
 
+function cldOpt(url) {
+  if (!url || !url.includes('res.cloudinary.com')) return url;
+  return url.replace('/upload/', '/upload/f_auto,q_auto/');
+}
+
 let activitiesData = [];
 let currentSlides  = {};
 let lbActivity = null, lbIndex = 0;
@@ -847,7 +852,7 @@ async function loadActivities() {
       card.className = 'scrapbook-card';
 
       const imgs = act.images.map((src, j) =>
-        `<img src="${src}" alt="${act.title}"
+        `<img src="${cldOpt(src)}" alt="${act.title}"
               class="gallery-photo ${j===0?'active':''}"
               onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22225%22%3E%3Crect fill=%22%23e5e7eb%22 width=%22400%22 height=%22225%22/%3E%3Ctext fill=%22%23aaa%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3EPhoto%3C/text%3E%3C/svg%3E'">`
       ).join('');
@@ -922,7 +927,7 @@ function goSlide(i, j) {
 /* Lightbox */
 function openLB(i, j) {
   lbActivity = i; lbIndex = j;
-  document.getElementById('lb-img').src = activitiesData[i].images[j];
+  document.getElementById('lb-img').src = cldOpt(activitiesData[i].images[j]);
   const lb = document.getElementById('lightbox');
   lb.style.display = 'flex';
   requestAnimationFrame(() => lb.classList.add('active'));
@@ -942,7 +947,7 @@ function navLB(dir) {
   if (lbActivity === null) return;
   const act = activitiesData[lbActivity];
   lbIndex = (lbIndex + dir + act.images.length) % act.images.length;
-  document.getElementById('lb-img').src = act.images[lbIndex];
+  document.getElementById('lb-img').src = cldOpt(act.images[lbIndex]);
 }
 
 document.getElementById('lb-close').addEventListener('click', closeLB);
