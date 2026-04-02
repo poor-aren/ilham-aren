@@ -374,9 +374,6 @@ body {
 }
 .art-visual {
   flex: 1; border-radius: 9px;
-  border: 2px solid rgba(0,0,0,.15);
-  background: rgba(255,255,255,.85);
-  display: flex; align-items: center; justify-content: center;
   overflow: hidden; min-height: 75px;
   position: relative; z-index: 2;
 }
@@ -518,11 +515,7 @@ body {
             <span class="art-tag tag-3d">3D</span>
           </div>
           <div class="art-visual">
-            <!-- <img src="YOUR_CLOUDINARY_GIF_URL" alt="art"> -->
-            <div class="art-placeholder">
-              <div class="ico">🎨</div>
-              <small>your art<br>GIF here</small>
-            </div>
+            <img src="https://raw.githubusercontent.com/poor-aren/ilham-aren/main/assets/sona.gif" alt="art gif" style="width:100%;height:100%;object-fit:cover;display:block;">
           </div>
         </div>
       </div>
@@ -554,9 +547,18 @@ body {
 
 <script>
 /* ══════════════════════════════════════
-   FETCH INDEX CONFIG FROM JSONBIN
+   ASSETS FROM GITHUB (profil & gif)
    ══════════════════════════════════════ */
 (async function() {
+  const GITHUB_BASE = 'https://raw.githubusercontent.com/poor-aren/ilham-aren/main/assets';
+  const PROFILE_URL = `${GITHUB_BASE}/profil.png`;
+  const GIF_URL     = `${GITHUB_BASE}/sona.gif`;
+
+  /* ── Profile Photo ── */
+  const avatarInner = document.getElementById('avatar-inner');
+  avatarInner.innerHTML = `<img src="${PROFILE_URL}" alt="Ilham">`;
+
+  /* ── GIF — fetch config dari JSONBin hanya untuk posisi & ukuran ── */
   const JSONBIN_KEY = '$2a$10$0p5f.8.7MaVHfCRw6y28wuozbrEphXg0vBuLRVccJXXZgGIL0kpD.';
   const JSONBIN_BIN = '6989f92bd0ea881f40ad5b6c';
   try {
@@ -566,48 +568,45 @@ body {
     const data = await res.json();
     const cfg  = data.record.indexConfig || {};
 
-    /* ── Profile Photo ── */
-    if (cfg.profilePhoto) {
-      const avatarInner = document.getElementById('avatar-inner');
-      avatarInner.innerHTML = `<img src="${cfg.profilePhoto}" alt="Ilham">`;
-    }
-
     /* ── GIF ── */
-    if (cfg.gifUrl) {
-      const sizeMap = {
-        small:  '80px',
-        medium: '140px',
-        large:  '200px',
-        full:   'auto'
-      };
-      const h = sizeMap[cfg.gifSize] || '140px';
-      const gifHTML = `<img src="${cfg.gifUrl}" alt="decoration" style="width:100%;height:${h};object-fit:cover;display:block;">`;
+    const sizeMap = {
+      small:  '80px',
+      medium: '140px',
+      large:  '200px',
+      full:   'auto'
+    };
+    const h = sizeMap[cfg.gifSize] || '140px';
+    const gifHTML = `<img src="${GIF_URL}" alt="decoration" style="width:100%;height:${h};object-fit:cover;display:block;">`;
+    const gifPosition = cfg.gifPosition || 'art-card';
 
-      if (cfg.gifPosition === 'below-bio') {
-        const el = document.getElementById('hero-gif-below-bio');
-        el.innerHTML = gifHTML;
-        el.style.display = 'block';
-      } else if (cfg.gifPosition === 'after-hero') {
-        const el = document.getElementById('hero-gif-after-hero');
-        el.innerHTML = `<div style="border-radius:12px;overflow:hidden;border:2px solid #eeeeea;">${gifHTML}</div>`;
-        el.style.display = 'block';
-      } else if (cfg.gifPosition === 'art-card') {
-        /* replace placeholder inside .art-visual */
-        const artVisual = document.querySelector('.art-visual');
-        if (artVisual) {
-          artVisual.innerHTML = `<img src="${cfg.gifUrl}" alt="art gif" style="width:100%;height:100%;object-fit:cover;display:block;">`;
-        }
-      } else if (cfg.gifPosition === 'hero-bg') {
-        /* overlay on hero-top */
-        const heroTop = document.querySelector('.hero-top');
-        const overlay = document.createElement('div');
-        overlay.style.cssText = 'position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;';
-        overlay.innerHTML = `<img src="${cfg.gifUrl}" alt="" style="width:100%;height:100%;object-fit:cover;opacity:0.18;">`;
-        heroTop.insertBefore(overlay, heroTop.firstChild);
+    if (gifPosition === 'below-bio') {
+      const el = document.getElementById('hero-gif-below-bio');
+      el.innerHTML = gifHTML;
+      el.style.display = 'block';
+    } else if (gifPosition === 'after-hero') {
+      const el = document.getElementById('hero-gif-after-hero');
+      el.innerHTML = `<div style="border-radius:12px;overflow:hidden;border:2px solid #eeeeea;">${gifHTML}</div>`;
+      el.style.display = 'block';
+    } else if (gifPosition === 'art-card') {
+      /* replace placeholder inside .art-visual */
+      const artVisual = document.querySelector('.art-visual');
+      if (artVisual) {
+        artVisual.innerHTML = `<img src="${GIF_URL}" alt="art gif" style="width:100%;height:100%;object-fit:cover;display:block;">`;
       }
+    } else if (gifPosition === 'hero-bg') {
+      /* overlay on hero-top */
+      const heroTop = document.querySelector('.hero-top');
+      const overlay = document.createElement('div');
+      overlay.style.cssText = 'position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;';
+      overlay.innerHTML = `<img src="${GIF_URL}" alt="" style="width:100%;height:100%;object-fit:cover;opacity:0.18;">`;
+      heroTop.insertBefore(overlay, heroTop.firstChild);
     }
   } catch(e) {
-    // silently fail – show default
+    /* JSONBin gagal — tetap tampilkan gif di art-card sebagai fallback */
+    const artVisual = document.querySelector('.art-visual');
+    if (artVisual) {
+      artVisual.innerHTML = `<img src="${GIF_URL}" alt="art gif" style="width:100%;height:100%;object-fit:cover;display:block;">`;
+    }
   }
 })();
 
