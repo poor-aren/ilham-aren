@@ -1,854 +1,721 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=1200, initial-scale=0.35, minimum-scale=0.2, maximum-scale=2.0, user-scalable=yes">
-    <title>Tech Projects - Muhammad Ilham | Aren</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Caveat:wght@500;600;700&family=Kalam:wght@300;400;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
-        body { 
-            min-width: 1024px; 
-            zoom: 0.67; 
-            margin:0; 
-            background-image: url('./assets/background.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tech Projects - Muhammad Ilham | Aren</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=Space+Mono:wght@400;700&family=Courier+Prime:wght@400;700&family=Caveat:wght@500;600;700&family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-        /* MEJA WORKSHOP - coklat hangat kayu muda */
-        .workshop-table {
-            position: relative;
-            background-color: #c8a878;
-            background-image:
-                repeating-linear-gradient(
-                    94deg,
-                    transparent 0px, transparent 22px,
-                    rgba(255,255,255,0.06) 22px, rgba(255,255,255,0.06) 23px
-                ),
-                repeating-linear-gradient(
-                    180deg,
-                    transparent 0px, transparent 55px,
-                    rgba(0,0,0,0.04) 55px, rgba(0,0,0,0.04) 57px
-                ),
-                linear-gradient(170deg, #d4b088 0%, #c8a070 40%, #b8905e 70%, #c4a070 100%);
-            border-radius: 18px;
-            box-shadow:
-                0 10px 40px rgba(0,0,0,0.18),
-                inset 0 0 0 5px #8a5c30,
-                inset 0 0 0 8px #a06830;
-            overflow: hidden;
-        }
+:root {
+  --yellow: #FBC605;
+  --black: #1a1a1a;
+  --dark: #343639;
+  --white: #ffffff;
+  --bg: #ffffff;
+  --grid: #d0d0d0;
+  --gray: #888;
+  --radius: 20px;
+  --radius-sm: 12px;
+  --mat-green: #1e4d2b;
+  --mat-green-light: #2a6038;
+}
 
-        /* Baut/sekrup sudut meja */
-        .table-screw {
-            position: absolute;
-            width: 14px; height: 14px;
-            background: radial-gradient(circle at 35% 35%, #d4a060, #7a4a20);
-            border-radius: 50%;
-            border: 1.5px solid #5a3010;
-            z-index: 50;
-            pointer-events: none;
-        }
-        .table-screw::after {
-            content: '';
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%,-50%) rotate(45deg);
-            width: 8px; height: 1.5px;
-            background: rgba(0,0,0,0.4);
-        }
-        .table-screw::before {
-            content: '';
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%,-50%);
-            width: 1.5px; height: 8px;
-            background: rgba(0,0,0,0.4);
-        }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 30px 30px;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 16px;
+}
 
-        /* MAT BACK BUTTON */
-        .mat-back {
-            display: inline-flex; align-items: center; gap: 8px;
-            font-family: 'Courier Prime', monospace;
-            font-size: 0.72rem; font-weight: 400;
-            color: rgba(255,255,255,0.55);
-            text-decoration: none;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-bottom: 28px;
-            padding: 6px 16px;
-            border: 1px solid rgba(255,255,255,0.3);
-            background: transparent;
-            transition: all 0.2s;
-        }
-        .mat-back:hover {
-            color: rgba(255,255,255,0.85);
-            border-color: rgba(255,255,255,0.55);
-        }
+/* MAIN CARD — same as index.html */
+.main-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--white);
+  border: none;
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.13), 0 2px 8px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
 
-        /* AREA MEJA - sekitar cutting mat */
-        .messy-desk {
-            background: transparent;
-            padding: 60px 52px 80px;
-            min-height: 900px;
-            position: relative;
-            overflow: visible;
-        }
+/* ── WHITE HEADER ── */
+.card-header {
+  background: var(--white);
+  padding: 20px 18px 0;
+  position: relative;
+  background: linear-gradient(170deg, #fff 60%, #fffbea 100%);
+}
 
-        /* CUTTING MAT - GREEN (dynamic size) */
-        .cutting-mat {
-            background: linear-gradient(135deg, #2d5a3d 0%, #1a3d28 100%);
-            padding: 60px;
-            border-radius: 8px;
-            position: relative;
-            box-shadow: 
-                0 8px 32px rgba(0,0,0,0.3),
-                inset 0 0 0 2px rgba(255,255,255,0.1);
-            overflow: visible;
-        }
+.header-top-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
 
-        /* Grid lines on cutting mat */
-        .cutting-mat::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image:
-                repeating-linear-gradient(0deg, transparent 0px, transparent 19px, rgba(255,255,255,0.08) 19px, rgba(255,255,255,0.08) 20px),
-                repeating-linear-gradient(90deg, transparent 0px, transparent 19px, rgba(255,255,255,0.08) 19px, rgba(255,255,255,0.08) 20px);
-            background-size: 20px 20px;
-            pointer-events: none;
-        }
+/* Back button - top left */
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  color: var(--black);
+  text-decoration: none;
+  padding: 6px 10px;
+  border: 2px solid var(--black);
+  border-radius: 8px;
+  background: var(--white);
+  flex-shrink: 0;
+  transition: background .15s, color .15s;
+}
+.btn-back:hover {
+  background: var(--black);
+  color: var(--white);
+}
+.btn-back svg { width: 10px; height: 10px; }
 
-        /* CUTTING MAT branding */
-        .mat-branding {
-            position: absolute; top: 18px; right: 25px;
-            font-family: 'Courier Prime', monospace;
-            font-size: 0.72rem; font-weight: 400;
-            color: rgba(255,255,255,0.25);
-            letter-spacing: 5px; pointer-events: none;
-            text-transform: uppercase;
-        }
-        
-        /* Measurement rulers */
-        .ruler-top, .ruler-left {
-            font-family: 'Courier Prime', monospace;
-            font-size: 0.6rem; color: rgba(255,255,255,0.35);
-            pointer-events: none;
-        }
-        .ruler-top {
-            position: absolute; top: 12px; left: 80px;
-            display: flex; gap: 52px;
-        }
-        .ruler-left {
-            position: absolute; left: 12px; top: 80px;
-            display: flex; flex-direction: column; gap: 52px;
-        }
-        
-        /* A4 size marks in corners */
-        .a4-mark {
-            position: absolute;
-            font-family: 'Courier Prime', monospace;
-            font-size: 0.85rem; font-weight: 700;
-            color: rgba(255,255,255,0.35);
-            pointer-events: none;
-        }
+/* Header title area */
+.header-title-block {
+  flex: 1;
+}
+.header-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-bottom: 3px;
+}
+.header-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -0.8px;
+  color: var(--black);
+  line-height: 1.1;
+}
+.header-title .accent { color: var(--yellow); }
+.header-subtitle {
+  font-family: 'Space Mono', monospace;
+  font-size: 7px;
+  color: var(--gray);
+  letter-spacing: 1.5px;
+  margin-top: 3px;
+}
 
-        /* Diagonal corner lines (A4 indicators) */
-        .corner-line {
-            position: absolute;
-            width: 40px; height: 40px;
-            pointer-events: none;
-        }
-        .corner-tl { top: 15px; left: 15px; }
-        .corner-tl::before {
-            content: ''; position: absolute; top: 0; left: 0;
-            width: 100%; height: 3px;
-            background: rgba(255,255,255,0.25);
-        }
-        .corner-tl::after {
-            content: ''; position: absolute; top: 0; left: 0;
-            width: 3px; height: 100%;
-            background: rgba(255,255,255,0.25);
-        }
+/* Header divider */
+.header-divider {
+  height: 3px;
+  background: linear-gradient(90deg, var(--black) 60%, var(--yellow) 100%);
+  margin: 0 -18px;
+}
 
-        .corner-tr { top: 15px; right: 15px; }
-        .corner-tr::before {
-            content: ''; position: absolute; top: 0; right: 0;
-            width: 100%; height: 3px;
-            background: rgba(255,255,255,0.25);
-        }
-        .corner-tr::after {
-            content: ''; position: absolute; top: 0; right: 0;
-            width: 3px; height: 100%;
-            background: rgba(255,255,255,0.25);
-        }
+/* ── CUTTING MAT BODY ── */
+.mat-body {
+  background: linear-gradient(160deg, #1e4d2b 0%, #163820 60%, #1a4226 100%);
+  position: relative;
+  overflow: hidden;
+  padding: 0 0 20px;
+}
 
-        /* Title - screen printed on cutting mat */
-        .mat-title {
-            font-family: 'Courier Prime', monospace;
-            font-size: 1.3rem; font-weight: 400;
-            color: rgba(255,255,255,0.3);
-            text-align: center;
-            margin-bottom: 30px;
-            letter-spacing: 7px;
-            text-transform: uppercase;
-        }
+/* Grid lines - cutting mat pattern */
+.mat-body::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0px, transparent 19px, rgba(255,255,255,0.07) 19px, rgba(255,255,255,0.07) 20px),
+    repeating-linear-gradient(90deg, transparent 0px, transparent 19px, rgba(255,255,255,0.07) 19px, rgba(255,255,255,0.07) 20px);
+  background-size: 20px 20px;
+  pointer-events: none;
+  z-index: 0;
+}
 
-        .filter-zone {
-            margin-bottom: 40px;
-        }
-        .filter-tags {
-            display: flex; flex-wrap: wrap; gap: 8px;
-        }
-        .filter-tag {
-            font-family: 'Courier Prime', monospace;
-            font-size: 0.65rem; font-weight: 400;
-            padding: 5px 14px;
-            background: transparent;
-            color: rgba(255,255,255,0.45);
-            border: 1px solid rgba(255,255,255,0.25);
-            cursor: pointer; transition: all 0.2s;
-            letter-spacing: 2px; text-transform: uppercase;
-        }
-        .filter-tag:hover {
-            color: rgba(255,255,255,0.75);
-            border-color: rgba(255,255,255,0.5);
-        }
-        .filter-tag.active {
-            color: #fbbf24;
-            border-color: rgba(251,191,36,0.6);
-            background: rgba(251,191,36,0.08);
-        }
+/* Watermark text */
+.mat-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-35deg);
+  font-family: 'Courier Prime', monospace;
+  font-size: 52px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.03);
+  letter-spacing: 6px;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 0;
+  user-select: none;
+}
 
-        /* Projects grid - SCATTERED LAYOUT (dynamic height) */
-        .projects-scatter {
-            position: relative;
-            min-height: 400px;
-        }
+/* Ruler marks top */
+.mat-ruler-top {
+  position: relative;
+  z-index: 1;
+  height: 22px;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  display: flex;
+  align-items: flex-end;
+  padding: 0 18px;
+  gap: 0;
+  overflow: hidden;
+}
+.ruler-mark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 20px;
+  flex-shrink: 0;
+}
+.ruler-mark span {
+  font-family: 'Courier Prime', monospace;
+  font-size: 6px;
+  color: rgba(255,255,255,0.28);
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.ruler-mark .tick {
+  width: 1px;
+  background: rgba(255,255,255,0.25);
+  height: 5px;
+}
+.ruler-mark.big .tick { height: 9px; }
 
-        /* Project photo - POLAROID STYLE */
-        .project-photo {
-            position: absolute;
-            background: white;
-            padding: 12px 12px 50px;
-            box-shadow: 4px 6px 20px rgba(0,0,0,0.4);
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        .project-photo:hover {
-            transform: scale(1.05) rotate(0deg) !important;
-            box-shadow: 8px 12px 32px rgba(0,0,0,0.5);
-            z-index: 100 !important;
-        }
+/* Mat branding strip */
+.mat-brand-strip {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px 6px;
+}
+.mat-brand-text {
+  font-family: 'Courier Prime', monospace;
+  font-size: 7px;
+  letter-spacing: 4px;
+  color: rgba(255,255,255,0.22);
+  text-transform: uppercase;
+}
+.mat-cm-marks {
+  display: flex;
+  gap: 14px;
+}
+.mat-cm-mark {
+  font-family: 'Courier Prime', monospace;
+  font-size: 6.5px;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 1px;
+}
 
-        /* Photo image - BIGGER */
-        .photo-img {
-            width: 340px;
-            height: 250px;
-            object-fit: cover;
-            background: #f0f0f0;
-            border: 1px solid #e0e0e0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-        }
-        
-        /* Photo gallery - clickable slideshow */
-        .photo-gallery {
-            position: relative;
-            cursor: pointer;
-        }
-        .photo-gallery:hover {
-            opacity: 0.95;
-        }
+/* ── FILTER ZONE inside mat ── */
+.filter-zone {
+  position: relative;
+  z-index: 2;
+  padding: 0 18px 14px;
+}
+.filter-label {
+  font-family: 'Courier Prime', monospace;
+  font-size: 7px;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
 
-        /* Sticky note with TAPE effect */
-        .sticky-note {
-            position: absolute;
-            background: #fef3c7;
-            padding: 12px 16px;
-            min-width: 180px;
-            box-shadow: 2px 3px 10px rgba(0,0,0,0.2);
-            border: 1px solid #f4d03f;
-            z-index: 10;
-        }
-        /* Tape holding sticky note */
-        .sticky-note::before {
-            content: '';
-            position: absolute;
-            top: -8px; left: 50%;
-            transform: translateX(-50%) rotate(-2deg);
-            width: 60px; height: 18px;
-            background: repeating-linear-gradient(45deg,
-                rgba(255,255,255,0.6), rgba(255,255,255,0.6) 3px,
-                rgba(255,255,255,0.3) 3px, rgba(255,255,255,0.3) 6px
-            );
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-            border-radius: 1px;
-        }
-        .sticky-note-left {
-            bottom: -20px;
-            left: -30px;
-            transform: rotate(-8deg);
-        }
-        .sticky-note-right {
-            bottom: -20px;
-            right: -30px;
-            transform: rotate(6deg);
-        }
+/* Dropdown button row */
+.filter-btn-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.filter-dropdown-btn {
+  font-family: 'Space Mono', monospace;
+  font-size: 7.5px;
+  font-weight: 700;
+  padding: 5px 12px;
+  background: transparent;
+  color: rgba(255,255,255,0.6);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 4px;
+  cursor: pointer;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.filter-dropdown-btn:hover {
+  color: rgba(255,255,255,0.9);
+  border-color: rgba(255,255,255,0.5);
+}
+.filter-dropdown-btn.has-filter {
+  color: var(--yellow);
+  border-color: rgba(251,191,36,0.6);
+  background: rgba(251,191,36,0.08);
+}
+.filter-active-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 7px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.filter-active-label span {
+  color: var(--yellow);
+  font-weight: 700;
+}
 
-        .note-title {
-            font-family: 'Caveat', cursive;
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #1a1a1a;
-            margin-bottom: 4px;
-            line-height: 1.4;
-        }
-        .note-desc {
-            font-family: 'Kalam', cursive;
-            font-size: 0.8rem;
-            color: #4b5563;
-            line-height: 1.4;
-        }
+/* Popup */
+.filter-popup {
+  display: none;
+  position: absolute;
+  top: calc(100% - 8px);
+  left: 18px;
+  right: 18px;
+  background: #1a3522;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  padding: 12px;
+  z-index: 10;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+.filter-popup.open { display: block; }
+.filter-popup-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.filter-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 7px;
+  font-weight: 700;
+  padding: 4px 9px;
+  background: transparent;
+  color: rgba(255,255,255,0.45);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 4px;
+  cursor: pointer;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  transition: all 0.15s;
+}
+.filter-tag:hover {
+  color: rgba(255,255,255,0.8);
+  border-color: rgba(255,255,255,0.45);
+}
+.filter-tag.active {
+  color: var(--yellow);
+  border-color: rgba(251,191,36,0.55);
+  background: rgba(251,191,36,0.08);
+}
 
-        /* Tags - cutting mat grid style */
-        .photo-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 8px;
-        }
-        .photo-tag {
-            font-family: 'Courier Prime', monospace;
-            font-size: 0.65rem; font-weight: 700;
-            padding: 4px 10px;
-            background: linear-gradient(135deg, #2d5a3d 0%, #1a3d28 100%);
-            background-image:
-                repeating-linear-gradient(0deg, transparent 0px, transparent 4px, rgba(255,255,255,0.1) 4px, rgba(255,255,255,0.1) 5px),
-                repeating-linear-gradient(90deg, transparent 0px, transparent 4px, rgba(255,255,255,0.1) 4px, rgba(255,255,255,0.1) 5px);
-            background-size: 5px 5px;
-            color: #fbbf24;
-            border: 2px solid rgba(255,255,255,0.25);
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
-        }
+/* ── PROJECTS GRID ── */
+.projects-grid {
+  position: relative;
+  z-index: 1;
+  padding: 0 14px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
 
-        /* Scattered electronic components on desk */
-        .component-scatter {
-            position: absolute;
-            pointer-events: none;
-            opacity: 0.6;
-        }
+/* Project card - polaroid on mat */
+.project-card {
+  background: var(--white);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 3px 4px 14px rgba(0,0,0,0.35), 0 1px 3px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+  border: 1.5px solid rgba(255,255,255,0.15);
+}
+.project-card:hover {
+  transform: translateY(-3px) rotate(0.5deg);
+  box-shadow: 5px 8px 20px rgba(0,0,0,0.45);
+}
 
-        /* Wire coils */
-        .wire-coil {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            border: 4px solid #dc2626;
-            border-radius: 50%;
-            opacity: 0.4;
-        }
+/* Photo area */
+.card-photo {
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+  display: block;
+  background: #e8e8e8;
+  position: relative;
+  overflow: hidden;
+}
+.card-photo-placeholder {
+  width: 100%;
+  height: 110px;
+  background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  position: relative;
+}
+.card-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* Gallery counter */
+.gallery-counter {
+  position: absolute;
+  bottom: 5px;
+  right: 6px;
+  background: rgba(0,0,0,0.65);
+  color: rgba(255,255,255,0.9);
+  font-family: 'Space Mono', monospace;
+  font-size: 7px;
+  padding: 2px 5px;
+  border-radius: 3px;
+}
 
-        /* Resistor lying around */
-        .resistor-part {
-            position: absolute;
-            width: 50px;
-            height: 15px;
-            background: #d4a373;
-            border: 2px solid #8b5a2b;
-            border-radius: 8px;
-            opacity: 0.5;
-        }
+/* Card content */
+.card-content {
+  padding: 9px 10px 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.card-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--black);
+  line-height: 1.3;
+  letter-spacing: -.2px;
+}
+.card-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  color: #666;
+  line-height: 1.5;
+  flex: 1;
+}
 
-        /* IC chip */
-        .ic-chip {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            background: #1a1a1a;
-            border: 2px solid #444;
-            opacity: 0.4;
-        }
+/* Tags inside card */
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 2px;
+}
+.card-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 6.5px;
+  font-weight: 700;
+  padding: 2px 6px;
+  background: linear-gradient(135deg, #1e4d2b, #163820);
+  color: rgba(255,255,255,0.85);
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  border: 1px solid rgba(255,255,255,0.15);
+}
 
-        /* Breadboard mini */
-        .breadboard-mini {
-            position: absolute;
-            width: 80px;
-            height: 60px;
-            background: #d4c4a8;
-            border: 2px solid #8b7355;
-            opacity: 0.3;
-        }
+/* Source link */
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 5px;
+  padding: 4px 8px;
+  background: var(--black);
+  color: var(--yellow);
+  font-family: 'Space Mono', monospace;
+  font-size: 7px;
+  font-weight: 700;
+  text-decoration: none;
+  border: 1.5px solid var(--yellow);
+  border-radius: 4px;
+  letter-spacing: .5px;
+  align-self: flex-start;
+  transition: all .15s;
+}
+.card-link:hover {
+  background: var(--yellow);
+  color: var(--black);
+}
 
-        /* Empty state */
-        .empty-mat {
-            text-align: center;
-            padding: 150px 20px;
-            font-family: 'Caveat', cursive;
-            font-size: 2rem;
-            color: rgba(255,255,255,0.3);
-        }
+/* Loading / empty */
+.mat-status {
+  text-align: center;
+  padding: 40px 20px;
+  font-family: 'Courier Prime', monospace;
+  color: rgba(255,255,255,0.3);
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  position: relative;
+  z-index: 1;
+}
 
-        
-    </style>
+/* Bottom mat strip */
+.mat-bottom {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 8px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+.mat-bottom-text {
+  font-family: 'Courier Prime', monospace;
+  font-size: 7px;
+  color: rgba(255,255,255,0.18);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+</style>
 </head>
 <body>
 
-<div class="max-w-6xl mx-auto px-6 py-12">
-<div class="workshop-table">
+<div class="main-card">
 
-    <!-- Baut sudut meja -->
-    <div class="table-screw" style="top:12px;left:12px;"></div>
-    <div class="table-screw" style="top:12px;right:12px;"></div>
-    <div class="table-screw" style="bottom:12px;left:12px;"></div>
-    <div class="table-screw" style="bottom:12px;right:12px;"></div>
+  <!-- ── WHITE HEADER ── -->
+  <div class="card-header">
+    <div class="header-top-row">
+      <!-- Back button top-left -->
+      <a href="./index.html" class="btn-back">
+        <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7 5H3M3 5L5.5 2.5M3 5L5.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        BACK
+      </a>
+      <!-- Title -->
+      <div class="header-title-block">
+        <div class="header-label">Muhammad Ilham · Projects</div>
+        <div class="header-title">TECH <span class="accent">WORKSHOP</span></div>
+        <div class="header-subtitle">⚡ BUILDS · EXPERIMENTS · PROTOTYPES</div>
+      </div>
+    </div>
+    <div class="header-divider"></div>
+  </div>
 
-    <!-- ═══ POJOK KIRI ATAS ═══ -->
+  <!-- ── CUTTING MAT BODY ── -->
+  <div class="mat-body">
+    <!-- Watermark -->
+    <div class="mat-watermark">CUTTING MAT</div>
 
-    <!-- Solder iron -->
-    <svg style="position:absolute;top:18px;left:22px;transform:rotate(38deg);opacity:0.88;pointer-events:none;z-index:5;" width="130" height="18" viewBox="0 0 130 18">
-        <!-- handle karet -->
-        <rect x="0" y="5" width="55" height="8" rx="4" fill="#222"/>
-        <rect x="4" y="6" width="48" height="6" rx="3" fill="#333"/>
-        <!-- grip lines -->
-        <line x1="12" y1="6" x2="12" y2="12" stroke="#111" stroke-width="1.5"/>
-        <line x1="18" y1="6" x2="18" y2="12" stroke="#111" stroke-width="1.5"/>
-        <line x1="24" y1="6" x2="24" y2="12" stroke="#111" stroke-width="1.5"/>
-        <!-- logam -->
-        <rect x="55" y="7" width="50" height="4" rx="1" fill="#b0b0b0"/>
-        <!-- ujung taper -->
-        <polygon points="105,7 130,9 105,11" fill="#d0d0d0"/>
-        <!-- kabel -->
-        <path d="M0,9 Q-15,2 -25,9" stroke="#555" stroke-width="3" fill="none"/>
-    </svg>
+    <!-- Ruler top -->
+    <div class="mat-ruler-top" id="ruler-top"></div>
 
-    <!-- Bekas solder / flux spot di meja -->
-    <div style="position:absolute;top:62px;left:48px;width:22px;height:8px;background:rgba(80,50,10,0.25);border-radius:50%;transform:rotate(-10deg);pointer-events:none;z-index:3;"></div>
-    <div style="position:absolute;top:70px;left:60px;width:10px;height:10px;background:rgba(80,50,10,0.18);border-radius:50%;pointer-events:none;z-index:3;"></div>
+    <!-- Mat branding -->
+    <div class="mat-brand-strip">
+      <span class="mat-brand-text">SELF-HEALING CUTTING MAT · A1</span>
+      <div class="mat-cm-marks">
+        <span class="mat-cm-mark">10cm</span>
+        <span class="mat-cm-mark">20cm</span>
+        <span class="mat-cm-mark">30cm</span>
+      </div>
+    </div>
 
-    <!-- Obeng pipih -->
-    <svg style="position:absolute;top:72px;left:18px;transform:rotate(-18deg);opacity:0.82;pointer-events:none;z-index:5;" width="95" height="13" viewBox="0 0 95 13">
-        <rect x="0" y="4" width="60" height="5" rx="2.5" fill="#c08030"/>
-        <rect x="60" y="3" width="22" height="7" rx="1" fill="#e8c060"/>
-        <rect x="82" y="5.5" width="13" height="2" fill="#999"/>
-    </svg>
-
-    <!-- Kertas catatan TODO -->
-    <div style="position:absolute;top:22px;left:148px;transform:rotate(-5deg);background:#f9f5d0;width:105px;height:90px;box-shadow:3px 4px 10px rgba(0,0,0,0.3);padding:9px;z-index:6;pointer-events:none;">
-        <!-- tape atas -->
-        <div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%) rotate(1deg);width:50px;height:14px;background:repeating-linear-gradient(45deg,rgba(255,255,255,0.55),rgba(255,255,255,0.55) 3px,rgba(200,200,150,0.4) 3px,rgba(200,200,150,0.4) 6px);"></div>
-        <div style="font-family:'Kalam',cursive;font-size:0.6rem;color:#333;font-weight:700;border-bottom:1px solid #d4c870;padding-bottom:3px;margin-bottom:5px;">TODO LIST</div>
-        <div style="font-family:'Kalam',cursive;font-size:0.5rem;color:#555;line-height:1.75;">
-            <span style="color:#2a7a2a;">✓</span> solder header pins<br>
-            <span style="color:#2a7a2a;">✓</span> flash bootloader<br>
-            <span style="color:#888;">□</span> test I2C addr<br>
-            <span style="color:#888;">□</span> buat PCB v2
+    <!-- Filter zone -->
+    <div class="filter-zone">
+      <div class="filter-label">— filter by tag —</div>
+      <div class="filter-btn-row">
+        <button class="filter-dropdown-btn" id="filter-dropdown-btn" onclick="toggleFilterPopup()">
+          ▼ FILTER
+        </button>
+        <span class="filter-active-label" id="filter-active-label">showing: <span>ALL</span></span>
+      </div>
+      <div class="filter-popup" id="filter-popup">
+        <div class="filter-popup-tags" id="filter-tags">
+          <div class="filter-tag active" data-filter="all" onclick="filterProjects('all')">ALL</div>
         </div>
+      </div>
     </div>
 
-    <!-- ═══ POJOK KANAN ATAS ═══ -->
-
-    <!-- Penggaris kayu -->
-    <svg style="position:absolute;top:16px;right:185px;transform:rotate(3deg);opacity:0.85;pointer-events:none;z-index:5;" width="195" height="26" viewBox="0 0 195 26">
-        <rect x="0" y="3" width="195" height="20" rx="2" fill="#dfc080" stroke="#b08820" stroke-width="1"/>
-        <rect x="0" y="3" width="195" height="4" rx="1" fill="rgba(255,255,255,0.25)"/>
-        <g stroke="#8b6010" stroke-width="0.8">
-            <line x1="10" y1="3" x2="10" y2="11"/><line x1="20" y1="3" x2="20" y2="8"/>
-            <line x1="30" y1="3" x2="30" y2="11"/><line x1="40" y1="3" x2="40" y2="8"/>
-            <line x1="50" y1="3" x2="50" y2="15"/><line x1="60" y1="3" x2="60" y2="8"/>
-            <line x1="70" y1="3" x2="70" y2="11"/><line x1="80" y1="3" x2="80" y2="8"/>
-            <line x1="90" y1="3" x2="90" y2="11"/><line x1="100" y1="3" x2="100" y2="15"/>
-            <line x1="110" y1="3" x2="110" y2="8"/><line x1="120" y1="3" x2="120" y2="11"/>
-            <line x1="130" y1="3" x2="130" y2="8"/><line x1="140" y1="3" x2="140" y2="11"/>
-            <line x1="150" y1="3" x2="150" y2="15"/><line x1="160" y1="3" x2="160" y2="8"/>
-            <line x1="170" y1="3" x2="170" y2="11"/><line x1="180" y1="3" x2="180" y2="8"/>
-            <line x1="190" y1="3" x2="190" y2="11"/>
-        </g>
-        <text x="47" y="22" font-size="6" fill="#7a5000" font-family="monospace">5</text>
-        <text x="97" y="22" font-size="6" fill="#7a5000" font-family="monospace">10</text>
-        <text x="147" y="22" font-size="6" fill="#7a5000" font-family="monospace">15</text>
-    </svg>
-
-    <!-- Arduino Uno pojok kanan atas — SVG detail -->
-    <svg style="position:absolute;top:30px;right:18px;transform:rotate(-7deg);opacity:0.92;pointer-events:none;z-index:5;" width="88" height="110" viewBox="0 0 88 110">
-        <!-- PCB -->
-        <rect x="2" y="2" width="84" height="106" rx="4" fill="#1a5a1a" stroke="#0d3d0d" stroke-width="1.5"/>
-        <!-- silk screen area -->
-        <rect x="8" y="8" width="72" height="94" rx="2" fill="#1e6a1e" opacity="0.5"/>
-        <!-- teks Arduino -->
-        <text x="44" y="20" text-anchor="middle" font-size="5.5" fill="rgba(255,255,255,0.7)" font-family="monospace" font-weight="bold">ARDUINO</text>
-        <text x="44" y="28" text-anchor="middle" font-size="4.5" fill="rgba(255,255,255,0.5)" font-family="monospace">UNO R3</text>
-        <!-- USB port -->
-        <rect x="6" y="36" width="14" height="22" rx="2" fill="#aaa" stroke="#888" stroke-width="1"/>
-        <rect x="9" y="39" width="8" height="16" rx="1" fill="#555"/>
-        <!-- power jack -->
-        <circle cx="12" cy="78" r="7" fill="#444" stroke="#333" stroke-width="1"/>
-        <circle cx="12" cy="78" r="3.5" fill="#222"/>
-        <!-- crystal -->
-        <rect x="35" y="55" width="10" height="6" rx="1" fill="#d4a050" stroke="#a07030" stroke-width="0.8"/>
-        <!-- ATmega chip -->
-        <rect x="28" y="65" width="28" height="22" rx="1" fill="#1a1a2e" stroke="#444" stroke-width="0.8"/>
-        <text x="42" y="78" text-anchor="middle" font-size="3.5" fill="#4a9eff" font-family="monospace">ATmega</text>
-        <text x="42" y="83" text-anchor="middle" font-size="3" fill="#4a9eff" font-family="monospace">328P</text>
-        <!-- pin headers atas -->
-        <g fill="#c0c0c0">
-            <rect x="20" y="3" width="4" height="7" rx="0.5"/>
-            <rect x="26" y="3" width="4" height="7" rx="0.5"/>
-            <rect x="32" y="3" width="4" height="7" rx="0.5"/>
-            <rect x="38" y="3" width="4" height="7" rx="0.5"/>
-            <rect x="44" y="3" width="4" height="7" rx="0.5"/>
-            <rect x="50" y="3" width="4" height="7" rx="0.5"/>
-            <rect x="56" y="3" width="4" height="7" rx="0.5"/>
-        </g>
-        <!-- pin headers bawah -->
-        <g fill="#c0c0c0">
-            <rect x="20" y="100" width="4" height="7" rx="0.5"/>
-            <rect x="26" y="100" width="4" height="7" rx="0.5"/>
-            <rect x="32" y="100" width="4" height="7" rx="0.5"/>
-            <rect x="38" y="100" width="4" height="7" rx="0.5"/>
-            <rect x="44" y="100" width="4" height="7" rx="0.5"/>
-            <rect x="50" y="100" width="4" height="7" rx="0.5"/>
-            <rect x="56" y="100" width="4" height="7" rx="0.5"/>
-        </g>
-        <!-- LED power -->
-        <circle cx="70" cy="38" r="3" fill="#00ff44" opacity="0.9"/>
-        <!-- LED TX/RX -->
-        <circle cx="70" cy="46" r="2.5" fill="#ff8800" opacity="0.8"/>
-        <circle cx="70" cy="53" r="2.5" fill="#ff8800" opacity="0.6"/>
-        <!-- reset button -->
-        <rect x="62" y="65" width="14" height="10" rx="2" fill="#5090d0" stroke="#3070b0" stroke-width="0.8"/>
-        <text x="69" y="72" text-anchor="middle" font-size="3" fill="white" font-family="monospace">RST</text>
-    </svg>
-
-    <!-- ═══ BAWAH KIRI ═══ -->
-
-    <!-- Kapasitor x2 -->
-    <svg style="position:absolute;bottom:68px;left:22px;transform:rotate(10deg);opacity:0.85;pointer-events:none;z-index:5;" width="18" height="50" viewBox="0 0 18 50">
-        <rect x="3" y="5" width="12" height="30" rx="6" fill="#4a90d0" stroke="#2a70b0" stroke-width="1"/>
-        <rect x="5" y="5" width="4" height="30" rx="3" fill="rgba(255,255,255,0.2)"/>
-        <text x="9" y="23" text-anchor="middle" font-size="4" fill="white" font-family="monospace">100</text>
-        <text x="9" y="29" text-anchor="middle" font-size="3.5" fill="white" font-family="monospace">µF</text>
-        <line x1="6" y1="35" x2="6" y2="50" stroke="#aaa" stroke-width="1.5"/>
-        <line x1="12" y1="35" x2="12" y2="50" stroke="#aaa" stroke-width="1.5"/>
-        <rect x="1" y="4" width="16" height="4" rx="1" fill="#888" opacity="0.5"/>
-    </svg>
-    <svg style="position:absolute;bottom:60px;left:42px;transform:rotate(-8deg);opacity:0.8;pointer-events:none;z-index:5;" width="16" height="44" viewBox="0 0 16 44">
-        <rect x="2" y="4" width="12" height="26" rx="6" fill="#c04040" stroke="#902020" stroke-width="1"/>
-        <rect x="4" y="4" width="3.5" height="26" rx="2.5" fill="rgba(255,255,255,0.2)"/>
-        <text x="8" y="20" text-anchor="middle" font-size="3.5" fill="white" font-family="monospace">47µF</text>
-        <line x1="5" y1="30" x2="5" y2="44" stroke="#aaa" stroke-width="1.5"/>
-        <line x1="11" y1="30" x2="11" y2="44" stroke="#aaa" stroke-width="1.5"/>
-        <rect x="0" y="3" width="16" height="4" rx="1" fill="#777" opacity="0.5"/>
-    </svg>
-
-    <!-- Resistor -->
-    <svg style="position:absolute;bottom:88px;left:16px;transform:rotate(-22deg);opacity:0.82;pointer-events:none;z-index:5;" width="65" height="14" viewBox="0 0 65 14">
-        <line x1="0" y1="7" x2="13" y2="7" stroke="#bbb" stroke-width="1.5"/>
-        <rect x="13" y="2" width="39" height="10" rx="4" fill="#d4a878" stroke="#a07840" stroke-width="1"/>
-        <line x1="19" y1="2" x2="19" y2="12" stroke="#c0392b" stroke-width="2.5"/>
-        <line x1="26" y1="2" x2="26" y2="12" stroke="#c0392b" stroke-width="2.5"/>
-        <line x1="33" y1="2" x2="33" y2="12" stroke="#333" stroke-width="2.5"/>
-        <line x1="40" y1="2" x2="40" y2="12" stroke="#d4ac0d" stroke-width="2.5"/>
-        <line x1="52" y1="7" x2="65" y2="7" stroke="#bbb" stroke-width="1.5"/>
-    </svg>
-
-    <!-- Kabel jumper -->
-    <svg style="position:absolute;bottom:38px;left:75px;opacity:0.75;pointer-events:none;z-index:5;" width="100" height="35" viewBox="0 0 100 35">
-        <path d="M0,18 Q25,3 50,18 Q75,33 100,18" stroke="#e53e3e" stroke-width="2.5" fill="none"/>
-        <rect x="0" y="13" width="7" height="10" rx="1.5" fill="#222"/>
-        <rect x="93" y="13" width="7" height="10" rx="1.5" fill="#222"/>
-    </svg>
-    <svg style="position:absolute;bottom:44px;left:80px;opacity:0.7;pointer-events:none;z-index:5;" width="85" height="30" viewBox="0 0 85 30">
-        <path d="M0,15 Q21,3 42,15 Q63,27 85,15" stroke="#38a169" stroke-width="2.5" fill="none"/>
-        <rect x="0" y="10" width="7" height="10" rx="1.5" fill="#222"/>
-        <rect x="78" y="10" width="7" height="10" rx="1.5" fill="#222"/>
-    </svg>
-    <svg style="position:absolute;bottom:50px;left:88px;opacity:0.65;pointer-events:none;z-index:5;" width="72" height="28" viewBox="0 0 72 28">
-        <path d="M0,14 Q18,3 36,14 Q54,25 72,14" stroke="#3182ce" stroke-width="2.5" fill="none"/>
-        <rect x="0" y="9" width="7" height="10" rx="1.5" fill="#222"/>
-        <rect x="65" y="9" width="7" height="10" rx="1.5" fill="#222"/>
-    </svg>
-
-    <!-- ═══ BAWAH KANAN ═══ -->
-
-    <!-- Datasheet / kertas teknis -->
-    <div style="position:absolute;bottom:38px;right:220px;transform:rotate(4deg);background:#f8f8f8;width:100px;height:82px;box-shadow:3px 4px 10px rgba(0,0,0,0.28);padding:7px;z-index:6;pointer-events:none;">
-        <div style="font-family:'Courier Prime',monospace;font-size:0.45rem;color:#333;font-weight:700;border-bottom:1px solid #ccc;padding-bottom:2px;margin-bottom:3px;letter-spacing:1px;">ESP32 PINOUT</div>
-        <!-- fake pin diagram -->
-        <div style="display:flex;gap:3px;flex-direction:column;">
-            <div style="font-family:'Courier Prime',monospace;font-size:0.38rem;color:#555;line-height:1.6;">
-                GPIO2  — LED_BUILTIN<br>
-                GPIO4  — SDA (I2C)<br>
-                GPIO5  — SCL (I2C)<br>
-                GPIO16 — RX2<br>
-                GPIO17 — TX2<br>
-                GPIO18 — SCK (SPI)<br>
-                GND    — GND
-            </div>
-        </div>
+    <!-- Projects 2-col grid -->
+    <div class="projects-grid" id="projects-grid">
+      <div class="mat-status" style="grid-column:1/-1;">LOADING PROJECTS...</div>
     </div>
 
-    <!-- Breadboard -->
-    <svg style="position:absolute;bottom:42px;right:130px;transform:rotate(-5deg);opacity:0.88;pointer-events:none;z-index:5;" width="75" height="95" viewBox="0 0 75 95">
-        <rect x="2" y="2" width="71" height="91" rx="3" fill="#d4c4a8" stroke="#8b7355" stroke-width="1.5"/>
-        <rect x="8" y="8" width="26" height="79" rx="1" fill="#c8b89a"/>
-        <rect x="41" y="8" width="26" height="79" rx="1" fill="#c8b89a"/>
-        <g fill="#5a4a35" opacity="0.7">
-            <circle cx="15" cy="15" r="1.5"/><circle cx="15" cy="22" r="1.5"/><circle cx="15" cy="29" r="1.5"/>
-            <circle cx="15" cy="36" r="1.5"/><circle cx="15" cy="43" r="1.5"/><circle cx="15" cy="50" r="1.5"/>
-            <circle cx="15" cy="57" r="1.5"/><circle cx="15" cy="64" r="1.5"/><circle cx="15" cy="71" r="1.5"/>
-            <circle cx="23" cy="15" r="1.5"/><circle cx="23" cy="22" r="1.5"/><circle cx="23" cy="29" r="1.5"/>
-            <circle cx="23" cy="36" r="1.5"/><circle cx="23" cy="43" r="1.5"/><circle cx="23" cy="50" r="1.5"/>
-            <circle cx="23" cy="57" r="1.5"/><circle cx="23" cy="64" r="1.5"/>
-            <circle cx="48" cy="15" r="1.5"/><circle cx="48" cy="22" r="1.5"/><circle cx="48" cy="29" r="1.5"/>
-            <circle cx="48" cy="36" r="1.5"/><circle cx="48" cy="43" r="1.5"/>
-            <circle cx="59" cy="15" r="1.5"/><circle cx="59" cy="22" r="1.5"/><circle cx="59" cy="29" r="1.5"/>
-            <circle cx="59" cy="36" r="1.5"/>
-        </g>
-        <path d="M15,36 Q34,24 48,36" stroke="#e53e3e" stroke-width="2" fill="none"/>
-        <path d="M23,50 Q38,62 59,36" stroke="#3182ce" stroke-width="2" fill="none"/>
-        <path d="M15,57 Q30,48 48,43" stroke="#38a169" stroke-width="2" fill="none"/>
-        <!-- IC kecil di breadboard -->
-        <rect x="30" y="55" width="15" height="24" rx="1" fill="#1a1a2e" stroke="#333" stroke-width="0.7"/>
-        <text x="37.5" y="68" text-anchor="middle" font-size="3" fill="#4a9eff" font-family="monospace">SSD</text>
-        <text x="37.5" y="73" text-anchor="middle" font-size="3" fill="#4a9eff" font-family="monospace">1306</text>
-    </svg>
-
-    <!-- Sticky note hijau -->
-    <div style="position:absolute;bottom:45px;right:52px;transform:rotate(4deg);background:#a8d8a8;width:92px;height:78px;box-shadow:2px 4px 10px rgba(0,0,0,0.28);padding:8px;z-index:6;pointer-events:none;">
-        <div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%) rotate(-1deg);width:45px;height:12px;background:repeating-linear-gradient(45deg,rgba(255,255,255,0.5),rgba(255,255,255,0.5) 3px,rgba(180,220,180,0.4) 3px,rgba(180,220,180,0.4) 6px);"></div>
-        <div style="font-family:'Kalam',cursive;font-size:0.55rem;color:#1a4a1a;font-weight:700;border-bottom:1px solid rgba(0,0,0,0.1);margin-bottom:4px;padding-bottom:2px;">WIRING</div>
-        <div style="font-family:'Kalam',cursive;font-size:0.47rem;color:#2a5a2a;line-height:1.75;">VCC → 3.3V<br>GND → GND<br>SDA → GPIO4<br>SCL → GPIO5</div>
+    <!-- Bottom strip -->
+    <div class="mat-bottom">
+      <span class="mat-bottom-text">© aren · tech projects</span>
+      <span class="mat-bottom-text" id="project-count">— projects</span>
     </div>
 
-    <!-- Multimeter -->
-    <svg style="position:absolute;bottom:32px;right:18px;transform:rotate(-4deg);opacity:0.88;pointer-events:none;z-index:5;" width="58" height="78" viewBox="0 0 58 78">
-        <rect x="2" y="2" width="54" height="74" rx="6" fill="#2a2a2a" stroke="#404040" stroke-width="1.5"/>
-        <!-- display -->
-        <rect x="8" y="8" width="42" height="24" rx="2" fill="#1a3a1a" stroke="#0a2a0a" stroke-width="0.8"/>
-        <text x="29" y="22" text-anchor="middle" font-size="10" fill="#00e87a" font-family="monospace" font-weight="bold">3.3V</text>
-        <text x="29" y="28" text-anchor="middle" font-size="4.5" fill="#00b055" font-family="monospace">DC VOLT</text>
-        <!-- selector dial -->
-        <circle cx="29" cy="50" r="13" fill="#1a1a1a" stroke="#555" stroke-width="1.5"/>
-        <circle cx="29" cy="50" r="9" fill="#222" stroke="#444" stroke-width="1"/>
-        <line x1="29" y1="50" x2="29" y2="40" stroke="#ff4444" stroke-width="2.5"/>
-        <circle cx="29" cy="50" r="2.5" fill="#666"/>
-        <!-- probe jacks -->
-        <circle cx="20" cy="70" r="4.5" fill="#cc3333" stroke="#992222" stroke-width="1"/>
-        <circle cx="38" cy="70" r="4.5" fill="#111" stroke="#333" stroke-width="1"/>
-        <!-- brand text -->
-        <text x="29" y="37" text-anchor="middle" font-size="3.5" fill="#555" font-family="monospace">UT61E</text>
-    </svg>
+  </div><!-- /mat-body -->
 
-    <!-- IC chip ATmega pojok kanan -->
-    <svg style="position:absolute;top:160px;right:20px;transform:rotate(5deg);opacity:0.8;pointer-events:none;z-index:5;" width="62" height="48" viewBox="0 0 62 48">
-        <rect x="10" y="4" width="42" height="40" rx="2" fill="#1a1a2e" stroke="#444" stroke-width="1"/>
-        <rect x="14" y="8" width="34" height="32" rx="1" fill="#0d0d1a"/>
-        <circle cx="14" cy="10" r="2.5" fill="none" stroke="#666" stroke-width="1"/>
-        <text x="31" y="24" text-anchor="middle" font-size="5.5" fill="#4a9eff" font-family="monospace">SN74</text>
-        <text x="31" y="31" text-anchor="middle" font-size="4.5" fill="#4a9eff" font-family="monospace" opacity="0.7">HC595</text>
-        <!-- pins kiri -->
-        <rect x="2" y="9" width="8" height="3" rx="0.5" fill="#999"/>
-        <rect x="2" y="15" width="8" height="3" rx="0.5" fill="#999"/>
-        <rect x="2" y="21" width="8" height="3" rx="0.5" fill="#999"/>
-        <rect x="2" y="27" width="8" height="3" rx="0.5" fill="#999"/>
-        <rect x="2" y="33" width="8" height="3" rx="0.5" fill="#999"/>
-        <!-- pins kanan -->
-        <rect x="52" y="9" width="8" height="3" rx="0.5" fill="#999"/>
-        <rect x="52" y="15" width="8" height="3" rx="0.5" fill="#999"/>
-        <rect x="52" y="21" width="8" height="3" rx="0.5" fill="#999"/>
-        <rect x="52" y="27" width="8" height="3" rx="0.5" fill="#999"/>
-        <rect x="52" y="33" width="8" height="3" rx="0.5" fill="#999"/>
-    </svg>
-
-    <!-- MESSY DESK -->
-    <div class="messy-desk">
-        
-
-        <!-- CUTTING MAT -->
-        <div class="cutting-mat">
-            
-            <!-- Cutting mat branding -->
-            <div class="mat-branding">CUTTING MAT</div>
-            
-            <!-- Measurement rulers -->
-            <div class="ruler-top">
-                <span>0</span><span>5</span><span>10</span><span>15</span><span>20</span><span>25</span><span>30</span>
-            </div>
-            <div class="ruler-left">
-                <span>0</span><span>5</span><span>10</span><span>15</span><span>20</span><span>25</span>
-            </div>
-            
-            <!-- A4 corner marks -->
-            <div class="corner-line corner-tl"></div>
-            <div class="corner-line corner-tr"></div>
-            <div class="a4-mark" style="top:18px;left:65px;">A4</div>
-            <div class="a4-mark" style="top:18px;right:280px;">A4</div>
-
-            <!-- Back button - printed on mat -->
-            <a href="./index.html" class="mat-back">← BACK TO HOME</a>
-
-            <!-- Title integrated to mat -->
-            <div class="mat-title">TECH WORKSHOP PROJECTS</div>
-
-            <!-- Filter tags -->
-            <div class="filter-zone">
-                <div class="filter-tags" id="filter-tags">
-                    <div class="filter-tag active" data-filter="all">ALL</div>
-                </div>
-            </div>
-
-            <div class="projects-scatter" id="projects-scatter">
-                <div style="text-align:center; padding:100px 20px; font-family:'Courier Prime',monospace; color:rgba(255,255,255,0.3); font-size:1rem;">Loading projects...</div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- FOOTER -->
-    <div style="border-top:1px solid rgba(0,0,0,0.12); padding: 20px 32px; background:rgba(0,0,0,0.06);">
-        <div class="flex justify-between items-center">
-            <div class="flex gap-5">
-                <a href="https://www.linkedin.com/in/muhammad-ilham-6480b7345/" target="_blank" style="color:rgba(0,0,0,0.3);" onmouseover="this.style.color='#1d4ed8'" onmouseout="this.style.color='rgba(0,0,0,0.3)'">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-                </a>
-                <a href="https://www.instagram.com/ilham.aren/" target="_blank" style="color:rgba(0,0,0,0.3);" onmouseover="this.style.color='#be185d'" onmouseout="this.style.color='rgba(0,0,0,0.3)'">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                </a>
-            </div>
-            <div style="color:rgba(0,0,0,0.3); font-size:0.8rem; font-family:'Courier Prime',monospace; letter-spacing:1px;">© 2025 Muhammad Ilham | aren</div>
-        </div>
-    </div>
-
-</div>
-</div>
+</div><!-- /main-card -->
 
 <script>
-const KEY='$2a$10$0p5f.8.7MaVHfCRw6y28wuozbrEphXg0vBuLRVccJXXZgGIL0kpD.';
-const BIN='6989f92bd0ea881f40ad5b6c';
+/* ── Build ruler ── */
+(function(){
+  const ruler = document.getElementById('ruler-top');
+  for(let i=0;i<=20;i++){
+    const m = document.createElement('div');
+    const big = i%5===0;
+    m.className = 'ruler-mark' + (big?' big':'');
+    m.innerHTML = big
+      ? `<span>${i}</span><div class="tick"></div>`
+      : `<span></span><div class="tick"></div>`;
+    ruler.appendChild(m);
+  }
+})();
 
-// Random rotations for natural scattered look
-const rotations = [-5, -3, -2, 2, 3, 4, -4, 3, -3, 5, -2, 4];
+/* ── Fetch & render ── */
+const KEY  = '$2a$10$0p5f.8.7MaVHfCRw6y28wuozbrEphXg0vBuLRVccJXXZgGIL0kpD.';
+const BIN  = '6989f92bd0ea881f40ad5b6c';
 
-let allProjects = [];
+let allProjects  = [];
 let currentFilter = 'all';
 
 async function load(){
-    try{
-        const r=await fetch(`https://api.jsonbin.io/v3/b/${BIN}/latest`,{headers:{'X-Master-Key':KEY}});
-        const d=await r.json();
-        allProjects = d.record.projects || [];
-    }catch(e){
-        allProjects = [];
-    }
-    renderFilterTags();
-    renderProjects();
+  try {
+    const r = await fetch(`https://api.jsonbin.io/v3/b/${BIN}/latest`, {
+      headers: { 'X-Master-Key': KEY }
+    });
+    const d = await r.json();
+    allProjects = d.record.projects || [];
+  } catch(e) {
+    allProjects = [];
+  }
+  renderFilterTags();
+  renderProjects();
 }
 
 function renderFilterTags(){
-    const allTags = new Set();
-    allProjects.forEach(p=>{if(p.tags)p.tags.forEach(t=>allTags.add(t));});
-    const filterContainer = document.getElementById('filter-tags');
-    const tagButtons = Array.from(allTags).map(tag=>
-        `<div class="filter-tag" data-filter="${tag}" onclick="filterProjects('${tag}')">${tag}</div>`
-    ).join('');
-    filterContainer.innerHTML = '<div class="filter-tag active" data-filter="all" onclick="filterProjects(\'all\')">ALL</div>' + tagButtons;
+  const allTags = new Set();
+  allProjects.forEach(p => { if(p.tags) p.tags.forEach(t => allTags.add(t)); });
+  const container = document.getElementById('filter-tags');
+  const tagBtns = Array.from(allTags).map(tag =>
+    `<div class="filter-tag" data-filter="${tag}" onclick="filterProjects('${tag}')">${tag}</div>`
+  ).join('');
+  container.innerHTML =
+    `<div class="filter-tag active" data-filter="all" onclick="filterProjects('all')">ALL</div>` + tagBtns;
 }
 
+function toggleFilterPopup(){
+  const popup = document.getElementById('filter-popup');
+  popup.classList.toggle('open');
+}
+
+// Close popup when clicking outside
+document.addEventListener('click', function(e){
+  const zone = document.querySelector('.filter-zone');
+  if(zone && !zone.contains(e.target)){
+    document.getElementById('filter-popup').classList.remove('open');
+  }
+});
+
 function filterProjects(filter){
-    currentFilter = filter;
-    document.querySelectorAll('.filter-tag').forEach(t=>t.classList.remove('active'));
-    document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
-    renderProjects();
+  currentFilter = filter;
+  document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+  const active = document.querySelector(`[data-filter="${filter}"]`);
+  if(active) active.classList.add('active');
+
+  // Update button label
+  const btn = document.getElementById('filter-dropdown-btn');
+  const lbl = document.getElementById('filter-active-label');
+  if(filter === 'all'){
+    btn.classList.remove('has-filter');
+    lbl.innerHTML = 'showing: <span>ALL</span>';
+  } else {
+    btn.classList.add('has-filter');
+    lbl.innerHTML = `showing: <span>${filter}</span>`;
+  }
+
+  // Close popup
+  document.getElementById('filter-popup').classList.remove('open');
+
+  renderProjects();
 }
 
 function getEmoji(tags){
-    if(!tags||!tags.length)return'📦';
-    if(tags.includes('Machine Learning')||tags.includes('ML')||tags.includes('CV'))return'🤖';
-    if(tags.includes('IoT'))return'📡';
-    if(tags.includes('Web Dev')||tags.includes('Web'))return'🌐';
-    if(tags.includes('Arduino')||tags.includes('ESP32'))return'🔌';
-    if(tags.includes('Embedded'))return'⚡';
-    if(tags.includes('3D'))return'🎨';
-    return'💻';
+  if(!tags||!tags.length)return'📦';
+  if(tags.includes('Machine Learning')||tags.includes('ML')||tags.includes('CV'))return'🤖';
+  if(tags.includes('IoT'))return'📡';
+  if(tags.includes('Web Dev')||tags.includes('Web'))return'🌐';
+  if(tags.includes('Arduino')||tags.includes('ESP32'))return'🔌';
+  if(tags.includes('Embedded'))return'⚡';
+  if(tags.includes('3D'))return'🎨';
+  return'💻';
 }
 
-function renderProjects() {
-    const container = document.getElementById('projects-scatter');
-    let filtered = currentFilter === 'all' ? allProjects : allProjects.filter(p=>p.tags&&p.tags.includes(currentFilter));
-    
-    // Dynamic height based on project count
-    const projectCount = filtered.length;
-    const rows = Math.ceil(projectCount / 2); // 2 columns
-    const minHeight = Math.max(400, rows * 380);
-    container.style.minHeight = minHeight + 'px';
-    
-    if (!filtered.length) {
-        container.style.minHeight = '300px';
-        container.innerHTML = '<div class="empty-mat">No projects!</div>';
-        return;
-    }
-    
-    container.innerHTML = filtered.map((p, i) => {
-        // Grid-based positioning: 2 columns per row
-        const row = Math.floor(i / 2);
-        const col = i % 2;
-        
-        const top = 20 + (row * 360); // 360px spacing between rows
-        const left = col === 0 ? 30 : 480; // Left column: 30px, Right column: 480px
-        
-        // Random rotation for natural look
-        const rotate = rotations[i % rotations.length];
-        const stickyClass = i % 2 === 0 ? 'sticky-note-left' : 'sticky-note-right';
-        const style = `top:${top}px;left:${left}px;transform:rotate(${rotate}deg);z-index:${10-i};`;
-        
-        // Support both old (single image) and new (images array)
-        const imgs = p.images || (p.image ? [p.image] : []);
-        const hasImages = imgs.length > 0;
-        
-        return `
-            <div class="project-photo" style="${style}">
-                ${hasImages ? 
-                    (imgs.length > 1 ? 
-                        `<div class="photo-img photo-gallery" data-images='${JSON.stringify(imgs)}' onclick="cycleImage(this)">
-                            <img loading="lazy" src="${imgs[0]}" style="width:100%;height:100%;object-fit:cover;" alt="${p.title}">
-                            <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);color:white;padding:4px 8px;border-radius:4px;font-size:0.7rem;font-family:'Courier Prime',monospace;">1/${imgs.length}</div>
-                        </div>` :
-                        `<img loading="lazy" src="${imgs[0]}" class="photo-img" alt="${p.title}">`
-                    ) :
-                    `<div class="photo-img">${getEmoji(p.tags)}</div>`
-                }
-                <div class="sticky-note ${stickyClass}">
-                    <div class="note-title">${p.title}</div>
-                    ${p.description ? `<div class="note-desc">${p.description}</div>` : ''}
-                    ${p.tags && p.tags.length ? `
-                        <div class="photo-tags">
-                            ${p.tags.slice(0,3).map(tag => `<span class="photo-tag">${tag}</span>`).join('')}
-                        </div>
-                    ` : ''}
-                    ${p.link ? `<a href="${p.link}" target="_blank" onclick="event.stopPropagation()" style="display:inline-block;margin-top:8px;padding:5px 12px;background:#1a1a1a;color:#fbbf24;font-family:'Courier Prime',monospace;font-size:0.7rem;font-weight:700;text-decoration:none;border:2px solid #fbbf24;border-radius:4px;transition:all 0.2s;" onmouseover="this.style.background='#fbbf24';this.style.color='#1a1a1a'" onmouseout="this.style.background='#1a1a1a';this.style.color='#fbbf24'">🔗 SOURCE</a>` : ''}
-                </div>
-            </div>
-        `;
-    }).join('');
+function renderProjects(){
+  const container = document.getElementById('projects-grid');
+  const counter   = document.getElementById('project-count');
+
+  let filtered = currentFilter === 'all'
+    ? allProjects
+    : allProjects.filter(p => p.tags && p.tags.includes(currentFilter));
+
+  counter.textContent = `${filtered.length} project${filtered.length!==1?'s':''}`;
+
+  if(!filtered.length){
+    container.innerHTML = `<div class="mat-status" style="grid-column:1/-1;">NO PROJECTS FOUND</div>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map((p, i) => {
+    const imgs   = p.images || (p.image ? [p.image] : []);
+    const hasImg = imgs.length > 0;
+    const multiImg = imgs.length > 1;
+
+    const photoHtml = hasImg
+      ? `<div class="card-photo" ${multiImg ? `data-images='${JSON.stringify(imgs)}' data-idx="0" onclick="cycleImage(this)"` : ''}>
+           <img loading="lazy" src="${imgs[0]}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;">
+           ${multiImg ? `<div class="gallery-counter">1/${imgs.length}</div>` : ''}
+         </div>`
+      : `<div class="card-photo-placeholder">${getEmoji(p.tags)}</div>`;
+
+    const tagsHtml = p.tags && p.tags.length
+      ? `<div class="card-tags">${p.tags.slice(0,3).map(t=>`<span class="card-tag">${t}</span>`).join('')}</div>`
+      : '';
+
+    const linkHtml = p.link
+      ? `<a href="${p.link}" target="_blank" onclick="event.stopPropagation()" class="card-link">🔗 SOURCE</a>`
+      : '';
+
+    return `
+      <div class="project-card">
+        ${photoHtml}
+        <div class="card-content">
+          <div class="card-title">${p.title}</div>
+          ${p.description ? `<div class="card-desc">${p.description}</div>` : ''}
+          ${tagsHtml}
+          ${linkHtml}
+        </div>
+      </div>`;
+  }).join('');
 }
 
-// Image gallery cycle function
-function cycleImage(el) {
-    const imgs = JSON.parse(el.dataset.images);
-    const img = el.querySelector('img');
-    const counter = el.querySelector('div');
-    let currentIndex = imgs.indexOf(img.src);
-    currentIndex = (currentIndex + 1) % imgs.length;
-    img.src = imgs[currentIndex];
-    counter.textContent = `${currentIndex + 1}/${imgs.length}`;
+function cycleImage(el){
+  const imgs = JSON.parse(el.dataset.images);
+  let idx = parseInt(el.dataset.idx, 10);
+  idx = (idx + 1) % imgs.length;
+  el.dataset.idx = idx;
+  el.querySelector('img').src = imgs[idx];
+  const counter = el.querySelector('.gallery-counter');
+  if(counter) counter.textContent = `${idx+1}/${imgs.length}`;
 }
 
 load();
