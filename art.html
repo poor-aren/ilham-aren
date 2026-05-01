@@ -45,7 +45,7 @@ body {
   background: var(--white);
   border-radius: 24px;
   box-shadow: 0 8px 32px rgba(0,0,0,.13), 0 2px 8px rgba(0,0,0,.08);
-  overflow: hidden;
+  overflow: visible;
   animation: popIn .45s cubic-bezier(.34,1.56,.64,1) both;
 }
 @keyframes popIn {
@@ -419,6 +419,9 @@ body {
   padding: 0;
   overflow: visible;
 }
+/* Panels need overflow visible so cards can stick out of corkboard */
+.panel { overflow: visible !important; }
+.panel.active { overflow: visible !important; }
 
 /* Cork board inside commission */
 .corkboard-wrap { padding: 14px; overflow: visible; }
@@ -429,35 +432,42 @@ body {
   border: 7px solid var(--cork-border);
   outline: 2px solid #6b4423;
   box-shadow: inset 0 0 32px rgba(0,0,0,.2), 0 3px 12px rgba(0,0,0,.18);
-  padding: 20px 14px 120px;
+  padding: 16px 14px 60px;
   position: relative;
-  overflow: visible;
+  overflow: visible !important;
 }
 
-/* Commission intro */
+/* Commission intro — small taped paper note, not a big title */
 .comm-intro {
-  text-align: center; margin-bottom: 16px;
+  text-align: center; margin-bottom: 12px; pointer-events: none;
 }
-.comm-intro h2 {
+.comm-intro-note {
+  display: inline-block;
+  background: #fffde7;
+  padding: 5px 14px;
   font-family: 'Caveat', cursive;
-  font-size: 22px; font-weight: 700;
-  color: #fffde7;
-  text-shadow: 0 2px 8px rgba(0,0,0,.4);
-  margin-bottom: 4px;
+  font-size: 14px; font-weight: 600;
+  color: #374151;
+  transform: rotate(-1deg);
+  box-shadow: 1px 2px 6px rgba(0,0,0,.22);
+  position: relative;
 }
-.comm-intro p {
-  font-family: 'Space Mono', monospace;
-  font-size: 8px; color: rgba(255,255,255,.6);
-  letter-spacing: .5px;
+.comm-intro-note::before {
+  content: '';
+  position: absolute; top: -7px; left: 50%;
+  transform: translateX(-50%) rotate(-1deg);
+  width: 36px; height: 11px; border-radius: 1px;
+  background: repeating-linear-gradient(45deg, rgba(251,198,5,.8), rgba(251,198,5,.8) 5px, rgba(251,198,5,.5) 5px, rgba(251,198,5,.5) 10px);
+  box-shadow: 0 1px 2px rgba(0,0,0,.15);
 }
 
 /* Commission sheet (center top big card) */
 #card-sheet {
   position: absolute;
-  width: 152px;
-  left: 50%; top: 12px;
+  width: 170px;
+  left: 50%; top: 8px;
   transform: translateX(-50%) rotate(-1deg);
-  padding: 5px 5px 25px;
+  padding: 5px 5px 24px;
   z-index: 8;
   background: white;
   box-shadow: 3px 5px 16px rgba(0,0,0,0.3), 6px 10px 32px rgba(0,0,0,0.15);
@@ -493,25 +503,24 @@ body {
 /* Commission scatter — position:absolute per card */
 .comm-grid {
   position: relative;
-  min-height: 900px;
-  margin-bottom: 14px;
+  min-height: 480px;
+  margin-bottom: 0;
 }
 
 /* Each comm-item is absolutely positioned */
 .comm-item {
   position: absolute;
-  width: 116px;
+  width: 128px;
 }
 
-/* Scatter positions — scaled from art lama (scale ~0.362):
-   c1: left -20→-7, top 80→29 | c2: left 30→11, top 480→174 | c3: left -24→-9, top 760→275
-   c4: right -24→-9, top 30→11 | c5: right 24→9, top 460→167 | c6: right -18→-7, top 750→272 */
-.comm-item:nth-child(1) { left: -7px;  top: 29px;  transform: rotate(-4deg);   z-index: 9; }
-.comm-item:nth-child(2) { left:  11px; top: 174px; transform: rotate(3.5deg);  z-index: 7; }
-.comm-item:nth-child(3) { left: -9px;  top: 275px; transform: rotate(-2.5deg); z-index: 8; }
-.comm-item:nth-child(4) { right: -9px; top: 11px;  transform: rotate(4.5deg);  z-index: 9; }
-.comm-item:nth-child(5) { right:  9px; top: 167px; transform: rotate(-3deg);   z-index: 7; }
-.comm-item:nth-child(6) { right: -7px; top: 272px; transform: rotate(2.5deg);  z-index: 8; }
+/* Card height: 128px image (1:1) + 28px caption = 156px total, gap 16px
+   c1=18, c2=190, c3=362 | c4=6, c5=178, c6=350 */
+.comm-item:nth-child(1) { left: -22px;  top: 18px;  transform: rotate(-4deg);   z-index: 9; }
+.comm-item:nth-child(2) { left:   6px;  top: 190px; transform: rotate(3.5deg);  z-index: 7; }
+.comm-item:nth-child(3) { left: -22px;  top: 362px; transform: rotate(-2.5deg); z-index: 8; }
+.comm-item:nth-child(4) { right: -22px; top: 6px;   transform: rotate(4.5deg);  z-index: 9; }
+.comm-item:nth-child(5) { right:   4px; top: 178px; transform: rotate(-3deg);   z-index: 7; }
+.comm-item:nth-child(6) { right: -22px; top: 350px; transform: rotate(2.5deg);  z-index: 8; }
 
 .comm-item:nth-child(1):hover,
 .comm-item:nth-child(2):hover,
@@ -522,7 +531,7 @@ body {
 
 .c-polaroid {
   background: white;
-  padding: 5px 5px 38px;
+  padding: 5px 5px 28px;
   border-radius: 2px;
   box-shadow: 0 4px 12px rgba(0,0,0,.32), 0 2px 4px rgba(0,0,0,.18);
   transition: transform .25s ease, box-shadow .25s ease;
@@ -562,10 +571,10 @@ body {
 
 /* Commission card caption */
 .c-caption {
-  position: absolute; bottom: 0; left: 0; right: 0; height: 38px;
+  position: absolute; bottom: 0; left: 0; right: 0; height: 28px;
   display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 2px;
-  border-top: 1px solid #f0f0f0; padding: 0 4px;
+  align-items: center; justify-content: center; gap: 1px;
+  border-top: 1px solid #f0f0f0; padding: 0 3px;
 }
 .c-title {
   font-family: 'Kalam', cursive;
@@ -603,7 +612,7 @@ body {
 .comm-footer {
   position: absolute;
   width: 80px;
-  bottom: 15px;
+  bottom: 14px;
   left: 50%;
   transform: translateX(-50%) rotate(1.5deg);
   background: #fffde7;
@@ -647,7 +656,7 @@ body {
 .vgen-link {
   position: absolute;
   bottom: 16px;
-  right: 94px;
+  right: 90px;
   z-index: 10;
   display: inline-flex; align-items: center; justify-content: center;
   font-family: 'Caveat', cursive;
@@ -797,8 +806,7 @@ body {
         <div class="corkboard">
 
           <div class="comm-intro">
-            <h2>Commission Info</h2>
-            <p>// tap a card to order on vgen</p>
+            <span class="comm-intro-note">commission info ✦</span>
           </div>
 
           <div class="comm-grid">
@@ -905,8 +913,8 @@ body {
           <a href="https://vgen.co/aren" target="_blank" class="vgen-link">vgen.co/aren →</a>
 
           <!-- Sticky deco notes -->
-          <div style="position:absolute;top:152px;left:96px;width:46px;font-family:'Caveat',cursive;font-size:8px;font-weight:600;color:#374151;padding:5px 6px;line-height:1.4;box-shadow:2px 3px 8px rgba(0,0,0,.22);z-index:11;pointer-events:none;background:#FFF9C4;transform:rotate(-4deg);">hover to see price!</div>
-          <div style="position:absolute;top:62px;right:106px;width:42px;font-family:'Caveat',cursive;font-size:8px;font-weight:600;color:#374151;padding:5px 6px;line-height:1.4;box-shadow:2px 3px 8px rgba(0,0,0,.22);z-index:11;pointer-events:none;background:#B3E5FC;transform:rotate(5deg);">tap to order!</div>
+          <div style="position:absolute;top:185px;left:100px;width:44px;font-family:'Caveat',cursive;font-size:8px;font-weight:600;color:#374151;padding:5px 5px;line-height:1.3;box-shadow:2px 3px 8px rgba(0,0,0,.22);z-index:11;pointer-events:none;background:#FFF9C4;transform:rotate(-4deg);">hover price!</div>
+          <div style="position:absolute;top:48px;right:110px;width:40px;font-family:'Caveat',cursive;font-size:8px;font-weight:600;color:#374151;padding:5px 5px;line-height:1.3;box-shadow:2px 3px 8px rgba(0,0,0,.22);z-index:11;pointer-events:none;background:#B3E5FC;transform:rotate(5deg);">tap order!</div>
 
         </div>
       </div>
@@ -975,6 +983,14 @@ async function load() {
     const d = await r.json();
     const imgs = d.record.komisImages || {};
     portfolioData = d.record.portfolio || [];
+
+    // Poster (commission sheet center card)
+    if (imgs['poster']) {
+      const pi = document.getElementById('poster-img');
+      const pp = document.getElementById('poster-ph');
+      if (pi) { pi.src = imgs['poster']; pi.style.display = 'block'; }
+      if (pp) pp.style.display = 'none';
+    }
 
     // Commission images
     Object.entries(IMG_MAP).forEach(([key, id]) => {
