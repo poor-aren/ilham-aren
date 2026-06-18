@@ -987,9 +987,9 @@ body:not(.theme-formal) .social-link { backdrop-filter: blur(6px); }
       <div id="bannerBatik"></div>
       <div class="hero-right">
         <div class="profile-wrap">
-          <img src="assets/profile.png" alt="Muhammad Ilham Aren"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-          <div class="profile-placeholder" style="display:none;">🧑‍💻</div>
+          <img id="profile-img" src="" alt="Muhammad Ilham Aren" style="display:none;"
+               onerror="this.style.display='none'; document.getElementById('profile-placeholder').style.display='flex';">
+          <div id="profile-placeholder" class="profile-placeholder" style="display:flex;">🧑‍💻</div>
         </div>
       </div>
       <div class="hero-banner-info">
@@ -1025,7 +1025,7 @@ body:not(.theme-formal) .social-link { backdrop-filter: blur(6px); }
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           Hire Me
         </a>
-        <a href="cv.pdf" download class="btn-secondary">
+        <a id="cv-btn" href="#" download class="btn-secondary" style="pointer-events:none; opacity:0.5;">
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Download CV
         </a>
@@ -1055,6 +1055,48 @@ body:not(.theme-formal) .social-link { backdrop-filter: blur(6px); }
 
 </div>
 <!-- /PAGE WRAP -->
+
+<!-- ══ SUPABASE CONFIG ══ -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+/* ════════════════════════════════
+   SUPABASE — ganti nilai di bawah ini
+════════════════════════════════ */
+const SUPABASE_URL    = 'https://hchkohixelkuodjqignl.supabase.co';   // ← ganti
+const SUPABASE_ANON   = 'sb_publishable_Vw33SssZycZbZ78d_Ri1BQ_Hv9QxnE_';
+
+const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+async function loadAssets() {
+  try {
+    // ── Foto profil ──
+    const { data: photoData } = _sb.storage
+      .from('portfolio-assets')
+      .getPublicUrl('profile.png');
+    if (photoData?.publicUrl) {
+      const img = document.getElementById('profile-img');
+      img.src = photoData.publicUrl + '?t=' + Date.now();
+      img.style.display = 'block';
+      document.getElementById('profile-placeholder').style.display = 'none';
+    }
+
+    // ── CV ──
+    const { data: cvData } = _sb.storage
+      .from('portfolio-assets')
+      .getPublicUrl('cv.pdf');
+    if (cvData?.publicUrl) {
+      const btn = document.getElementById('cv-btn');
+      btn.href = cvData.publicUrl;
+      btn.style.pointerEvents = '';
+      btn.style.opacity = '';
+    }
+  } catch(e) {
+    console.warn('Supabase assets:', e);
+  }
+}
+
+loadAssets();
+</script>
 
 <script>
 /* ── THEME TOGGLE ── */
