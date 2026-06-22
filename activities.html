@@ -3,964 +3,513 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Activities — Muhammad Ilham | Aren</title>
+<title>Muhammad Ilham | Aren</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Space+Mono:wght@400;700&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 :root {
-  --yellow:  #FBC605;
-  --black:   #1a1a1a;
-  --dark:    #343639;
-  --white:   #ffffff;
-  --bg:      #ffffff;
-  --grid:    #d0d0d0;
-  --gray:    #888;
-  --cream:   #fef9f3;
+  --radius: 12px;
+  --transition-speed: 0.55s;
+  --bg:            #0a1018;
+  --text:          #ffffff;
+  --text-muted:    rgba(255,255,255,0.65);
+  --accent:        #FBC605;
+  --accent-hover:  #e6b400;
+  --nav-bg:        #ffffff;
+  --nav-border:    #e5e7eb;
+  --nav-shadow:    0 2px 16px rgba(0,0,0,0.12);
+  --nav-active-bg: #FBC605;
+  --nav-active-c:  #000;
+  --nav-hover-ul:  #FBC605;
+  --divider:       rgba(255,255,255,0.15);
+  --hero-overlay:  linear-gradient(90deg, rgba(0,10,20,0.30) 0%, rgba(0,10,20,0.15) 60%, rgba(0,10,20,0.00) 100%);
+  --hero-bg:       transparent;
 }
 
+body.theme-formal {
+  --bg:            #0a1018;
+  --text:          #0d0d0d;
+  --text-muted:    #6b7280;
+  --accent:        #0d0d0d;
+  --accent-hover:  #333;
+  --nav-bg:        #ffffff;
+  --nav-border:    #e5e7eb;
+  --nav-shadow:    0 2px 16px rgba(0,0,0,0.10);
+  --nav-active-bg: #0d0d0d;
+  --nav-active-c:  #fff;
+  --nav-hover-ul:  #0d0d0d;
+  --divider:       #e5e7eb;
+  --hero-overlay:  none;
+  --hero-bg:       #ffffff;
+}
+
+html { scroll-behavior: smooth; }
 body {
   font-family: 'Inter', sans-serif;
   background: var(--bg);
-  background-image:
-    linear-gradient(var(--grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-  background-size: 30px 30px;
+  color: var(--text);
   min-height: 100vh;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 16px;
-}
-
-/* ── MAIN CARD ── */
-.main-card {
-  width: 100%; max-width: 420px;
-  background: var(--white);
-  border-radius: 24px;
-  box-shadow: 0 8px 32px rgba(0,0,0,.13), 0 2px 8px rgba(0,0,0,.08);
-  overflow: hidden;
-  animation: popIn .45s cubic-bezier(.34,1.56,.64,1) both;
-}
-
-/* ── NAV ── */
-.card-nav {
-  border-bottom: 2px solid var(--black);
-  background: var(--white);
-}
-.nav-row { display:flex; width:100%; justify-content:flex-end; }
-.nav-link {
-  font-family: 'Space Mono', monospace;
-  font-size: 9px; font-weight: 700; letter-spacing: .4px;
-  color: var(--black); text-decoration: none;
-  padding: 11px 14px;
-  border-bottom: 3px solid transparent;
-  white-space: nowrap; transition: all .18s;
-}
-.nav-link.active { border-bottom-color: var(--yellow); }
-.nav-link:hover  { background: #fffbe6; }
-
-/* ── PAGE HEADER ── */
-.page-header {
-  background: var(--white);
-  border-bottom: 3px solid var(--yellow);
-  padding: 24px 22px 0;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-.page-header h1 {
-  font-size: 22px; font-weight: 900;
-  color: var(--dark); letter-spacing: -.5px;
-  margin-bottom: 10px;
-}
-.page-header h1 .word {
-  color: var(--yellow);
-  position: relative;
-  display: inline-block;
-}
-/* ── PIXEL ART HEADER SCENE ── */
-.page-header {
-  position: relative;
-  overflow: hidden;
-  height: 140px;
-  border-bottom: 3px solid var(--yellow);
-  image-rendering: pixelated;
-}
-
-/* sky layer */
-.sky {
-  position: absolute; inset: 0;
-  background: linear-gradient(to bottom, #4ab8f0 0%, #7dd4f7 45%, #b0e8fa 75%, #d8f4fd 100%);
-}
-
-/* sun */
-.sun {
-  position: absolute;
-  top: 10px; right: 28px;
-  width: 20px; height: 20px;
-  background: #FBC605;
-  box-shadow: 0 0 0 4px rgba(251,198,5,.3), 0 0 12px rgba(251,198,5,.5);
-  animation: sunPulse 4s ease-in-out infinite alternate;
-}
-.sun::before {
-  content: '';
-  position: absolute;
-  top: -6px; left: 8px;
-  width: 4px; height: 32px;
-  background: rgba(251,198,5,.35);
-}
-.sun::after {
-  content: '';
-  position: absolute;
-  top: 8px; left: -6px;
-  width: 32px; height: 4px;
-  background: rgba(251,198,5,.35);
-}
-@keyframes sunPulse {
-  from { box-shadow: 0 0 0 4px rgba(251,198,5,.25), 0 0 12px rgba(251,198,5,.4); }
-  to   { box-shadow: 0 0 0 7px rgba(251,198,5,.38), 0 0 22px rgba(251,198,5,.6); }
-}
-
-/* sea layer */
-.sea {
-  position: absolute;
-  bottom: 22px; left: 0; right: 0;
-  height: 48px;
-  background: linear-gradient(to bottom, #1e9bd1 0%, #1479a8 60%, #0d5e86 100%);
-  border-top: 4px solid #0d96c8;
-}
-
-/* sand beach */
-.sand {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 22px;
-  background: linear-gradient(to bottom, #f5d98a 0%, #e8c56a 60%, #d4a940 100%);
-}
-
-/* sand decorations */
-.sand-deco {
-  position: absolute;
-  bottom: 0; left: 0;
-  height: 22px;
-  width: 100%;
-}
-
-/* cloud strip — scrolls right to left */
-.clouds {
-  position: absolute;
-  top: 4px; left: 0;
-  height: 42px;
-  width: 800px;
-  animation: scrollClouds 38s linear infinite;
-}
-
-/* individual boat strips — each at different vertical position */
-.boat-a {
-  position: absolute;
-  bottom: 30px; left: 0;
-  height: 40px;
-  width: 800px;
-  animation: scrollBoat1 32s linear infinite;
-}
-.boat-b {
-  position: absolute;
-  bottom: 22px; left: 0;
-  height: 40px;
-  width: 800px;
-  animation: scrollBoat2 44s linear infinite;
-  animation-delay: -14s;
-}
-.boat-c {
-  position: absolute;
-  bottom: 26px; left: 0;
-  height: 40px;
-  width: 800px;
-  animation: scrollBoat3 38s linear infinite;
-  animation-delay: -8s;
-}
-
-@keyframes scrollClouds {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-400px); }
-}
-@keyframes scrollBoat1 {
-  from { transform: translateX(460px); }
-  to   { transform: translateX(-400px); }
-}
-@keyframes scrollBoat2 {
-  from { transform: translateX(460px); }
-  to   { transform: translateX(-400px); }
-}
-@keyframes scrollBoat3 {
-  from { transform: translateX(460px); }
-  to   { transform: translateX(-400px); }
-}
-
-/* title overlay */
-.header-title {
-  position: absolute;
-  inset: 0;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  z-index: 10;
-  pointer-events: none;
-}
-.header-title h1 {
-  font-size: 20px; font-weight: 900;
-  color: var(--dark);
-  letter-spacing: -.5px;
-  background: rgba(255,255,255,.82);
-  padding: 4px 16px 5px;
-  border-radius: 4px;
-  border: 2px solid var(--dark);
-  box-shadow: 3px 3px 0 var(--yellow);
-  line-height: 1;
-  margin-bottom: 5px;
-}
-.header-title h1 .adv { color: var(--yellow); }
-.header-title p {
-  font-family: 'Space Mono', monospace;
-  font-size: 8px; color: var(--dark);
-  background: rgba(255,255,255,.7);
-  padding: 2px 10px; border-radius: 100px;
-  font-weight: 700;
-}
-
-/* ── SCRAPBOOK SECTION ── */
-.scrapbook {
-  background: var(--cream);
-  padding: 18px 16px 24px;
-  display: flex;
   flex-direction: column;
-  gap: 20px;
 }
 
-/* Loading */
-.loading-state { text-align:center; padding:48px 20px; }
-.loading-dots { display:flex; justify-content:center; gap:6px; margin-bottom:10px; }
-.loading-dots span {
-  width:8px; height:8px; border-radius:50%;
-  background: var(--dark); opacity:.3;
-  animation: dotBounce .8s ease-in-out infinite;
+/* ── FADE OVERLAY ── */
+#theme-fade {
+  position: fixed; inset: 0; z-index: 9999;
+  background: #fff; opacity: 0; pointer-events: none;
+  transition: opacity 0.28s ease;
 }
-.loading-dots span:nth-child(2){ animation-delay:.15s; }
-.loading-dots span:nth-child(3){ animation-delay:.30s; }
-.loading-text {
-  font-family:'Space Mono',monospace; font-size:10px; color:var(--gray);
+#theme-fade.fading { opacity: 1; pointer-events: all; }
+
+/* ── CANVAS BG ── */
+#pixelCanvas {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0; image-rendering: pixelated;
 }
 
-/* Empty */
-.empty-state { text-align:center; padding:48px 20px; display:none; }
-.empty-state p { font-family:'Space Mono',monospace; font-size:10px; color:var(--gray); margin-top:8px; }
+/* Formal: white bg over canvas */
+body.theme-formal #pixelCanvas { opacity: 0; }
+body.theme-formal { background: #ffffff; }
 
-/* ── SCRAPBOOK CARD ── */
-.scrapbook-card {
-  background: var(--white);
-  border: 2.5px solid var(--dark);
-  border-radius: 16px;
-  overflow: hidden;
-  position: relative;
-  box-shadow: 4px 4px 0 var(--dark);
-  transition: transform .2s, box-shadow .2s;
-}
-.scrapbook-card:nth-child(odd)  { transform: rotate(-.5deg); }
-.scrapbook-card:nth-child(even) { transform: rotate(.5deg);  }
-.scrapbook-card:active {
-  transform: rotate(0deg) translateY(-3px) !important;
-  box-shadow: 6px 6px 0 var(--yellow) !important;
-  border-color: var(--yellow);
-}
-
-/* Washi tape strip removed */
-.washi, .washi-yellow, .washi-pink, .washi-blue { display: none; }
-
-/* ── PHOTO GALLERY ── */
-.photo-gallery {
-  position: relative;
-  aspect-ratio: 16/9;
-  overflow: hidden;
-  background: #f3f4f6;
-  margin: 0;
-  border-radius: 0;
-  border: none;
-  cursor: pointer;
-}
-.gallery-photo {
-  width:100%; height:100%;
-  object-fit: cover;
-  position: absolute; inset: 0;
-  opacity: 0;
-  transition: opacity .5s ease;
-}
-.gallery-photo.active { opacity:1; }
-
-/* photo counter badge */
-.photo-count {
-  position: absolute;
-  top: 8px; left: 8px;
-  background: white;
-  color: var(--dark);
-  font-family: 'Space Mono', monospace;
-  font-size: 8px; font-weight: 700;
-  padding: 3px 9px;
-  border-radius: 100px;
-  border: 2px solid var(--dark);
-  z-index: 10;
-}
-
-/* nav arrows */
-.gal-btn {
-  position: absolute; top:50%; transform: translateY(-50%);
-  width: 28px; height: 28px;
-  background: white; border: 2px solid var(--dark);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; font-weight: 900; cursor: pointer;
-  z-index: 10; transition: all .15s;
-  color: var(--dark);
-  -webkit-tap-highlight-color: transparent;
-}
-.gal-btn:active { background: var(--yellow); }
-.gal-btn.prev { left: 7px; }
-.gal-btn.next { right: 7px; }
-
-/* dot indicators */
-.dot-row {
-  position: absolute; bottom: 7px; left: 50%;
+/* ── NAVBAR ── */
+nav {
+  position: fixed; top: 20px; left: 50%;
   transform: translateX(-50%);
-  display: flex; gap: 5px; z-index:10;
-}
-.dot {
-  width: 7px; height: 7px;
-  background: rgba(52,54,57,.3);
-  border-radius: 50%; cursor: pointer;
-  border: 1.5px solid white;
-  transition: all .2s;
-}
-.dot.active {
-  background: var(--yellow);
-  transform: scale(1.4);
-  border-color: var(--dark);
+  z-index: 100;
+  background: var(--nav-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--nav-border);
+  border-radius: 100px;
+  padding: 6px 8px;
+  display: flex; align-items: center; gap: 2px;
+  box-shadow: var(--nav-shadow);
+  transition: background var(--transition-speed), border-color var(--transition-speed);
 }
 
-/* ── CARD CONTENT ── */
-.card-content { padding: 14px 14px 16px; }
+.nav-link {
+  font-size: 13.5px; font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 7px 18px; border-radius: 100px;
+  transition: color .18s, background .18s;
+  white-space: nowrap;
+  display: flex; align-items: center; gap: 6px;
+  position: relative;
+}
+.nav-link::after {
+  content: ''; position: absolute;
+  bottom: 3px; left: 18px; right: 18px;
+  height: 2px; background: var(--nav-hover-ul);
+  border-radius: 2px; opacity: 0; transition: opacity .18s;
+}
+.nav-link .nav-icon { width: 14px; height: 14px; opacity: 0.55; }
+.nav-link.active {
+  background: var(--nav-active-bg);
+  color: var(--nav-active-c); font-weight: 700;
+}
+.nav-link.active .nav-icon { opacity: 1; }
+body.theme-formal .nav-link.active .nav-icon { filter: brightness(0) invert(1); }
+.nav-link:not(.active):hover { color: var(--text); }
+.nav-link:not(.active):hover::after { opacity: 1; }
+body:not(.theme-formal) nav .nav-link { color: #0d0d0d; }
+body:not(.theme-formal) nav .nav-link .nav-icon { stroke: #0d0d0d; }
+body:not(.theme-formal) nav .nav-link.active { color: #000; }
 
-.activity-title {
-  font-size: 13px; font-weight: 900;
-  color: var(--dark); line-height: 1.3;
-  margin-bottom: 6px;
-  display: flex; align-items: flex-start; gap: 6px;
+/* ── THEME TOGGLE ── */
+#theme-toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 100px; padding: 3px 3px 3px 10px;
+  margin-left: 6px; cursor: pointer; user-select: none;
+  white-space: nowrap; background: transparent !important;
+  box-shadow: none !important; position: relative;
 }
-.activity-title .pin-dot {
-  width: 8px; height: 8px;
-  background: var(--yellow); border-radius: 50%;
-  border: 1.5px solid var(--dark);
-  flex-shrink: 0; margin-top: 4px;
+#theme-toggle .theme-label { display: none; }
+#theme-toggle::before {
+  content: ''; position: absolute; left: -6px; top: 50%;
+  transform: translateY(-50%);
+  width: 1px; height: 22px; background: var(--divider);
 }
-.activity-desc {
-  font-size: 11px; color: #555;
-  line-height: 1.6; font-weight: 500;
+body:not(.theme-formal) #theme-toggle::before { background: #e5e7eb; }
+
+.theme-switch {
+  display: flex; align-items: center; position: relative;
+  width: 64px; height: 34px; cursor: pointer; flex-shrink: 0;
+}
+.theme-switch-track {
+  position: absolute; inset: 0; border-radius: 100px;
+  overflow: hidden; border: 1.5px solid rgba(0,0,0,0.12);
+}
+.theme-switch-batik {
+  position: absolute; inset: 0;
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Cellipse cx='14' cy='14' rx='14' ry='8' transform='rotate(45 14 14)' fill='none' stroke='%237B1A1A' stroke-width='1.3'/%3E%3Cellipse cx='42' cy='14' rx='14' ry='8' transform='rotate(-45 42 14)' fill='none' stroke='%237B1A1A' stroke-width='1.3'/%3E%3Cellipse cx='14' cy='42' rx='14' ry='8' transform='rotate(-45 14 42)' fill='none' stroke='%237B1A1A' stroke-width='1.3'/%3E%3Cellipse cx='42' cy='42' rx='14' ry='8' transform='rotate(45 42 42)' fill='none' stroke='%237B1A1A' stroke-width='1.3'/%3E%3Ccircle cx='28' cy='28' r='2.5' fill='%237B1A1A'/%3E%3Ccircle cx='0' cy='0' r='2.5' fill='%237B1A1A'/%3E%3Ccircle cx='56' cy='0' r='2.5' fill='%237B1A1A'/%3E%3Ccircle cx='0' cy='56' r='2.5' fill='%237B1A1A'/%3E%3Ccircle cx='56' cy='56' r='2.5' fill='%237B1A1A'/%3E%3C/svg%3E");
+  background-size: 22px 22px; opacity: 0; transition: opacity 0.35s;
+}
+.theme-switch-thumb {
+  position: absolute; top: 4px; left: 4px;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: #7B1A1A; box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+  transition: transform 0.32s cubic-bezier(.4,1.4,.6,1), background 0.3s;
+  z-index: 2;
+}
+body.theme-formal .theme-switch-track { border-color: rgba(123,26,26,0.25); }
+body.theme-formal .theme-switch-batik { opacity: 0.55; }
+body.theme-formal .theme-switch-thumb { transform: translateX(0); background: #7B1A1A; }
+body:not(.theme-formal) .theme-switch-track { border-color: rgba(0,136,184,0.4); }
+body:not(.theme-formal) .theme-switch-batik { opacity: 0; }
+body:not(.theme-formal) .theme-switch-thumb { transform: translateX(30px); background: #FBC605; }
+
+/* ── MAIN CONTENT ── */
+main {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 120px 24px 60px;
+  position: relative; z-index: 1;
+}
+
+.wip-card {
+  max-width: 520px; width: 100%;
+  text-align: center;
+}
+
+/* Animated pixel grid icon */
+.wip-icon {
+  width: 80px; height: 80px;
+  margin: 0 auto 32px;
+  position: relative;
+}
+.wip-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  width: 80px; height: 80px;
+}
+.wip-cell {
+  border-radius: 3px;
+  background: rgba(251,198,5,0.15);
+  transition: background 0.3s;
+}
+.wip-cell.lit { background: #FBC605; }
+body.theme-formal .wip-cell { background: rgba(13,13,13,0.08); }
+body.theme-formal .wip-cell.lit { background: #0d0d0d; }
+
+.wip-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  opacity: 0.8;
+}
+
+.wip-title {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(28px, 5vw, 40px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+body.theme-formal .wip-title { font-family: 'Playfair Display', serif; }
+
+.wip-title span { color: var(--accent); }
+
+.wip-desc {
+  font-size: 15px; line-height: 1.7;
+  color: var(--text-muted);
+  margin-bottom: 36px;
+  max-width: 380px; margin-left: auto; margin-right: auto;
+}
+
+.wip-progress {
+  margin-bottom: 36px;
+}
+.wip-progress-bar {
+  height: 4px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 100px;
+  overflow: hidden;
   margin-bottom: 10px;
 }
-.activity-link {
-  display: inline-block;
+body.theme-formal .wip-progress-bar { background: rgba(0,0,0,0.08); }
+.wip-progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 100px;
+  width: 0%;
+  animation: fill-bar 2s cubic-bezier(.4,0,.2,1) forwards 0.6s;
+}
+@keyframes fill-bar {
+  to { width: 38%; }
+}
+.wip-progress-meta {
+  display: flex; justify-content: space-between;
   font-family: 'Space Mono', monospace;
-  font-size: 8.5px; font-weight: 700;
-  background: var(--dark); color: var(--yellow);
-  padding: 6px 14px; border-radius: 8px;
-  text-decoration: none; letter-spacing: .3px;
-  transition: all .15s;
-}
-.activity-link:active {
-  background: var(--yellow); color: var(--dark);
+  font-size: 10px; color: var(--text-muted); opacity: 0.6;
 }
 
-/* ── FOOTER ── */
-.card-footer {
-  border-top: 2px solid #eeeeea;
-  padding: 13px 18px;
-  display: flex; align-items: center; justify-content: space-between;
+.wip-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13.5px; font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  padding: 10px 22px;
+  border-radius: 100px;
+  border: 1.5px solid rgba(255,255,255,0.18);
+  transition: border-color .2s, background .2s, color .2s;
 }
-.socials { display:flex; gap:7px; }
-.soc-btn {
-  width:35px; height:35px;
-  border: 2px solid var(--black); border-radius:9px;
-  background: var(--white);
-  display:flex; align-items:center; justify-content:center;
-  color: var(--black); text-decoration:none;
-  transition: all .12s;
+body.theme-formal .wip-back { border-color: #e5e7eb; color: #0d0d0d; }
+.wip-back:hover {
+  background: var(--accent);
+  color: #000; border-color: var(--accent);
 }
-.soc-btn:active { transform:translate(2px,2px); }
-.soc-btn svg { width:15px; height:15px; }
-.footer-copy {
-  font-family:'Space Mono',monospace; font-size:7.5px;
-  color: var(--gray); white-space:nowrap;
-}
+.wip-back svg { width: 14px; height: 14px; }
 
-/* ── LIGHTBOX ── */
-.lightbox {
-  position: fixed; inset:0;
-  background: rgba(0,0,0,.9);
-  display: none; align-items:center; justify-content:center;
-  z-index: 9999; opacity:0;
-  transition: opacity .25s;
-  padding: 20px;
+/* Fade-up animations */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-.lightbox.active { display:flex; opacity:1; }
-.lb-wrap {
-  position: relative;
-  width:100%; max-width:360px;
-  transform: scale(.85);
-  transition: transform .35s cubic-bezier(.175,.885,.32,1.275);
-}
-.lightbox.active .lb-wrap { transform: scale(1); }
-.lb-img {
-  width:100%; display:block;
-  border: 8px solid white;
-  border-radius: 4px;
-  box-shadow: 0 16px 48px rgba(0,0,0,.5);
-}
-.lb-close {
-  position:absolute; top:-14px; right:-14px;
-  width:38px; height:38px;
-  background: var(--yellow); color: var(--dark);
-  border-radius:50%; border:3px solid white;
-  display:flex; align-items:center; justify-content:center;
-  font-size:20px; font-weight:900; cursor:pointer;
-  z-index:10;
-  transition: transform .2s;
-}
-.lb-close:active { transform: rotate(90deg) scale(1.1); }
-.lb-nav {
-  position:absolute; top:50%; transform:translateY(-50%);
-  width:36px; height:36px;
-  background:white; border:2px solid var(--dark);
-  border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  font-size:18px; font-weight:900; cursor:pointer; color:var(--dark);
-  transition: background .15s;
-}
-.lb-nav:active { background: var(--yellow); }
-.lb-nav.prev { left:-18px; }
-.lb-nav.next { right:-18px; }
+.wip-icon    { animation: fade-up .5s ease both .1s; }
+.wip-label   { animation: fade-up .5s ease both .18s; }
+.wip-title   { animation: fade-up .5s ease both .24s; }
+.wip-desc    { animation: fade-up .5s ease both .30s; }
+.wip-progress{ animation: fade-up .5s ease both .36s; }
+.wip-back    { animation: fade-up .5s ease both .42s; }
 
-/* ── KEYFRAMES ── */
-@keyframes popIn {
-  from { opacity:0; transform:scale(.94) translateY(14px); }
-  to   { opacity:1; transform:scale(1) translateY(0); }
-}
-@keyframes dotBounce {
-  0%,80%,100% { transform:scale(.8); opacity:.3; }
-  40%          { transform:scale(1.2); opacity:1; }
-}
-
-@media(min-width:480px){
-  body { padding:32px 16px; align-items:center; }
+/* ── MOBILE ── */
+@media (max-width: 480px) {
+  nav { justify-content: flex-end; padding-right: 16px; top: 12px; }
+  .nav-link { padding: 6px 10px; font-size: 10.5px; }
+  .nav-link .nav-icon { display: none; }
+  #theme-toggle { padding: 0; margin-left: 4px; }
+  #theme-toggle::before { display: none; }
+  .theme-switch { width: 52px; height: 28px; }
+  .theme-switch-thumb { top: 3px; left: 3px; width: 20px; height: 20px; }
+  body:not(.theme-formal) .theme-switch-thumb { transform: translateX(24px); }
+  body:not(.theme-formal) #theme-toggle { border: 1.5px solid #e5e7eb; }
+  main { padding-top: 100px; }
 }
 </style>
 </head>
 <body>
 
-<div class="main-card">
+<div id="theme-fade"></div>
+<canvas id="pixelCanvas"></canvas>
 
-  <!-- NAV -->
-  <nav class="card-nav">
-    <div class="nav-row">
-      <a href="./index.html"        class="nav-link">HOME</a>
-      <a href="./certificates.html" class="nav-link">CERTIFICATES</a>
-      <a href="./activities.html"   class="nav-link active">ACTIVITIES</a>
-      <a href="./aboutme.html"      class="nav-link">ABOUT ME</a>
-    </div>
-  </nav>
+<!-- NAVBAR -->
+<nav>
+  <a href="./index.html" class="nav-link">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Home
+  </a>
+  <a href="./tech.html" class="nav-link" id="nav-tech">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+    Project
+  </a>
+  <a href="./activities.html" class="nav-link" id="nav-activities">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    Activities
+  </a>
+  <a href="./aboutme.html" class="nav-link" id="nav-aboutme">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    About Me
+  </a>
 
-  <!-- HEADER -->
-  <div class="page-header">
-    <!-- sky -->
-    <div class="sky"></div>
-
-    <!-- sun -->
-    <div class="sun"></div>
-
-    <!-- pixel clouds SVG strip — detailed, tall, fluffy pixel art -->
-    <svg class="clouds" viewBox="0 0 800 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-
-      <!-- ═══ CLOUD A — large fluffy cumulus ═══ -->
-      <!-- base row -->
-      <rect x="8"   y="24" width="6"  height="4"  fill="#ffffff" opacity=".9"/>
-      <rect x="14"  y="24" width="36" height="4"  fill="#ffffff" opacity=".95"/>
-      <rect x="50"  y="24" width="6"  height="4"  fill="#ffffff" opacity=".9"/>
-      <!-- mid row -->
-      <rect x="6"   y="18" width="8"  height="6"  fill="#ffffff" opacity=".9"/>
-      <rect x="14"  y="16" width="10" height="8"  fill="#ffffff"/>
-      <rect x="24"  y="14" width="14" height="10" fill="#ffffff"/>
-      <rect x="38"  y="16" width="10" height="8"  fill="#ffffff"/>
-      <rect x="48"  y="18" width="8"  height="6"  fill="#ffffff" opacity=".9"/>
-      <!-- top bumps -->
-      <rect x="16"  y="12" width="8"  height="4"  fill="#ffffff"/>
-      <rect x="26"  y="8"  width="10" height="6"  fill="#ffffff"/>
-      <rect x="38"  y="12" width="8"  height="4"  fill="#ffffff"/>
-      <!-- inner shadow (bottom of cloud, slightly grey) -->
-      <rect x="14"  y="26" width="36" height="2"  fill="#ddeeff" opacity=".6"/>
-      <rect x="20"  y="24" width="6"  height="2"  fill="#ddeeff" opacity=".4"/>
-      <rect x="38"  y="24" width="6"  height="2"  fill="#ddeeff" opacity=".4"/>
-
-      <!-- ═══ CLOUD B — small wispy ═══ -->
-      <rect x="90"  y="22" width="4"  height="4"  fill="#ffffff" opacity=".8"/>
-      <rect x="94"  y="20" width="8"  height="6"  fill="#ffffff" opacity=".85"/>
-      <rect x="102" y="18" width="12" height="8"  fill="#ffffff" opacity=".9"/>
-      <rect x="114" y="20" width="8"  height="6"  fill="#ffffff" opacity=".85"/>
-      <rect x="122" y="22" width="4"  height="4"  fill="#ffffff" opacity=".8"/>
-      <rect x="100" y="14" width="6"  height="4"  fill="#ffffff" opacity=".85"/>
-      <rect x="106" y="12" width="8"  height="6"  fill="#ffffff" opacity=".9"/>
-      <rect x="114" y="14" width="6"  height="4"  fill="#ffffff" opacity=".85"/>
-      <!-- shadow -->
-      <rect x="94"  y="24" width="28" height="2"  fill="#ddeeff" opacity=".5"/>
-
-      <!-- ═══ CLOUD C — big layered cloud ═══ -->
-      <rect x="152" y="26" width="8"  height="4"  fill="#ffffff" opacity=".88"/>
-      <rect x="160" y="24" width="44" height="6"  fill="#ffffff" opacity=".95"/>
-      <rect x="204" y="26" width="8"  height="4"  fill="#ffffff" opacity=".88"/>
-      <rect x="154" y="20" width="10" height="6"  fill="#ffffff" opacity=".9"/>
-      <rect x="164" y="16" width="12" height="8"  fill="#ffffff"/>
-      <rect x="176" y="14" width="16" height="10" fill="#ffffff"/>
-      <rect x="192" y="16" width="12" height="8"  fill="#ffffff"/>
-      <rect x="204" y="20" width="8"  height="6"  fill="#ffffff" opacity=".9"/>
-      <rect x="168" y="10" width="8"  height="6"  fill="#ffffff" opacity=".95"/>
-      <rect x="178" y="6"  width="12" height="8"  fill="#ffffff"/>
-      <rect x="192" y="10" width="8"  height="6"  fill="#ffffff" opacity=".95"/>
-      <rect x="180" y="4"  width="8"  height="4"  fill="#ffffff" opacity=".9"/>
-      <!-- highlight top -->
-      <rect x="180" y="4"  width="4"  height="2"  fill="#ffffff"/>
-      <!-- shadow -->
-      <rect x="160" y="28" width="44" height="2"  fill="#cce0f5" opacity=".55"/>
-      <rect x="172" y="26" width="8"  height="2"  fill="#cce0f5" opacity=".35"/>
-      <rect x="192" y="26" width="8"  height="2"  fill="#cce0f5" opacity=".35"/>
-
-      <!-- ═══ CLOUD D — medium round ═══ -->
-      <rect x="246" y="22" width="6"  height="4"  fill="#ffffff" opacity=".82"/>
-      <rect x="252" y="20" width="10" height="6"  fill="#ffffff" opacity=".88"/>
-      <rect x="262" y="18" width="14" height="8"  fill="#ffffff" opacity=".92"/>
-      <rect x="276" y="20" width="10" height="6"  fill="#ffffff" opacity=".88"/>
-      <rect x="286" y="22" width="6"  height="4"  fill="#ffffff" opacity=".82"/>
-      <rect x="256" y="14" width="8"  height="6"  fill="#ffffff" opacity=".9"/>
-      <rect x="264" y="10" width="12" height="8"  fill="#ffffff" opacity=".95"/>
-      <rect x="276" y="14" width="8"  height="6"  fill="#ffffff" opacity=".9"/>
-      <rect x="268" y="8"  width="6"  height="4"  fill="#ffffff" opacity=".88"/>
-      <!-- shadow -->
-      <rect x="252" y="24" width="34" height="2"  fill="#ddeeff" opacity=".45"/>
-
-      <!-- ═══ CLOUD E — tall dramatic ═══ -->
-      <rect x="330" y="28" width="6"  height="4"  fill="#ffffff" opacity=".85"/>
-      <rect x="336" y="26" width="36" height="6"  fill="#ffffff" opacity=".92"/>
-      <rect x="372" y="28" width="6"  height="4"  fill="#ffffff" opacity=".85"/>
-      <rect x="332" y="22" width="8"  height="6"  fill="#ffffff" opacity=".9"/>
-      <rect x="340" y="18" width="10" height="8"  fill="#ffffff"/>
-      <rect x="350" y="14" width="14" height="12" fill="#ffffff"/>
-      <rect x="364" y="18" width="10" height="8"  fill="#ffffff"/>
-      <rect x="374" y="22" width="6"  height="6"  fill="#ffffff" opacity=".9"/>
-      <rect x="344" y="10" width="8"  height="8"  fill="#ffffff" opacity=".95"/>
-      <rect x="352" y="6"  width="10" height="8"  fill="#ffffff"/>
-      <rect x="362" y="10" width="8"  height="6"  fill="#ffffff" opacity=".95"/>
-      <rect x="354" y="4"  width="6"  height="4"  fill="#ffffff" opacity=".9"/>
-      <!-- shadow -->
-      <rect x="336" y="30" width="36" height="2"  fill="#bbddf8" opacity=".6"/>
-      <rect x="346" y="28" width="8"  height="2"  fill="#bbddf8" opacity=".35"/>
-      <rect x="360" y="28" width="8"  height="2"  fill="#bbddf8" opacity=".35"/>
-
-      <!-- ══════════ SEAMLESS REPEAT +400 ══════════ -->
-      <!-- Cloud A repeat -->
-      <rect x="408" y="24" width="6"  height="4"  fill="#ffffff" opacity=".9"/>
-      <rect x="414" y="24" width="36" height="4"  fill="#ffffff" opacity=".95"/>
-      <rect x="450" y="24" width="6"  height="4"  fill="#ffffff" opacity=".9"/>
-      <rect x="406" y="18" width="8"  height="6"  fill="#ffffff" opacity=".9"/>
-      <rect x="414" y="16" width="10" height="8"  fill="#ffffff"/>
-      <rect x="424" y="14" width="14" height="10" fill="#ffffff"/>
-      <rect x="438" y="16" width="10" height="8"  fill="#ffffff"/>
-      <rect x="448" y="18" width="8"  height="6"  fill="#ffffff" opacity=".9"/>
-      <rect x="416" y="12" width="8"  height="4"  fill="#ffffff"/>
-      <rect x="426" y="8"  width="10" height="6"  fill="#ffffff"/>
-      <rect x="438" y="12" width="8"  height="4"  fill="#ffffff"/>
-      <rect x="414" y="26" width="36" height="2"  fill="#ddeeff" opacity=".6"/>
-      <!-- Cloud B repeat -->
-      <rect x="490" y="22" width="4"  height="4"  fill="#ffffff" opacity=".8"/>
-      <rect x="494" y="20" width="8"  height="6"  fill="#ffffff" opacity=".85"/>
-      <rect x="502" y="18" width="12" height="8"  fill="#ffffff" opacity=".9"/>
-      <rect x="514" y="20" width="8"  height="6"  fill="#ffffff" opacity=".85"/>
-      <rect x="522" y="22" width="4"  height="4"  fill="#ffffff" opacity=".8"/>
-      <rect x="500" y="14" width="6"  height="4"  fill="#ffffff" opacity=".85"/>
-      <rect x="506" y="12" width="8"  height="6"  fill="#ffffff" opacity=".9"/>
-      <rect x="514" y="14" width="6"  height="4"  fill="#ffffff" opacity=".85"/>
-      <rect x="494" y="24" width="28" height="2"  fill="#ddeeff" opacity=".5"/>
-      <!-- Cloud C repeat -->
-      <rect x="552" y="26" width="8"  height="4"  fill="#ffffff" opacity=".88"/>
-      <rect x="560" y="24" width="44" height="6"  fill="#ffffff" opacity=".95"/>
-      <rect x="604" y="26" width="8"  height="4"  fill="#ffffff" opacity=".88"/>
-      <rect x="554" y="20" width="10" height="6"  fill="#ffffff" opacity=".9"/>
-      <rect x="564" y="16" width="12" height="8"  fill="#ffffff"/>
-      <rect x="576" y="14" width="16" height="10" fill="#ffffff"/>
-      <rect x="592" y="16" width="12" height="8"  fill="#ffffff"/>
-      <rect x="604" y="20" width="8"  height="6"  fill="#ffffff" opacity=".9"/>
-      <rect x="568" y="10" width="8"  height="6"  fill="#ffffff" opacity=".95"/>
-      <rect x="578" y="6"  width="12" height="8"  fill="#ffffff"/>
-      <rect x="592" y="10" width="8"  height="6"  fill="#ffffff" opacity=".95"/>
-      <rect x="580" y="4"  width="8"  height="4"  fill="#ffffff" opacity=".9"/>
-      <rect x="560" y="28" width="44" height="2"  fill="#cce0f5" opacity=".55"/>
-      <!-- Cloud D repeat -->
-      <rect x="646" y="22" width="6"  height="4"  fill="#ffffff" opacity=".82"/>
-      <rect x="652" y="20" width="10" height="6"  fill="#ffffff" opacity=".88"/>
-      <rect x="662" y="18" width="14" height="8"  fill="#ffffff" opacity=".92"/>
-      <rect x="676" y="20" width="10" height="6"  fill="#ffffff" opacity=".88"/>
-      <rect x="686" y="22" width="6"  height="4"  fill="#ffffff" opacity=".82"/>
-      <rect x="656" y="14" width="8"  height="6"  fill="#ffffff" opacity=".9"/>
-      <rect x="664" y="10" width="12" height="8"  fill="#ffffff" opacity=".95"/>
-      <rect x="676" y="14" width="8"  height="6"  fill="#ffffff" opacity=".9"/>
-      <rect x="668" y="8"  width="6"  height="4"  fill="#ffffff" opacity=".88"/>
-      <rect x="652" y="24" width="34" height="2"  fill="#ddeeff" opacity=".45"/>
-      <!-- Cloud E repeat -->
-      <rect x="730" y="28" width="6"  height="4"  fill="#ffffff" opacity=".85"/>
-      <rect x="736" y="26" width="36" height="6"  fill="#ffffff" opacity=".92"/>
-      <rect x="772" y="28" width="6"  height="4"  fill="#ffffff" opacity=".85"/>
-      <rect x="732" y="22" width="8"  height="6"  fill="#ffffff" opacity=".9"/>
-      <rect x="740" y="18" width="10" height="8"  fill="#ffffff"/>
-      <rect x="750" y="14" width="14" height="12" fill="#ffffff"/>
-      <rect x="764" y="18" width="10" height="8"  fill="#ffffff"/>
-      <rect x="774" y="22" width="6"  height="6"  fill="#ffffff" opacity=".9"/>
-      <rect x="744" y="10" width="8"  height="8"  fill="#ffffff" opacity=".95"/>
-      <rect x="752" y="6"  width="10" height="8"  fill="#ffffff"/>
-      <rect x="762" y="10" width="8"  height="6"  fill="#ffffff" opacity=".95"/>
-      <rect x="754" y="4"  width="6"  height="4"  fill="#ffffff" opacity=".9"/>
-      <rect x="736" y="30" width="36" height="2"  fill="#bbddf8" opacity=".6"/>
-    </svg>
-
-    <!-- sea -->
-    <div class="sea"></div>
-
-    <!-- Boat A — classic wooden steamboat -->
-    <svg class="boat-a" viewBox="0 0 80 38" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg">
-      <rect x="10"  y="22" width="52" height="10" fill="#8B5E3C"/>
-      <rect x="8"   y="28" width="56" height="6"  fill="#6b4423"/>
-      <rect x="6"   y="32" width="60" height="4"  fill="#5a3820"/>
-      <rect x="10"  y="22" width="52" height="2"  fill="#a07040" opacity=".6"/>
-      <rect x="18"  y="14" width="24" height="10" fill="#c8a878"/>
-      <rect x="18"  y="14" width="24" height="2"  fill="#d8b888" opacity=".7"/>
-      <rect x="20"  y="16" width="6"  height="6"  fill="#88ccff" opacity=".85"/>
-      <rect x="20"  y="16" width="2"  height="6"  fill="#aadeff" opacity=".5"/>
-      <rect x="30"  y="16" width="6"  height="6"  fill="#88ccff" opacity=".85"/>
-      <rect x="30"  y="16" width="2"  height="6"  fill="#aadeff" opacity=".5"/>
-      <rect x="44"  y="8"  width="6"  height="14" fill="#343639"/>
-      <rect x="44"  y="8"  width="2"  height="14" fill="#4a4d50" opacity=".5"/>
-      <rect x="42"  y="6"  width="10" height="4"  fill="#252728"/>
-      <rect x="42"  y="2"  width="6"  height="4"  fill="#cccccc" opacity=".7"/>
-      <rect x="40"  y="0"  width="4"  height="2"  fill="#bbbbbb" opacity=".5"/>
-      <rect x="46"  y="0"  width="6"  height="2"  fill="#cccccc" opacity=".4"/>
-      <rect x="22"  y="4"  width="2"  height="12" fill="#343639"/>
-      <rect x="24"  y="5"  width="8"  height="6"  fill="#FBC605" opacity=".95"/>
-      <rect x="24"  y="5"  width="2"  height="6"  fill="#e0a800" opacity=".6"/>
-      <rect x="14"  y="24" width="4"  height="4"  fill="#88ccff" opacity=".6"/>
-      <rect x="54"  y="24" width="4"  height="4"  fill="#88ccff" opacity=".6"/>
-      <rect x="8"   y="36" width="56" height="2"  fill="#0d6e99" opacity=".5"/>
-    </svg>
-
-    <!-- Boat B — small sailboat (lower) -->
-    <svg class="boat-b" viewBox="0 0 80 38" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg">
-      <rect x="4"  y="26" width="30" height="8"  fill="#c84040"/>
-      <rect x="2"  y="30" width="34" height="5"  fill="#a83030"/>
-      <rect x="0"  y="34" width="38" height="2"  fill="#882020"/>
-      <rect x="4"  y="26" width="30" height="2"  fill="#e05050" opacity=".6"/>
-      <rect x="4"  y="28" width="30" height="2"  fill="#ffffff" opacity=".4"/>
-      <rect x="18" y="4"  width="2"  height="24" fill="#5a3820"/>
-      <rect x="18" y="4"  width="1"  height="24" fill="#7a5030" opacity=".5"/>
-      <rect x="20" y="18" width="14" height="2"  fill="#5a3820"/>
-      <rect x="20" y="6"  width="2"  height="14" fill="#fffff0" opacity=".95"/>
-      <rect x="22" y="8"  width="4"  height="12" fill="#fffff0" opacity=".95"/>
-      <rect x="26" y="10" width="4"  height="10" fill="#fffff0" opacity=".9"/>
-      <rect x="30" y="12" width="4"  height="8"  fill="#fffff0" opacity=".85"/>
-      <rect x="6"  y="10" width="2"  height="12" fill="#fffff0" opacity=".85"/>
-      <rect x="8"  y="12" width="4"  height="10" fill="#fffff0" opacity=".8"/>
-      <rect x="12" y="14" width="4"  height="8"  fill="#fffff0" opacity=".75"/>
-      <rect x="16" y="16" width="2"  height="6"  fill="#fffff0" opacity=".7"/>
-      <rect x="20" y="2"  width="8"  height="4"  fill="#e74c3c"/>
-      <rect x="20" y="2"  width="2"  height="4"  fill="#c0392b" opacity=".6"/>
-      <rect x="2"  y="35" width="34" height="2"  fill="#0d6e99" opacity=".45"/>
-    </svg>
-
-    <!-- Boat C — cargo ship (mid height) -->
-    <svg class="boat-c" viewBox="0 0 90 38" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg">
-      <rect x="4"  y="20" width="68" height="14" fill="#4a5568"/>
-      <rect x="2"  y="28" width="72" height="8"  fill="#374151"/>
-      <rect x="0"  y="34" width="76" height="4"  fill="#2d3748"/>
-      <rect x="4"  y="20" width="68" height="2"  fill="#6b7280" opacity=".5"/>
-      <rect x="2"  y="32" width="72" height="2"  fill="#c0392b" opacity=".8"/>
-      <rect x="14" y="10" width="22" height="12" fill="#718096"/>
-      <rect x="14" y="10" width="22" height="2"  fill="#8a9ab0" opacity=".6"/>
-      <rect x="16" y="12" width="4"  height="4"  fill="#88ccff" opacity=".9"/>
-      <rect x="22" y="12" width="4"  height="4"  fill="#88ccff" opacity=".9"/>
-      <rect x="28" y="12" width="4"  height="4"  fill="#88ccff" opacity=".9"/>
-      <rect x="26" y="4"  width="8"  height="8"  fill="#343639"/>
-      <rect x="24" y="2"  width="12" height="4"  fill="#252728"/>
-      <rect x="24" y="2"  width="6"  height="2"  fill="#aaaaaa" opacity=".6"/>
-      <rect x="24" y="4"  width="4"  height="2"  fill="#bbbbbb" opacity=".4"/>
-      <rect x="38" y="16" width="10" height="6"  fill="#e74c3c" opacity=".9"/>
-      <rect x="38" y="16" width="2"  height="6"  fill="#c0392b" opacity=".5"/>
-      <rect x="50" y="16" width="10" height="6"  fill="#3498db" opacity=".9"/>
-      <rect x="50" y="16" width="2"  height="6"  fill="#2880c0" opacity=".5"/>
-      <rect x="62" y="16" width="10" height="6"  fill="#27ae60" opacity=".9"/>
-      <rect x="38" y="18" width="10" height="1"  fill="#000" opacity=".15"/>
-      <rect x="50" y="18" width="10" height="1"  fill="#000" opacity=".15"/>
-      <rect x="62" y="18" width="10" height="1"  fill="#000" opacity=".15"/>
-      <rect x="6"  y="24" width="4"  height="4"  fill="#88ccff" opacity=".5"/>
-      <rect x="2"  y="36" width="72" height="2"  fill="#0d6e99" opacity=".45"/>
-    </svg>
-
-    <!-- sand beach -->
-    <div class="sand"></div>
-
-    <!-- sand decorations — shells and pebbles only, no animals -->
-    <svg class="sand-deco" viewBox="0 0 420 22" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- shell 1 -->
-      <rect x="20"  y="6"  width="6"  height="4"  fill="#f0c080" opacity=".9"/>
-      <rect x="22"  y="4"  width="4"  height="2"  fill="#e8b060"/>
-      <rect x="22"  y="10" width="4"  height="2"  fill="#e8b060"/>
-      <rect x="22"  y="6"  width="2"  height="4"  fill="#d9a050" opacity=".6"/>
-      <!-- pebbles -->
-      <rect x="70"  y="10" width="4"  height="4"  fill="#c8b090" opacity=".7"/>
-      <rect x="76"  y="12" width="6"  height="2"  fill="#b8a080" opacity=".7"/>
-      <rect x="84"  y="10" width="4"  height="4"  fill="#d0b898" opacity=".65"/>
-      <!-- shell 2 -->
-      <rect x="130" y="8"  width="8"  height="4"  fill="#ffd090" opacity=".85"/>
-      <rect x="132" y="6"  width="4"  height="2"  fill="#f0b860"/>
-      <rect x="132" y="12" width="4"  height="2"  fill="#f0b860"/>
-      <!-- pebbles -->
-      <rect x="190" y="10" width="6"  height="4"  fill="#c8b090" opacity=".7"/>
-      <rect x="198" y="12" width="4"  height="2"  fill="#b8a080" opacity=".65"/>
-      <!-- shell 3 -->
-      <rect x="250" y="6"  width="6"  height="4"  fill="#f0c080" opacity=".9"/>
-      <rect x="252" y="4"  width="4"  height="2"  fill="#e8b060"/>
-      <rect x="252" y="10" width="4"  height="2"  fill="#e8b060"/>
-      <!-- pebbles -->
-      <rect x="310" y="10" width="4"  height="4"  fill="#c8b090" opacity=".7"/>
-      <rect x="316" y="12" width="6"  height="2"  fill="#b8a080" opacity=".65"/>
-      <rect x="324" y="10" width="4"  height="4"  fill="#d0b898" opacity=".6"/>
-      <!-- shell 4 -->
-      <rect x="375" y="8"  width="8"  height="4"  fill="#ffd090" opacity=".8"/>
-      <rect x="377" y="6"  width="4"  height="2"  fill="#f0b860"/>
-      <rect x="377" y="12" width="4"  height="2"  fill="#f0b860"/>
-    </svg>
-
-    <!-- title on top -->
-    <div class="header-title">
-      <h1>MY <span class="adv">ADVENTURES</span></h1>
-      <p>// events · competitions · conferences</p>
+  <!-- THEME TOGGLE -->
+  <div id="theme-toggle" role="button" aria-label="Toggle theme" onclick="toggleTheme()">
+    <span class="theme-label">Theme</span>
+    <div class="theme-switch" aria-hidden="true">
+      <div class="theme-switch-track">
+        <div class="theme-switch-batik"></div>
+      </div>
+      <div class="theme-switch-thumb"></div>
     </div>
   </div>
+</nav>
 
-  <!-- SCRAPBOOK -->
-  <div class="scrapbook" id="scrapbook">
+<!-- MAIN -->
+<main>
+  <div class="wip-card">
 
-    <!-- Loading -->
-    <div class="loading-state" id="loading">
-      <div class="loading-dots"><span></span><span></span><span></span></div>
-      <p class="loading-text">// loading activities...</p>
+    <div class="wip-icon">
+      <div class="wip-grid" id="wipGrid">
+        <!-- 25 cells, JS will animate them -->
+      </div>
     </div>
 
-    <!-- Empty -->
-    <div class="empty-state" id="empty">
-      <p>// no activities found</p>
+    <p class="wip-label">// work in progress</p>
+
+    <h1 class="wip-title">This page is<br><span>under construction</span></h1>
+
+    <p class="wip-desc">
+      Still building things here. Come back soon — it'll be worth the wait.
+    </p>
+
+    <div class="wip-progress">
+      <div class="wip-progress-bar">
+        <div class="wip-progress-fill"></div>
+      </div>
+      <div class="wip-progress-meta">
+        <span>progress</span>
+        <span>38%</span>
+      </div>
     </div>
 
-    <!-- Cards injected here -->
-    <div id="activities-container"></div>
+    <a href="./index.html" class="wip-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Back to Home
+    </a>
 
   </div>
+</main>
 
-  <!-- FOOTER -->
-  <footer class="card-footer">
-    <div class="socials">
-      <a href="https://www.linkedin.com/in/muhammad-ilham-6480b7345/" target="_blank" class="soc-btn">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
-      </a>
-      <a href="https://www.instagram.com/ilham.aren/" target="_blank" class="soc-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
-      </a>
-      <a href="/cdn-cgi/l/email-protection#650c090d04080417000b250008040c094b060a08" class="soc-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 8l10 6 10-6"/></svg>
-      </a>
-      <a href="https://github.com/poor-aren" target="_blank" class="soc-btn">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C6.626 0 2 5.373 2 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c.997.005 2.003.138 2.944.404 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
-      </a>
-    </div>
-    <div class="footer-copy">© 2025 ilham | aren</div>
-  </footer>
+<script>
+/* ── THEME ── */
+let currentTheme = localStorage.getItem('portfolio-theme') || 'formal';
+if (currentTheme === 'formal') document.body.classList.add('theme-formal');
 
-</div>
-
-<!-- LIGHTBOX -->
-<div id="lightbox" class="lightbox">
-  <div class="lb-wrap">
-    <div class="lb-close" id="lb-close">×</div>
-    <div class="lb-nav prev" id="lb-prev">‹</div>
-    <div class="lb-nav next" id="lb-next">›</div>
-    <img id="lb-img" class="lb-img" src="" alt="">
-  </div>
-</div>
-
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-const JSONBIN_KEY = '$2a$10$0p5f.8.7MaVHfCRw6y28wuozbrEphXg0vBuLRVccJXXZgGIL0kpD.';
-const JSONBIN_BIN = '6989f92bd0ea881f40ad5b6c';
-const WASHI      = ['washi-yellow','washi-pink','washi-blue'];
-
-function cldOpt(url) {
-  if (!url || !url.includes('res.cloudinary.com')) return url;
-  return url.replace('/upload/', '/upload/f_auto,q_auto/');
-}
-
-let activitiesData = [];
-let currentSlides  = {};
-let lbActivity = null, lbIndex = 0;
-
-async function loadActivities() {
-  try {
-    const res  = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN}/latest`, {
-      headers: { 'X-Master-Key': JSONBIN_KEY }
-    });
-    const data = await res.json();
-    activitiesData = (data.record.activities || []).filter(a => a !== null);
-
-    document.getElementById('loading').style.display = 'none';
-
-    if (!activitiesData.length) {
-      document.getElementById('empty').style.display = 'block';
-      return;
+function toggleTheme() {
+  const fade = document.getElementById('theme-fade');
+  fade.classList.add('fading');
+  setTimeout(() => {
+    if (document.body.classList.contains('theme-formal')) {
+      document.body.classList.remove('theme-formal');
+      currentTheme = 'creative';
+    } else {
+      document.body.classList.add('theme-formal');
+      currentTheme = 'formal';
     }
+    localStorage.setItem('portfolio-theme', currentTheme);
+    setTimeout(() => fade.classList.remove('fading'), 80);
+  }, 260);
+}
 
-    const container = document.getElementById('activities-container');
-    container.style.display = 'grid';
-    container.style.gridTemplateColumns = '1fr 1fr';
-    container.style.gap = '16px';
+/* ── MARK ACTIVE NAV based on current filename ── */
+(function(){
+  const p = location.pathname.split('/').pop() || 'index.html';
+  const map = { 'tech.html': 'nav-tech', 'activities.html': 'nav-activities', 'aboutme.html': 'nav-aboutme' };
+  const id = map[p];
+  if (id) document.getElementById(id)?.classList.add('active');
+})();
 
-    activitiesData.forEach((act, i) => {
-      currentSlides[i] = 0;
-      const washi = WASHI[i % WASHI.length];
-      const multi = act.images.length > 1;
+/* ── PIXEL GRID ANIMATION ── */
+(function(){
+  const grid = document.getElementById('wipGrid');
+  const cells = [];
+  for(let i = 0; i < 25; i++) {
+    const c = document.createElement('div');
+    c.className = 'wip-cell';
+    grid.appendChild(c);
+    cells.push(c);
+  }
 
-      const card = document.createElement('div');
-      card.className = 'scrapbook-card';
+  // Pattern: snake fill, then scatter
+  const pattern = [12,7,11,13,17,6,8,16,18,2,4,20,22,1,3,5,9,15,19,21,23,0,10,14,24];
+  let idx = 0;
+  const litSet = new Set();
 
-      const imgs = act.images.map((src, j) =>
-        `<img src="${cldOpt(src)}" alt="${act.title}"
-              class="gallery-photo ${j===0?'active':''}"
-              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22225%22%3E%3Crect fill=%22%23e5e7eb%22 width=%22400%22 height=%22225%22/%3E%3Ctext fill=%22%23aaa%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3EPhoto%3C/text%3E%3C/svg%3E'">`
-      ).join('');
+  function tick() {
+    if(idx < pattern.length) {
+      litSet.add(pattern[idx]);
+      cells[pattern[idx]].classList.add('lit');
+      idx++;
+      setTimeout(tick, 80);
+    } else {
+      // Flicker random cells
+      setInterval(() => {
+        const r = Math.floor(Math.random() * 25);
+        cells[r].classList.toggle('lit');
+        setTimeout(() => {
+          if(litSet.has(r)) cells[r].classList.add('lit');
+        }, 200);
+      }, 600);
+    }
+  }
+  setTimeout(tick, 700);
+})();
 
-      const dots = multi ? act.images.map((_,j) =>
-        `<div class="dot ${j===0?'active':''}" onclick="goSlide(${i},${j})"></div>`
-      ).join('') : '';
+/* ── UNDERWATER PIXEL BG ── */
+(function(){
+  const cv = document.getElementById('pixelCanvas');
+  const cx = cv.getContext('2d');
+  const P = 3;
 
-      const navBtns = multi
-        ? `<div class="gal-btn prev" onclick="event.stopPropagation();changeSlide(${i},-1)">‹</div>
-           <div class="gal-btn next" onclick="event.stopPropagation();changeSlide(${i},1)">›</div>`
-        : '';
+  function resize(){ cv.width = window.innerWidth; cv.height = window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
 
-      const counter = multi
-        ? `<div class="photo-count">${act.images.length} photos</div>`
-        : '';
+  function r(a,b){ return a + Math.random()*(b-a); }
+  function ri(a,b){ return Math.floor(r(a,b+1)); }
 
-      const linkBtn = act.link
-        ? `<a href="${act.link}" target="_blank" rel="noopener" class="activity-link">view link →</a>`
-        : '';
+  const FCOLORS=[['#ff6600','#ffaa44'],['#ffdd00','#fff088'],['#00bbff','#88eeff'],['#ff66aa','#ffbbdd'],['#55ff00','#bbff88']];
+  function mkFish(){
+    const dir=Math.random()<0.5?1:-1;
+    return{x:dir===1?-0.05:1.05,y:r(0.1,0.85),speed:r(0.0012,0.003)*dir,dir,sz:r(3,6),tailT:r(0,Math.PI*2),c:FCOLORS[ri(0,FCOLORS.length-1)]};
+  }
+  const FISH=[]; for(let i=0;i<8;i++){const f=mkFish();f.x=Math.random();FISH.push(f);}
+  const BUBS=[]; for(let i=0;i<24;i++) BUBS.push({x:Math.random(),y:Math.random(),sp:r(0.0003,0.0009),sz:ri(1,2)*P});
 
-      card.innerHTML = `
-        <div class="washi ${washi}"></div>
-        <div class="photo-gallery" onclick="openLB(${i}, currentSlides[${i}])">
-          ${imgs}${navBtns}${counter}
-          ${multi ? `<div class="dot-row">${dots}</div>` : ''}
-        </div>
-        <div class="card-content">
-          <div class="activity-title">
-            <div class="pin-dot"></div>
-            <span>${act.title}</span>
-          </div>
-          <p class="activity-desc">${act.description}</p>
-          ${linkBtn}
-        </div>`;
+  const RAYS=[];
+  for(let i=0;i<10;i++) RAYS.push({x:r(0.03,0.97),t:r(0,Math.PI*2),w:r(0.02,0.07),c:['#e0f7ff','#ffe8b0','#d8f0ff'][ri(0,2)]});
 
-      container.appendChild(card);
+  function drawFish(f,W,H){
+    f.tailT+=0.18; f.x+=f.speed;
+    if(f.x>1.05||f.x<-0.05) Object.assign(f,mkFish());
+    const x=f.x*W,y=f.y*H,s=f.sz,tf=Math.sin(f.tailT)*s*0.7;
+    cx.save();
+    if(f.dir===-1){cx.translate(x,0);cx.scale(-1,1);cx.translate(-x,0);}
+    cx.fillStyle=f.c[1]; cx.fillRect(x-s*2,y+tf-s*0.5,s*2,s);
+    cx.fillStyle=f.c[0]; cx.fillRect(x,y-s,s*3.5,s*2);
+    cx.fillStyle='#000'; cx.fillRect(x+s*3.2,y-s*0.4,P,P);
+    cx.restore();
+  }
 
-      // auto slideshow
-      if (multi) setInterval(() => changeSlide(i, 1), 4000);
+  let now=0;
+  function render(ts){
+    now=ts;
+    const W=cv.width,H=cv.height;
+    const g=cx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#29c4e8'); g.addColorStop(0.35,'#0fa8d4'); g.addColorStop(0.7,'#0088b8'); g.addColorStop(1,'#006d98');
+    cx.fillStyle=g; cx.fillRect(0,0,W,H);
+
+    RAYS.forEach(ray=>{
+      ray.t+=0.0007;
+      const rx=ray.x*W+Math.sin(ray.t)*W*0.04,hw=ray.w*W;
+      cx.globalAlpha=0.06+0.04*Math.sin(ray.t); cx.fillStyle=ray.c;
+      cx.beginPath(); cx.moveTo(rx-hw*0.2,0); cx.lineTo(rx+hw*0.2,0); cx.lineTo(rx+hw,H); cx.lineTo(rx-hw,H); cx.closePath(); cx.fill();
+      cx.globalAlpha=1;
     });
 
-  } catch(e) {
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('empty').style.display = 'block';
+    BUBS.forEach(b=>{
+      b.y-=b.sp; if(b.y<-0.02) b.y=1.02;
+      cx.globalAlpha=0.4; cx.fillStyle='#d8f4ff';
+      cx.fillRect(b.x*W,b.y*H,b.sz,b.sz);
+      cx.globalAlpha=1;
+    });
+
+    // Sandy seabed
+    const sandY=H*0.9;
+    const sg=cx.createLinearGradient(0,sandY,0,H);
+    sg.addColorStop(0,'#c8a96e'); sg.addColorStop(1,'#7a5c30');
+    cx.fillStyle=sg; cx.fillRect(0,sandY,W,H-sandY);
+    cx.fillStyle='#e0c88a'; cx.fillRect(0,sandY,W,P);
+
+    FISH.forEach(f=>drawFish(f,W,H));
+
+    const sy=(ts*0.02)%H;
+    cx.globalAlpha=0.03; cx.fillStyle='#00ffcc'; cx.fillRect(0,sy,W,2); cx.globalAlpha=1;
+
+    requestAnimationFrame(render);
   }
-}
-
-function changeSlide(i, dir) {
-  const act  = activitiesData[i];
-  const card = document.getElementById('activities-container').children[i];
-  const imgs = card.querySelectorAll('.gallery-photo');
-  const dots = card.querySelectorAll('.dot');
-  imgs[currentSlides[i]].classList.remove('active');
-  if (dots.length) dots[currentSlides[i]].classList.remove('active');
-  currentSlides[i] = (currentSlides[i] + dir + act.images.length) % act.images.length;
-  imgs[currentSlides[i]].classList.add('active');
-  if (dots.length) dots[currentSlides[i]].classList.add('active');
-}
-
-function goSlide(i, j) {
-  const card = document.getElementById('activities-container').children[i];
-  const imgs = card.querySelectorAll('.gallery-photo');
-  const dots = card.querySelectorAll('.dot');
-  imgs[currentSlides[i]].classList.remove('active');
-  dots[currentSlides[i]].classList.remove('active');
-  currentSlides[i] = j;
-  imgs[j].classList.add('active');
-  dots[j].classList.add('active');
-}
-
-/* Lightbox */
-function openLB(i, j) {
-  lbActivity = i; lbIndex = j;
-  document.getElementById('lb-img').src = cldOpt(activitiesData[i].images[j]);
-  const lb = document.getElementById('lightbox');
-  lb.style.display = 'flex';
-  requestAnimationFrame(() => lb.classList.add('active'));
-  document.body.style.overflow = 'hidden';
-  // hide nav if single image
-  const single = activitiesData[i].images.length <= 1;
-  document.getElementById('lb-prev').style.display = single ? 'none' : 'flex';
-  document.getElementById('lb-next').style.display = single ? 'none' : 'flex';
-}
-function closeLB() {
-  const lb = document.getElementById('lightbox');
-  lb.classList.remove('active');
-  setTimeout(() => lb.style.display = 'none', 280);
-  document.body.style.overflow = '';
-}
-function navLB(dir) {
-  if (lbActivity === null) return;
-  const act = activitiesData[lbActivity];
-  lbIndex = (lbIndex + dir + act.images.length) % act.images.length;
-  document.getElementById('lb-img').src = cldOpt(act.images[lbIndex]);
-}
-
-document.getElementById('lb-close').addEventListener('click', closeLB);
-document.getElementById('lb-prev').addEventListener('click', () => navLB(-1));
-document.getElementById('lb-next').addEventListener('click', () => navLB(1));
-document.getElementById('lightbox').addEventListener('click', e => { if(e.target===e.currentTarget) closeLB(); });
-document.addEventListener('keydown', e => {
-  if (e.key==='Escape') closeLB();
-  if (e.key === 'ArrowLeft')  navLB(-1);
-  if (e.key === 'ArrowRight') navLB(1);
-});
-
-loadActivities();
+  requestAnimationFrame(render);
+})();
 </script>
 </body>
 </html>
