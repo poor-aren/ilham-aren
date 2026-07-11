@@ -410,14 +410,61 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 /* ---- Easter egg overlay ---- */
 .egg-overlay{
   position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center;
-  background: rgba(10,9,12,.86); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-  opacity: 0; visibility: hidden; transition: opacity .28s ease; cursor: pointer;
+  background: rgba(10,9,12,.9); backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px);
+  opacity: 0; visibility: hidden; transition: opacity .3s ease; cursor: pointer; overflow: hidden;
 }
 .egg-overlay.show{ opacity: 1; visibility: visible; }
-.egg-inner{ transform: scale(.82) rotate(-2deg); transition: transform .38s cubic-bezier(.2,.9,.25,1.4); text-align: center; }
-.egg-overlay.show .egg-inner{ transform: scale(1) rotate(0); }
-.egg-inner img{ max-width: min(82vw, 560px); max-height: 78vh; border-radius: 16px; display: block; }
-.egg-hint{ margin-top: 14px; color: #cbb48f; font-family: "JetBrains Mono", monospace; font-size: .72rem; letter-spacing: 1px; }
+.egg-hint{
+  position: absolute; bottom: 26px; left: 0; right: 0; text-align: center; color: #cbb48f;
+  font-family: "JetBrains Mono", monospace; font-size: .72rem; letter-spacing: 1px;
+}
+.egg-stage{ position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; }
+
+/* gaya confetti + pop */
+.egg-stage.confetti .egg-pop-img{
+  max-width: min(82vw, 560px); max-height: 74vh; border-radius: 16px;
+  box-shadow: 0 30px 80px rgba(0,0,0,.5);
+  animation: eggPop .6s cubic-bezier(.18,.9,.28,1.4) both;
+}
+@keyframes eggPop{
+  0%{ transform: scale(.2) rotate(-8deg); opacity: 0; }
+  60%{ transform: scale(1.08) rotate(3deg); opacity: 1; }
+  80%{ transform: scale(.97) rotate(-1.5deg); }
+  100%{ transform: scale(1) rotate(0); opacity: 1; }
+}
+.egg-confetti{ position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
+.egg-confetti i{
+  position: absolute; top: -24px; border-radius: 2px; will-change: transform, opacity;
+  animation-name: eggFall; animation-timing-function: linear; animation-fill-mode: forwards;
+}
+@keyframes eggFall{
+  0%{ transform: translateY(-10vh) translateX(0) rotate(0); opacity: 1; }
+  100%{ transform: translateY(112vh) translateX(var(--dx)) rotate(var(--rot)); opacity: .9; }
+}
+
+/* gaya polaroid jatuh */
+.egg-stage.polaroid .egg-polaroid{
+  background: #fff; padding: 14px 14px 44px; border-radius: 6px; transform-origin: center;
+  box-shadow: 0 34px 90px rgba(0,0,0,.6);
+  animation: eggDrop 1s cubic-bezier(.3,.9,.3,1.2) both;
+}
+.egg-stage.polaroid .egg-polaroid img{
+  display: block; width: min(74vw, 440px); height: auto; max-height: 62vh; object-fit: cover;
+}
+.egg-stage.polaroid .egg-cap{
+  margin-top: 12px; text-align: center; color: #333;
+  font-family: "JetBrains Mono", monospace; font-size: .88rem; letter-spacing: 1.5px; text-transform: uppercase;
+}
+@keyframes eggDrop{
+  0%{ transform: translateY(-130vh) rotate(-12deg); opacity: 0; }
+  55%{ transform: translateY(0) rotate(-6deg); opacity: 1; }
+  70%{ transform: translateY(-26px) rotate(-4deg); }
+  85%{ transform: translateY(0) rotate(-5.5deg); }
+  100%{ transform: translateY(0) rotate(-5deg); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce){
+  .egg-stage.confetti .egg-pop-img, .egg-stage.polaroid .egg-polaroid, .egg-confetti i{ animation-duration: .01ms !important; }
+}
 </style>
 </head>
 
@@ -561,11 +608,11 @@ const CONFIG = {
     }
   },
 
-  // Easter egg: ketik kata ini DI HALAMAN (bukan di kolom input) → gambar muncul tiba-tiba.
-  // Isi dengan URL gambar (mis. dari Supabase Storage) atau taruh di public/ lalu "/egg-aren.jpg".
+  // Easter egg: ketik kata ini DI HALAMAN (bukan di kolom input) → gambar muncul dengan animasi.
+  // style: "confetti" (pop + confetti) atau "polaroid" (foto jatuh seperti polaroid).
   easter: {
-    aren:  "https://raw.githubusercontent.com/poor-aren/jenap/main/IMG_20250912_001309_716.jpg",
-    mykisah: "https://raw.githubusercontent.com/poor-aren/jenap/main/IMG_20260623_215857-1.jpg.jpeg"
+    aren:    { img: "https://raw.githubusercontent.com/poor-aren/jenap/main/IMG_20250912_001309_716.jpg", style: "confetti" },
+    mykisah: { img: "https://raw.githubusercontent.com/poor-aren/jenap/main/IMG_20260623_215857-1.jpg.jpeg", style: "polaroid" }
   }
 };
 
@@ -1441,28 +1488,63 @@ window.addEventListener('resize', () => {
    EASTER EGG — ketik kata kunci (di halaman, bukan di input) → gambar muncul
    ===================================================================== */
 function initEasterEggs(){
-  const eggs = CONFIG.easter || {};
-  const words = Object.keys(eggs).map(w => w.toLowerCase()).filter(Boolean);
+  const raw = CONFIG.easter || {};
+  const eggs = {};
+  Object.keys(raw).forEach(k => {
+    const v = raw[k];
+    eggs[k.toLowerCase()] = (typeof v === 'string') ? { img:v, style:'confetti' } : { img:(v.img||''), style:(v.style||'confetti') };
+  });
+  const words = Object.keys(eggs);
   if(!words.length) return;
   const maxLen = Math.max(...words.map(w => w.length));
-  let buf = "", overlay = null;
+  let buf = "", overlay = null, stage = null, confettiLayer = null;
 
   function ensureOverlay(){
     if(overlay) return;
     overlay = document.createElement('div');
     overlay.className = 'egg-overlay';
-    overlay.innerHTML = '<div class="egg-inner"><img alt=""><div class="egg-hint">klik / tekan tombol apa saja untuk menutup</div></div>';
+    overlay.innerHTML = '<div class="egg-confetti"></div><div class="egg-stage"></div><div class="egg-hint">klik / tekan tombol apa saja untuk menutup</div>';
     document.body.appendChild(overlay);
+    confettiLayer = overlay.querySelector('.egg-confetti');
+    stage = overlay.querySelector('.egg-stage');
     overlay.addEventListener('click', hide);
+  }
+  function burstConfetti(){
+    const colors = ['#E7B996','#C9A24A','#ff5d73','#4ea8ff','#6ee7a8','#ffd93d','#c77dff','#ffffff'];
+    const N = 90;
+    for(let k=0;k<N;k++){
+      const p = document.createElement('i');
+      const size = 6 + Math.random()*8;
+      p.style.left = (Math.random()*100) + 'vw';
+      p.style.width = size + 'px';
+      p.style.height = (size*1.4) + 'px';
+      p.style.background = colors[k % colors.length];
+      p.style.setProperty('--dx', ((-18 + Math.random()*36)) + 'vw');
+      p.style.setProperty('--rot', (360 + Math.random()*900) + 'deg');
+      p.style.animationDuration = (1.8 + Math.random()*1.7) + 's';
+      p.style.animationDelay = (Math.random()*0.35) + 's';
+      confettiLayer.appendChild(p);
+    }
   }
   function show(word){
     ensureOverlay();
-    const src = eggs[word];
-    overlay.querySelector('img').src = (src && src.trim())
-      ? src : placeholder(word + "  \u2726", "#141316", "#E7B996", 700, 500);
+    const egg = eggs[word];
+    const src = (egg.img && egg.img.trim()) ? egg.img : placeholder(word + "  \u2726", "#141316", "#E7B996", 700, 500);
+    confettiLayer.innerHTML = '';
+    stage.className = 'egg-stage ' + egg.style;
+    if(egg.style === 'polaroid'){
+      stage.innerHTML = '<div class="egg-polaroid"><img alt=""><div class="egg-cap"></div></div>';
+      stage.querySelector('.egg-cap').textContent = word;
+    } else {
+      stage.innerHTML = '<img class="egg-pop-img" alt="">';
+    }
+    stage.querySelector('img').src = src;
+    // paksa reflow agar animasi selalu terputar ulang
+    void stage.offsetWidth;
     overlay.classList.add('show');
+    if(egg.style === 'confetti') burstConfetti();
   }
-  function hide(){ if(overlay) overlay.classList.remove('show'); }
+  function hide(){ if(overlay){ overlay.classList.remove('show'); if(confettiLayer) confettiLayer.innerHTML=''; } }
 
   window.addEventListener('keydown', (e) => {
     if(overlay && overlay.classList.contains('show')){ hide(); return; }
