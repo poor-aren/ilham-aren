@@ -1,0 +1,18 @@
+# dependency (dibuat ulang oleh `npm install`)
+node_modules/
+
+# hasil build (dibuat ulang oleh `npm run build`)
+dist/
+
+# cache & log
+.vite/
+*.log
+npm-debug.log*
+
+# file sistem
+.DS_Store
+Thumbs.db
+
+# env rahasia (kalau nanti dipakai)
+.env
+.env.local
