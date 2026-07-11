@@ -179,7 +179,7 @@ function ensureProjLiquid() {
   projLiquidRoot = createRoot(projLiquidHost);
   projLiquidRoot.render(createElement(LiquidEther, {
     colors: ['#8a6f2e', '#C9A24A', '#E7B996'], // emas di atas latar hitam
-    mouseForce: 7, cursorSize: 80, resolution: 0.5,
+    mouseForce: 7, cursorSize: 80, resolution: 0.4,
     autoDemo: true, autoSpeed: 0.3, autoIntensity: 0.9,
     takeoverDuration: 0.2, autoResumeDelay: 700, autoRampDuration: 0.5 // balik ke posisi semula lebih cepat
   }));
