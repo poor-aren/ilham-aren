@@ -45,11 +45,12 @@ const Masonry = ({
   scaleOnHover = true,
   hoverScale = 0.95,
   blurToFocus = true,
+  maxColumns = 5,
   onItemClick
 }) => {
   const columns = useMedia(
     ['(min-width:1100px)', '(min-width:750px)', '(min-width:500px)'],
-    [5, 3, 2],
+    [maxColumns, 3, 2],
     1
   );
 

@@ -141,6 +141,7 @@ function ensureActivityStack(imagesPerItem) {
     id: i + 1,
     content: createElement(GalleryCard, { images: imgs })
   }));
+  cards.reverse(); // kartu teratas = elemen terakhir → item pertama (PIMNAS) tampil paling atas
   stackRoot = createRoot(stackHost);
   stackRoot.render(
     createElement(Stack, {
@@ -179,9 +180,9 @@ function ensureProjLiquid() {
   projLiquidRoot = createRoot(projLiquidHost);
   projLiquidRoot.render(createElement(LiquidEther, {
     colors: ['#8a6f2e', '#C9A24A', '#E7B996'], // emas di atas latar hitam
-    mouseForce: 7, cursorSize: 80, resolution: 0.4,
-    autoDemo: true, autoSpeed: 0.3, autoIntensity: 0.9,
-    takeoverDuration: 0.2, autoResumeDelay: 700, autoRampDuration: 0.5 // balik ke posisi semula lebih cepat
+    mouseForce: 20, cursorSize: 100, resolution: 0.32, // kuat (spt referensi) tapi resolusi rendah → tak ngelag
+    autoDemo: true, autoSpeed: 0.5, autoIntensity: 2.2,
+    takeoverDuration: 0.25, autoResumeDelay: 3000, autoRampDuration: 0.6 // air tenang perlahan (spt referensi)
   }));
 }
 window.__mountProjLiquid = (container) => {
@@ -208,12 +209,13 @@ window.__mountProjTitle = (container, text) => {
 
 /* ---- Grid Projects memakai Masonry (5 kolom + animasi) ---- */
 let masonryRoots = [];
-window.__mountProjMasonry = (container, items, onClick) => {
+window.__mountProjMasonry = (container, items, onClick, columns) => {
   if (!container) return;
   const root = createRoot(container);
   masonryRoots.push(root);
   root.render(createElement(Masonry, {
     items,
+    maxColumns: columns || 5,
     animateFrom: 'bottom', duration: 0.6, stagger: 0.05,
     scaleOnHover: true, hoverScale: 0.96, blurToFocus: true,
     onItemClick: onClick
