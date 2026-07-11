@@ -357,12 +357,22 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 .modal-card h3 { font-family:"Playfair Display",serif; font-weight:800; font-size:clamp(1.6rem,3vw,2.4rem); line-height:1.1; }
 .modal-card .m-close { flex:none; width:42px; height:42px; border-radius:50%; border:1.5px solid currentColor; background:transparent; color:inherit; cursor:pointer; font-size:1.1rem; display:flex; align-items:center; justify-content:center; transition: background .2s; }
 .modal-card .m-close:hover { background: rgba(255,255,255,.1); }
-.modal-card .m-body { padding: 0 30px 20px; overflow-y:auto; }
+.modal-card .m-body { padding: 0 30px 20px; overflow-y:auto; scrollbar-width:none; -ms-overflow-style:none; }
+.modal-card .m-body::-webkit-scrollbar { width:0; height:0; display:none; }
 .modal-card .m-desc { line-height:1.75; font-size:1.03rem; opacity:.92; }
+.modal-card .m-link {
+  display:inline-block; margin-top:18px; font-family:"JetBrains Mono",monospace; font-size:.76rem;
+  letter-spacing:1.5px; text-transform:uppercase; padding:10px 18px; border:1px solid currentColor;
+  border-radius:10px; transition: background .2s, opacity .2s; opacity:.9;
+}
+.modal-card .m-link:hover { background: rgba(255,255,255,.12); opacity:1; }
 .modal-card .m-meta { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
 .modal-card .m-meta .tag { font-family:"JetBrains Mono",monospace; font-size:.7rem; letter-spacing:.5px; padding:4px 10px; border-radius:20px; border:1px solid currentColor; opacity:.8; }
-.modal-card .m-gallery { display:flex; gap:14px; overflow-x:auto; padding:22px 30px 30px; scroll-snap-type:x mandatory; }
-.modal-card .m-gallery img { height:240px; width:auto; border-radius:14px; flex:none; scroll-snap-align:center; object-fit:cover; }
+.modal-card .m-gallery { display:flex; gap:14px; overflow-x:auto; padding:22px 30px 30px; scrollbar-width:none; -ms-overflow-style:none; }
+.modal-card .m-gallery::-webkit-scrollbar { width:0; height:0; display:none; }
+.modal-card .m-gallery.loop { cursor:grab; }
+.modal-card .m-gallery.loop.dragging { cursor:grabbing; }
+.modal-card .m-gallery img { height:240px; width:auto; border-radius:14px; flex:none; object-fit:cover; -webkit-user-drag:none; user-select:none; }
 
 /* ============ RESPONSIVE ============ */
 @media (max-width: 820px) {
@@ -753,10 +763,10 @@ function renderContact(){
       </div>
       <div class="c-right">
         <form class="contact-form" id="contactForm" novalidate>
-          <div class="fld"><label for="cf-name">Name</label>
-            <input id="cf-name" name="name" type="text" autocomplete="name" required></div>
-          <div class="fld"><label for="cf-email">Email</label>
-            <input id="cf-email" name="email" type="email" autocomplete="email" required></div>
+          <div class="fld"><label for="cf-name">Name <span style="opacity:.6;font-weight:400">(optional)</span></label>
+            <input id="cf-name" name="name" type="text" autocomplete="name"></div>
+          <div class="fld"><label for="cf-email">Email <span style="opacity:.6;font-weight:400">(optional)</span></label>
+            <input id="cf-email" name="email" type="email" autocomplete="email"></div>
           <div class="fld"><label for="cf-msg">Message</label>
             <textarea id="cf-msg" name="message" required></textarea></div>
           <button class="send" type="submit">
@@ -789,18 +799,41 @@ const N = PAGES.length;
    MODAL
    ===================================================================== */
 const modalRoot = document.getElementById('modalRoot');
-function openModal({ title, desc, images, tags, palette }){
+function openModal({ title, desc, images, tags, palette, link }){
   const pal = palette || { bg:'#1c1c1c', fg:'#E7B996' };
-  const gallery = (images||[]).map(src => `<img src="${img(src,'image',pal.bg,pal.fg,700,540)}" alt="">`).join("");
+  const one = (images||[]).map(src => `<img src="${img(src,'image',pal.bg,pal.fg,700,540)}" alt="" draggable="false">`).join("");
+  const loop = (images||[]).length > 1;
+  const galleryInner = loop ? (one + one + one) : one;
   const tagHtml = (tags && tags.length) ? `<div class="m-meta">${tags.map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>` : "";
+  const linkHtml = (link && link.trim()) ? `<a class="m-link" href="${esc(link)}" target="_blank" rel="noopener">Visit project →</a>` : "";
   modalRoot.innerHTML = `
     <div class="modal-card" style="background:${pal.bg};color:${pal.fg}">
       <div class="m-head"><h3>${esc(title)}</h3><button class="m-close" aria-label="Close">✕</button></div>
-      <div class="m-body">${tagHtml}<p class="m-desc">${esc(desc)}</p></div>
-      ${gallery ? `<div class="m-gallery">${gallery}</div>` : ""}
+      <div class="m-body">${tagHtml}<p class="m-desc">${esc(desc)}</p>${linkHtml}</div>
+      ${one ? `<div class="m-gallery${loop?' loop':''}">${galleryInner}</div>` : ""}
     </div>`;
   modalRoot.classList.add('open');
   modalRoot.querySelector('.m-close').onclick = closeModal;
+  if(loop) initModalGallery(modalRoot.querySelector('.m-gallery'));
+}
+/* Galeri modal: geser pakai mouse (drag + wheel), loop tak berujung, tanpa scrollbar */
+function initModalGallery(track){
+  if(!track) return;
+  let oneSet = 0;
+  const measure = () => { oneSet = track.scrollWidth / 3; if(oneSet > 0 && track.scrollLeft < 1) track.scrollLeft = oneSet; };
+  requestAnimationFrame(measure);
+  const wrap = () => { if(!oneSet) return; if(track.scrollLeft < oneSet*0.5) track.scrollLeft += oneSet; else if(track.scrollLeft > oneSet*1.5) track.scrollLeft -= oneSet; };
+  let down=false, startX=0, startLeft=0, lastX=0, vel=0, raf=null, moved=false;
+  const stop=()=>{ if(raf){ cancelAnimationFrame(raf); raf=null; } };
+  track.addEventListener('pointerdown', e=>{ measure(); down=true; moved=false; startX=e.clientX; startLeft=track.scrollLeft; lastX=e.clientX; vel=0; stop(); track.classList.add('dragging'); track.setPointerCapture(e.pointerId); });
+  track.addEventListener('pointermove', e=>{ if(!down) return; const dx=e.clientX-startX; if(Math.abs(dx)>4) moved=true; track.scrollLeft = startLeft - dx; vel = -(e.clientX-lastX); lastX=e.clientX; wrap(); });
+  const rel=e=>{ if(!down) return; down=false; track.classList.remove('dragging'); try{ track.releasePointerCapture(e.pointerId); }catch(_){}
+    (function mom(){ if(!track.isConnected || Math.abs(vel) < 0.12){ raf=null; return; } track.scrollLeft += vel; wrap(); vel *= 0.95; raf=requestAnimationFrame(mom); })();
+  };
+  track.addEventListener('pointerup', rel);
+  track.addEventListener('pointercancel', rel);
+  track.addEventListener('click', e=>{ if(moved){ e.preventDefault(); e.stopPropagation(); } }, true);
+  track.addEventListener('wheel', e=>{ stop(); track.scrollLeft += (Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX); wrap(); e.preventDefault(); }, { passive:false });
 }
 function closeModal(){ modalRoot.classList.remove('open'); modalRoot.innerHTML=""; }
 modalRoot.addEventListener('click', e => { if(e.target === modalRoot) closeModal(); });
@@ -879,7 +912,7 @@ function initProjects(root){
   // Klik feature → modal
   const openItem = (i) => {
     const p = items[i];
-    openModal({ title:p.title, desc:p.description, images:p.images, tags:p.tags, palette:{ bg:'#141414', fg:'#E7B996' } });
+    openModal({ title:p.title, desc:p.description, images:p.images, tags:p.tags, link:p.link, palette:{ bg:'#141414', fg:'#E7B996' } });
   };
   root.querySelectorAll('.feature').forEach(elm => {
     elm.addEventListener('click', () => openItem(+elm.dataset.i));
@@ -904,7 +937,7 @@ function initProjects(root){
       title: o.p.title,
       _idx: o.i
     }));
-    if(window.__mountProjMasonry) window.__mountProjMasonry(gridEl, mItems, (it)=> openItem(it._idx));
+    if(window.__mountProjMasonry) window.__mountProjMasonry(gridEl, mItems, (it)=> openItem(it._idx), cat === 'tech' ? 4 : 5);
   });
 
   // Tabs sub-halaman tech / art → tampilkan pane
@@ -1106,26 +1139,29 @@ function initContact(root){
     const btn = form.querySelector('.send');
     const lbl = btn.querySelector('span');
     const data = { name: form.name.value.trim(), email: form.email.value.trim(), message: form.message.value.trim() };
-    if(!data.name || !data.email || !data.message){ note.textContent = "Please fill in every field."; note.className = "note err"; return; }
+    if(!data.message){ note.textContent = "Please write a message."; note.className = "note err"; return; }
 
-    // 1) Web3Forms → email langsung ke Gmail (tanpa buka aplikasi email pengunjung)
+    // 1) Web3Forms → email langsung ke Gmail (tanpa buka aplikasi email; boleh anonim)
     const key = (CONFIG.contact.web3formsKey || "").trim();
     if(key){
       try {
         btn.disabled = true; if(lbl) lbl.textContent = "Sending…";
+        const payload = {
+          access_key: key,
+          subject: `Portfolio message${data.name ? ' from ' + data.name : ''}`,
+          from_name: data.name || "Anonymous",
+          name: data.name || "Anonymous",
+          message: data.message
+        };
+        if(data.email) payload.email = data.email;   // hanya jika diisi (biar bisa anonim)
         const res = await fetch("https://api.web3forms.com/submit", {
           method:"POST", headers:{ "Content-Type":"application/json", "Accept":"application/json" },
-          body: JSON.stringify({
-            access_key: key,
-            subject: `Portfolio message from ${data.name}`,
-            from_name: data.name,
-            name: data.name, email: data.email, message: data.message
-          })
+          body: JSON.stringify(payload)
         });
         const j = await res.json().catch(() => ({}));
         if(j.success){ form.reset(); note.textContent = "Thanks — your message is on its way!"; note.className = "note ok"; }
-        else { note.textContent = "Something went wrong. Try again or email me directly."; note.className = "note err"; }
-      } catch { note.textContent = "Network error. Try again or email me directly."; note.className = "note err"; }
+        else { note.textContent = "Something went wrong. Please try again."; note.className = "note err"; }
+      } catch { note.textContent = "Network error. Please try again."; note.className = "note err"; }
       finally { btn.disabled = false; if(lbl) lbl.textContent = "Send"; }
       return;
     }
@@ -1438,6 +1474,7 @@ function initEasterEggs(){
     }
   });
 }
+initEasterEggs();  // pasang segera, independen dari Supabase
 
 /* =====================================================================
    SUPABASE — tarik konten dari database saat halaman dimuat.
@@ -1496,7 +1533,7 @@ async function loadFromSupabase(){
   if(projects && projects.length){
     CONFIG.projects.items = projects.map(r => ({
       title:r.title||'', cat:r.cat||'tech', feature:!!r.feature, ar:Number(r.ar)||1,
-      cover:r.cover_url||'', tags:r.tags||[], description:r.description||'', images:r.images||[]
+      cover:r.cover_url||'', tags:r.tags||[], description:r.description||'', images:r.images||[], link:r.url||''
     }));
   }
   if(certs && certs.length){
@@ -1531,7 +1568,6 @@ window.LANYARD_CONFIG = CONFIG.contact.lanyard; // default sinkron untuk React (
   buildTopR((0 - 1 + N) % N);
   drawRempty();
   preIntro(); setIntroTargets(); draw(); ensureLoop();
-  initEasterEggs();
 })();
 </script>
 </body>
