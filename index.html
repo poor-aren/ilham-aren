@@ -433,18 +433,31 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 }
 .egg-stage{ position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; }
 
+/* kilatan cahaya saat muncul (semua gaya) */
+.egg-flash{
+  position: absolute; left: 50%; top: 50%; width: 62vmax; height: 62vmax; border-radius: 50%;
+  transform: translate(-50%,-50%) scale(0); opacity: 0; z-index: 1; pointer-events: none;
+  background: radial-gradient(circle, rgba(255,255,255,.3), rgba(231,185,150,.14) 42%, transparent 70%);
+}
+.egg-flash.go{ animation: eggFlash .72s ease-out forwards; }
+@keyframes eggFlash{
+  0%{ transform: translate(-50%,-50%) scale(0); opacity: .95; }
+  100%{ transform: translate(-50%,-50%) scale(1); opacity: 0; }
+}
+
 /* gaya confetti + pop */
 .egg-stage.confetti .egg-pop-img{
-  max-width: min(82vw, 560px); max-height: 74vh; border-radius: 16px;
-  box-shadow: 0 30px 80px rgba(0,0,0,.5);
-  animation: eggPop .6s cubic-bezier(.18,.9,.28,1.4) both;
+  max-width: min(84vw, 580px); max-height: 76vh; border-radius: 18px;
+  box-shadow: 0 30px 90px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.08);
+  animation: eggPop .7s cubic-bezier(.16,.9,.24,1.55) both, eggFloat 2.2s ease-in-out .7s;
 }
 @keyframes eggPop{
-  0%{ transform: scale(.2) rotate(-8deg); opacity: 0; }
-  60%{ transform: scale(1.08) rotate(3deg); opacity: 1; }
-  80%{ transform: scale(.97) rotate(-1.5deg); }
+  0%{ transform: scale(.15) rotate(-10deg); opacity: 0; }
+  55%{ transform: scale(1.14) rotate(4deg); opacity: 1; }
+  75%{ transform: scale(.95) rotate(-2deg); }
   100%{ transform: scale(1) rotate(0); opacity: 1; }
 }
+@keyframes eggFloat{ 0%,100%{ translate: 0 0; } 50%{ translate: 0 -10px; } }
 .egg-confetti{ position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
 .egg-confetti i{
   position: absolute; top: -24px; border-radius: 2px; will-change: transform, opacity;
@@ -476,7 +489,7 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   100%{ transform: translateY(0) rotate(-5deg); opacity: 1; }
 }
 @media (prefers-reduced-motion: reduce){
-  .egg-stage.confetti .egg-pop-img, .egg-stage.polaroid .egg-polaroid, .egg-confetti i{ animation-duration: .01ms !important; }
+  .egg-stage.confetti .egg-pop-img, .egg-stage.polaroid .egg-polaroid, .egg-confetti i, .egg-flash.go{ animation-duration: .01ms !important; }
 }
 </style>
 </head>
@@ -781,8 +794,6 @@ function renderProjects(){
           ${pane('art')}
         </div>
       </div></div>
-
-      <div class="proj-gray"><div class="chroma-overlay"></div><div class="chroma-fade"></div></div>
 
       <div class="proj-titlebar" id="projTitlebar"></div>
     </div>`;
@@ -1500,6 +1511,7 @@ window.addEventListener('resize', () => {
    EASTER EGG — ketik kata kunci (di halaman, bukan di input) → gambar muncul
    ===================================================================== */
 function initEasterEggs(){
+  const AUTO_MS = 2600; // hilang otomatis ~2 detik (setelah animasi muncul)
   const raw = CONFIG.easter || {};
   const eggs = {};
   Object.keys(raw).forEach(k => {
@@ -1509,37 +1521,39 @@ function initEasterEggs(){
   const words = Object.keys(eggs);
   if(!words.length) return;
   const maxLen = Math.max(...words.map(w => w.length));
-  let buf = "", overlay = null, stage = null, confettiLayer = null;
+  let buf = "", overlay = null, stage = null, confettiLayer = null, flash = null, hideTimer = null;
 
   function ensureOverlay(){
     if(overlay) return;
     overlay = document.createElement('div');
     overlay.className = 'egg-overlay';
-    overlay.innerHTML = '<div class="egg-confetti"></div><div class="egg-stage"></div><div class="egg-hint">klik / tekan tombol apa saja untuk menutup</div>';
+    overlay.innerHTML = '<div class="egg-flash"></div><div class="egg-confetti"></div><div class="egg-stage"></div><div class="egg-hint">klik / tekan tombol untuk menutup</div>';
     document.body.appendChild(overlay);
+    flash = overlay.querySelector('.egg-flash');
     confettiLayer = overlay.querySelector('.egg-confetti');
     stage = overlay.querySelector('.egg-stage');
     overlay.addEventListener('click', hide);
   }
   function burstConfetti(){
-    const colors = ['#E7B996','#C9A24A','#ff5d73','#4ea8ff','#6ee7a8','#ffd93d','#c77dff','#ffffff'];
-    const N = 90;
+    const colors = ['#E7B996','#C9A24A','#ff5d73','#4ea8ff','#6ee7a8','#ffd93d','#c77dff','#ffffff','#ff9f45'];
+    const N = 140;
     for(let k=0;k<N;k++){
       const p = document.createElement('i');
-      const size = 6 + Math.random()*8;
+      const size = 6 + Math.random()*9;
       p.style.left = (Math.random()*100) + 'vw';
       p.style.width = size + 'px';
       p.style.height = (size*1.4) + 'px';
       p.style.background = colors[k % colors.length];
-      p.style.setProperty('--dx', ((-18 + Math.random()*36)) + 'vw');
-      p.style.setProperty('--rot', (360 + Math.random()*900) + 'deg');
-      p.style.animationDuration = (1.8 + Math.random()*1.7) + 's';
-      p.style.animationDelay = (Math.random()*0.35) + 's';
+      p.style.setProperty('--dx', ((-24 + Math.random()*48)) + 'vw');
+      p.style.setProperty('--rot', (360 + Math.random()*1000) + 'deg');
+      p.style.animationDuration = (1.6 + Math.random()*1.6) + 's';
+      p.style.animationDelay = (Math.random()*0.25) + 's';
       confettiLayer.appendChild(p);
     }
   }
   function show(word){
     ensureOverlay();
+    clearTimeout(hideTimer);
     const egg = eggs[word];
     const src = (egg.img && egg.img.trim()) ? egg.img : placeholder(word + "  \u2726", "#141316", "#E7B996", 700, 500);
     confettiLayer.innerHTML = '';
@@ -1551,14 +1565,20 @@ function initEasterEggs(){
       stage.innerHTML = '<img class="egg-pop-img" alt="">';
     }
     stage.querySelector('img').src = src;
-    // paksa reflow agar animasi selalu terputar ulang
+    // retrigger kilatan cahaya + reflow agar animasi selalu terputar ulang
+    flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go');
     void stage.offsetWidth;
     overlay.classList.add('show');
-    if(egg.style === 'confetti') burstConfetti();
+    burstConfetti();
+    hideTimer = setTimeout(hide, AUTO_MS);
   }
-  function hide(){ if(overlay){ overlay.classList.remove('show'); if(confettiLayer) confettiLayer.innerHTML=''; } }
+  function hide(){
+    clearTimeout(hideTimer);
+    if(overlay){ overlay.classList.remove('show'); if(confettiLayer) confettiLayer.innerHTML = ''; }
+  }
 
   window.addEventListener('keydown', (e) => {
+    if(e.repeat) return; // abaikan auto-repeat (tahan tombol) → tak menutup tak sengaja
     if(overlay && overlay.classList.contains('show')){ hide(); return; }
     const t = e.target;
     if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
