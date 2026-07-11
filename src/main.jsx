@@ -215,6 +215,20 @@ window.__mountProjTitle = (container, text) => {
   );
 };
 
+/* ---- Panel kaca (GlassSurface) — props IDENTIK dgn judul, dipakai utk sertifikat & feature ---- */
+let glassRoots = [];
+window.__mountGlassPanel = (container) => {
+  if (!container) return;
+  const root = createRoot(container);
+  glassRoots.push(root);
+  root.render(createElement(GlassSurface, {
+    width: '100%', height: '100%', borderRadius: 18,
+    brightness: 60, opacity: 0.9, blur: 10, displace: 0.4,
+    distortionScale: -140, backgroundOpacity: 0.06, saturation: 1.4,
+    className: 'proj-title-glass'
+  }));
+};
+
 /* ---- Grid Projects memakai Masonry (5 kolom + animasi) ---- */
 let masonryRoots = [];
 window.__mountProjMasonry = (container, items, onClick, columns) => {
@@ -233,6 +247,8 @@ window.__unmountProjExtras = () => {
   if (titleRoot) { try { titleRoot.unmount(); } catch (_) {} titleRoot = null; }
   masonryRoots.forEach(r => { try { r.unmount(); } catch (_) {} });
   masonryRoots = [];
+  glassRoots.forEach(r => { try { r.unmount(); } catch (_) {} });
+  glassRoots = [];
 };
 
 // Pre-warm Stack setelah data final (event dari index) → kunjungan pertama instan
