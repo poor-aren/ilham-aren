@@ -2,7 +2,7 @@ import { useEffect, useState, createElement } from 'react';
 import { createRoot } from 'react-dom/client';
 import Lanyard from './Lanyard.jsx';
 import Stack from './Stack.jsx';
-import DotGrid from './DotGrid.jsx';
+import FloatingLines from './FloatingLines.jsx';
 import GlassSurface from './GlassSurface.jsx';
 import Masonry from './Masonry.jsx';
 
@@ -171,23 +171,29 @@ window.__unmountActivityStack = () => {}; // no-op: Stack persisten
 /* ---- Home: background dikosongkan (putih polos) ---- */
 window.__mountHomeLiquid = () => {}; // no-op
 
-/* ---- DotGrid untuk halaman Projects (dim, aksen emas di sekitar kursor; persisten) ---- */
+/* ---- FloatingLines untuk halaman Projects (garis ungu, penuh; persisten) ---- */
 let projLiquidHost = null, projLiquidRoot = null;
 function ensureProjLiquid() {
   if (projLiquidRoot) return;
   projLiquidHost = document.createElement('div');
-  projLiquidHost.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;';
+  projLiquidHost.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;opacity:.6;';
   projLiquidRoot = createRoot(projLiquidHost);
-  projLiquidRoot.render(createElement(DotGrid, {
-    dotSize: 4,
-    gap: 30,
-    baseColor: '#26262c',   // titik dim → tak berebut dgn teks emas
-    activeColor: '#E7B996',  // menyala emas di sekitar kursor
-    proximity: 130,
-    shockRadius: 220,
-    shockStrength: 4,
-    resistance: 750,
-    returnDuration: 1.4
+  projLiquidRoot.render(createElement(FloatingLines, {
+    // Warna garis — pilih salah satu (ganti linesGradient):
+    //   Ungu (dipakai): ['#2a2358', '#5b4bd6', '#a892ff']
+    //   Teal:           ['#0d3b4a', '#1f9db4', '#7fe3f0']
+    //   Emas:           ['#8a6f2e', '#C9A24A', '#E7B996']
+    linesGradient: ['#2a2358', '#5b4bd6', '#a892ff'], // ungu → kontras dgn teks emas
+    enabledWaves: ['top', 'middle', 'bottom'],
+    lineCount: 7,
+    lineDistance: 8,
+    animationSpeed: 0.5,
+    interactive: true,
+    bendRadius: 6,
+    bendStrength: -1.4,
+    parallax: true,
+    parallaxStrength: 0.16,
+    mixBlendMode: 'screen'   // di atas hitam → garis ungu menyala
   }));
 }
 window.__mountProjLiquid = (container) => {
