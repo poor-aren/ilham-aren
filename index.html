@@ -153,12 +153,13 @@ body.dragging #swipeBtn .pulse { display: none; }
 }
 
 /* ---- Sertifikat: melayang (tanpa card), ujung memudar (opacity turun) ---- */
-.cert-strip { margin-bottom: clamp(10px,1.4vw,16px); }
+.cert-strip { margin-bottom: clamp(6px,1vw,12px); }
 .cert-eyebrow {
   font-family: "JetBrains Mono", monospace; font-size: .7rem; letter-spacing: 3px;
   text-transform: uppercase; color: rgba(255,255,255,.72); margin-bottom: 16px;
 }
 .cert-track {
+  position: relative; z-index: 1;
   display: flex; gap: clamp(20px,2.6vw,38px); overflow-x: auto; padding: 4px 2px 8px; cursor: grab;
   scrollbar-width: none; -ms-overflow-style: none;
   -webkit-mask-image: linear-gradient(to right, transparent 0, rgba(0,0,0,.35) 7%, #000 26%, #000 74%, rgba(0,0,0,.35) 93%, transparent 100%);
@@ -166,23 +167,20 @@ body.dragging #swipeBtn .pulse { display: none; }
 }
 .cert-track.dragging { cursor: grabbing; }
 .cert-track::-webkit-scrollbar { height: 0; display: none; }
+.cert-panel { position: relative; border-radius: 20px; padding: 16px clamp(12px,2vw,20px); }
+.cert-glass { position: absolute; inset: 0; z-index: 0; border-radius: 20px; overflow: hidden; }
 .cert-item {
-  flex: 0 0 auto; width: clamp(160px,17vw,204px); cursor: pointer; text-align: left;
-  padding: 12px; border-radius: 16px;
-  background: linear-gradient(135deg, rgba(255,255,255,.09), rgba(255,255,255,.028));
-  backdrop-filter: blur(10px) saturate(1.4); -webkit-backdrop-filter: blur(10px) saturate(1.4);
-  border: 1px solid rgba(255,255,255,.16);
-  box-shadow: 0 8px 30px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.14);
-  transition: transform .3s cubic-bezier(.2,.8,.2,1), border-color .3s;
+  flex: 0 0 auto; width: clamp(150px,16vw,188px); cursor: pointer; text-align: left;
+  transition: transform .3s cubic-bezier(.2,.8,.2,1);
 }
-.cert-item:hover { transform: translateY(-4px); border-color: rgba(255,255,255,.34); }
+.cert-item:hover { transform: translateY(-3px); }
 .cert-item img { -webkit-user-drag: none; user-select: none; }
-.cert-thumb { width: 100%; aspect-ratio: 4/3; border-radius: 11px; overflow: hidden; border: 1px solid rgba(255,255,255,.14); }
+.cert-thumb { width: 100%; aspect-ratio: 4/3; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,.16); }
 .cert-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .cert-title  { margin-top: 11px; font-family: "Inter", sans-serif; font-weight: 500; font-size: .82rem; color: rgba(255,255,255,.95); line-height: 1.3; }
 .cert-issuer { margin-top: 3px;  font-family: "Inter", sans-serif; font-weight: 300; font-size: .72rem; color: rgba(255,255,255,.55); letter-spacing: .2px; }
 
-.proj-divider { height: 1px; background: rgba(231,185,150,.14); margin: 0 0 clamp(12px,1.6vw,18px); }
+.proj-divider { height: 1px; background: rgba(255,255,255,.12); margin: 0 0 clamp(8px,1.2vw,14px); }
 
 /* ---- Body head: label kiri + segmented control tech/art kanan ---- */
 .body-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: clamp(16px,2.4vw,24px); }
@@ -205,15 +203,15 @@ body.dragging #swipeBtn .pulse { display: none; }
 
 /* ---- Feature project (lebih kecil): foto kiri, teks kanan RATA ATAS-KIRI ---- */
 .feature {
+  position: relative;
   display: flex; gap: clamp(14px,2vw,22px); align-items: flex-start;
   border-radius: 16px; overflow: hidden; cursor: pointer;
-  margin: 0 0 18px; padding: 12px; border: 1px solid rgba(255,255,255,.18);
-  background: linear-gradient(135deg, rgba(255,255,255,.09), rgba(255,255,255,.028));
-  backdrop-filter: blur(14px) saturate(1.4); -webkit-backdrop-filter: blur(14px) saturate(1.4);
-  box-shadow: 0 10px 34px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.15);
-  transition: border-color .3s, transform .35s cubic-bezier(.2,.8,.2,1);
+  margin: 0 0 18px; padding: 12px; border: none; background: transparent;
+  transition: transform .35s cubic-bezier(.2,.8,.2,1);
 }
-.feature:hover { border-color: rgba(255,255,255,.36); transform: translateY(-3px); }
+.feature:hover { transform: translateY(-3px); }
+.feat-glass { position: absolute; inset: 0; z-index: 0; border-radius: 16px; overflow: hidden; }
+.feature > .feat-media, .feature > .feat-body { position: relative; z-index: 1; }
 .feat-media { flex: 0 0 30%; max-width: 30%; border-radius: 11px; overflow: hidden; align-self: stretch; }
 .feat-media img { width: 100%; height: 100%; min-height: clamp(150px,20vh,208px); object-fit: cover; display: block; }
 .feat-body { flex: 1 1 auto; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; padding: 2px 8px 2px 0; }
@@ -754,6 +752,7 @@ function renderProjects(){
   const featureHtml = (p,i) => {
     const w = 800, h = Math.round(w * (p.ar || 1));
     return `<div class="feature" data-i="${i}">
+      <div class="feat-glass"></div>
       <div class="feat-media"><img src="${img(p.cover, p.title, '#1c1c1c', '#5a5148', w, h)}" alt="" loading="lazy"></div>
       <div class="feat-body">
         <div class="feat-badge">★ featured</div>
@@ -783,7 +782,10 @@ function renderProjects(){
 
         <section class="cert-strip">
           <div class="cert-eyebrow">certificates</div>
-          <div class="cert-track">${certs}</div>
+          <div class="cert-panel">
+            <div class="cert-glass" id="certGlass"></div>
+            <div class="cert-track">${certs}</div>
+          </div>
         </section>
 
         <div class="proj-divider"></div>
@@ -1000,6 +1002,13 @@ function initProjects(root){
   if(projBg && root.id === 'baseLayer' && window.innerWidth > 820 && window.__mountProjLiquid) window.__mountProjLiquid(projBg);
   const titlebar = root.querySelector('#projTitlebar');
   if(titlebar && window.__mountProjTitle) window.__mountProjTitle(titlebar, c.title);
+
+  // Panel kaca (GlassSurface, tipe sama dgn judul) — hanya di layer utama
+  if(root.id === 'baseLayer' && window.__mountGlassPanel){
+    const cg = root.querySelector('#certGlass');
+    if(cg) window.__mountGlassPanel(cg);
+    root.querySelectorAll('.feat-glass').forEach(fg => window.__mountGlassPanel(fg));
+  }
 
   // Grid Masonry per kategori (5 kolom + animasi masuk)
   root.querySelectorAll('.pgrid').forEach(gridEl => {
