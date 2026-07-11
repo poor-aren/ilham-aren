@@ -2,7 +2,7 @@ import { useEffect, useState, createElement } from 'react';
 import { createRoot } from 'react-dom/client';
 import Lanyard from './Lanyard.jsx';
 import Stack from './Stack.jsx';
-import LiquidEther from './LiquidEther.jsx';
+import FloatingLines from './FloatingLines.jsx';
 import GlassSurface from './GlassSurface.jsx';
 import Masonry from './Masonry.jsx';
 
@@ -171,18 +171,25 @@ window.__unmountActivityStack = () => {}; // no-op: Stack persisten
 /* ---- Home: background dikosongkan (putih polos) ---- */
 window.__mountHomeLiquid = () => {}; // no-op
 
-/* ---- LiquidEther untuk halaman Projects (emas, lemah, balik cepat; persisten) ---- */
+/* ---- FloatingLines untuk halaman Projects (garis emas tipis, pelan; persisten) ---- */
 let projLiquidHost = null, projLiquidRoot = null;
 function ensureProjLiquid() {
   if (projLiquidRoot) return;
   projLiquidHost = document.createElement('div');
   projLiquidHost.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;';
   projLiquidRoot = createRoot(projLiquidHost);
-  projLiquidRoot.render(createElement(LiquidEther, {
-    colors: ['#8a6f2e', '#C9A24A', '#E7B996'], // emas di atas latar hitam
-    mouseForce: 20, cursorSize: 100, resolution: 0.32, // kuat (spt referensi) tapi resolusi rendah → tak ngelag
-    autoDemo: true, autoSpeed: 0.5, autoIntensity: 2.2,
-    takeoverDuration: 0.25, autoResumeDelay: 3000, autoRampDuration: 0.6 // air tenang perlahan (spt referensi)
+  projLiquidRoot.render(createElement(FloatingLines, {
+    linesGradient: ['#8a6f2e', '#C9A24A', '#E7B996'], // emas
+    enabledWaves: ['top', 'middle', 'bottom'],
+    lineCount: 6,            // sedikit → tenang, tak ramai
+    lineDistance: 9,
+    animationSpeed: 0.5,     // pelan
+    interactive: true,
+    bendRadius: 6,
+    bendStrength: -1.2,      // garis melengkung halus mengikuti kursor
+    parallax: true,
+    parallaxStrength: 0.14,
+    mixBlendMode: 'screen'   // di atas latar hitam → garis emas menyala tipis
   }));
 }
 window.__mountProjLiquid = (container) => {
