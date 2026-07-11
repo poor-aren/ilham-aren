@@ -217,12 +217,12 @@ window.__mountProjTitle = (container, text) => {
 
 /* ---- Panel kaca (GlassSurface) — props IDENTIK dgn judul, dipakai utk sertifikat & feature ---- */
 let glassRoots = [];
-window.__mountGlassPanel = (container) => {
+window.__mountGlassPanel = (container, radius) => {
   if (!container) return;
   const root = createRoot(container);
   glassRoots.push(root);
   root.render(createElement(GlassSurface, {
-    width: '100%', height: '100%', borderRadius: 18,
+    width: '100%', height: '100%', borderRadius: radius || 18,
     brightness: 60, opacity: 0.9, blur: 10, displace: 0.4,
     distortionScale: -140, backgroundOpacity: 0.06, saturation: 1.4,
     className: 'proj-title-glass'
