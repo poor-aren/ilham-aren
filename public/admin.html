@@ -486,10 +486,15 @@ $('pr_save').addEventListener('click', async ()=>{
     description:$('pr_desc').value, cover_url:prCover.url, images:prGallery.get(), url:$('pr_url').value.trim(),
     sort:parseInt($('pr_sort').value)||0
   };
-  let error;
-  if(prEditId) ({ error } = await sb.from('projects').update(payload).eq('id',prEditId));
-  else         ({ error } = await sb.from('projects').insert(payload));
-  if(error) return fail(error);
+  const doSave = (pl)=> prEditId ? sb.from('projects').update(pl).eq('id',prEditId) : sb.from('projects').insert(pl);
+  let res = await doSave(payload);
+  if(res.error && /url/i.test(res.error.message||'')){
+    // kolom 'url' belum ada di DB → simpan tanpa link dulu, biar edit tetap jalan
+    const { url, ...rest } = payload;
+    res = await doSave(rest);
+    if(!res.error){ toast('Tersimpan (catatan: kolom "url" belum ada — link belum aktif)'); prReset(); loadProjects(); return; }
+  }
+  if(res.error) return fail(res.error);
   toast('Project tersimpan'); prReset(); loadProjects();
 });
 async function loadProjects(){
