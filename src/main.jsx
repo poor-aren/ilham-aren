@@ -176,14 +176,11 @@ let projLiquidHost = null, projLiquidRoot = null;
 function ensureProjLiquid() {
   if (projLiquidRoot) return;
   projLiquidHost = document.createElement('div');
-  projLiquidHost.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;opacity:.6;';
+  projLiquidHost.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;opacity:.55;';
   projLiquidRoot = createRoot(projLiquidHost);
   projLiquidRoot.render(createElement(FloatingLines, {
-    // Warna garis — pilih salah satu (ganti linesGradient):
-    //   Ungu (dipakai): ['#2a2358', '#5b4bd6', '#a892ff']
-    //   Teal:           ['#0d3b4a', '#1f9db4', '#7fe3f0']
-    //   Emas:           ['#8a6f2e', '#C9A24A', '#E7B996']
-    linesGradient: ['#2a2358', '#5b4bd6', '#a892ff'], // ungu → kontras dgn teks emas
+    // Warna garis — krim emas
+    linesGradient: ['#7a6a3a', '#d8be7e', '#f4ead0'],
     enabledWaves: ['top', 'middle', 'bottom'],
     lineCount: 7,
     lineDistance: 8,
@@ -193,7 +190,7 @@ function ensureProjLiquid() {
     bendStrength: -1.4,
     parallax: true,
     parallaxStrength: 0.16,
-    mixBlendMode: 'screen'   // di atas hitam → garis ungu menyala
+    mixBlendMode: 'screen'
   }));
 }
 window.__mountProjLiquid = (container) => {
