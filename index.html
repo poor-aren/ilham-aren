@@ -202,6 +202,7 @@ body.dragging #swipeBtn .pulse { display: none; }
 
 /* ---- Feature project (lebih kecil): foto kiri, teks kanan RATA ATAS-KIRI ---- */
 .feature {
+  position: relative;
   display: flex; gap: clamp(14px,2vw,22px); align-items: flex-start;
   border-radius: 16px; overflow: hidden; cursor: pointer;
   margin: 0 0 18px; padding: 12px; border: 1px solid rgba(255,255,255,.16);
@@ -211,9 +212,10 @@ body.dragging #swipeBtn .pulse { display: none; }
   transition: border-color .3s, transform .35s cubic-bezier(.2,.8,.2,1);
 }
 .feature:hover { border-color: rgba(255,255,255,.34); transform: translateY(-3px); }
+.feature .seg { position: absolute; top: 12px; right: 12px; z-index: 3; }
 .feat-media { flex: 0 0 30%; max-width: 30%; border-radius: 11px; overflow: hidden; align-self: stretch; }
 .feat-media img { width: 100%; height: 100%; min-height: clamp(150px,20vh,208px); object-fit: cover; display: block; }
-.feat-body { flex: 1 1 auto; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; padding: 2px 8px 2px 0; }
+.feat-body { flex: 1 1 auto; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; padding: 2px clamp(8px,7vw,120px) 2px 0; }
 .feat-badge {
   align-self: flex-start;
   font-family: "JetBrains Mono", monospace; font-size: .6rem; letter-spacing: 1.5px; text-transform: uppercase;
@@ -357,10 +359,10 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 .modal-card {
   width: min(920px,96vw); max-height: 88vh; border-radius: 22px; overflow: hidden;
   display: flex; flex-direction: column; position: relative;
-  background: linear-gradient(135deg, rgba(42,38,46,.5), rgba(16,14,18,.62));
-  backdrop-filter: blur(26px) saturate(1.6); -webkit-backdrop-filter: blur(26px) saturate(1.6);
-  border: 1px solid rgba(231,185,150,.22);
-  box-shadow: 0 30px 80px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.16);
+  background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.035));
+  backdrop-filter: blur(30px) saturate(1.7) brightness(1.05); -webkit-backdrop-filter: blur(30px) saturate(1.7) brightness(1.05);
+  border: 1px solid rgba(255,255,255,.2);
+  box-shadow: 0 30px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.22);
   animation: modalIn .32s cubic-bezier(.2,.8,.2,1);
 }
 .modal-card::before {
@@ -748,9 +750,15 @@ function renderProjects(){
   // 3x salinan → ilusi loop tak berujung (drag momentum akan wrap di tengah)
   const certs = certList + certList + certList;
 
-  const featureHtml = (p,i) => {
+  const featureHtml = (p,i,cat) => {
     const w = 800, h = Math.round(w * (p.ar || 1));
+    const seg = `<div class="seg">
+        <div class="seg-glass"></div>
+        <button class="ptab${cat==='tech'?' active':''}" data-cat="tech">tech</button>
+        <button class="ptab${cat==='art'?' active':''}" data-cat="art">art</button>
+      </div>`;
     return `<div class="feature" data-i="${i}">
+      ${seg}
       <div class="feat-media"><img src="${img(p.cover, p.title, '#1c1c1c', '#5a5148', w, h)}" alt="" loading="lazy"></div>
       <div class="feat-body">
         <div class="feat-badge">★ featured</div>
@@ -764,7 +772,7 @@ function renderProjects(){
   const pane = (cat) => {
     const idxs = c.items.map((p,i)=>({p,i})).filter(o => (o.p.cat||'') === cat);
     let feat = idxs.find(o => o.p.feature) || idxs[0];
-    const featBlock = feat ? featureHtml(feat.p, feat.i) : '';
+    const featBlock = feat ? featureHtml(feat.p, feat.i, cat) : '';
     return `<div class="cat-pane" data-pane="${cat}"${cat==='art'?' style="display:none"':''}>
       ${featBlock}
       <div class="pgrid" data-grid="${cat}"></div>
@@ -786,14 +794,6 @@ function renderProjects(){
         <div class="proj-divider"></div>
 
         <div class="proj-body">
-          <div class="body-head">
-            <span class="body-eyebrow">selected work</span>
-            <div class="seg">
-              <div class="seg-glass" id="segGlass"></div>
-              <button class="ptab active" data-cat="tech">tech</button>
-              <button class="ptab" data-cat="art">art</button>
-            </div>
-          </div>
           ${pane('tech')}
           ${pane('art')}
         </div>
@@ -999,10 +999,9 @@ function initProjects(root){
   const titlebar = root.querySelector('#projTitlebar');
   if(titlebar && window.__mountProjTitle) window.__mountProjTitle(titlebar, c.title);
 
-  // Kaca betulan (GlassSurface) — hanya di segmented tabs tech/art (+ judul). Hemat, tak ngelag.
+  // Kaca betulan (GlassSurface) — di tab tech/art dalam card feature (+ judul). Ringan.
   if(root.id === 'baseLayer' && window.__mountGlassPanel){
-    const sg = root.querySelector('#segGlass');
-    if(sg) window.__mountGlassPanel(sg, 13);
+    root.querySelectorAll('.seg-glass').forEach(sg => window.__mountGlassPanel(sg, 13));
   }
 
   // Grid Masonry per kategori (5 kolom + animasi masuk)
@@ -1025,9 +1024,8 @@ function initProjects(root){
   const tabs = [...root.querySelectorAll('.ptab')];
   const panes = [...root.querySelectorAll('.cat-pane')];
   tabs.forEach(tab => tab.addEventListener('click', () => {
-    tabs.forEach(x => x.classList.remove('active'));
-    tab.classList.add('active');
-    panes.forEach(pn => { pn.style.display = (pn.dataset.pane === tab.dataset.cat) ? '' : 'none'; });
+    const cat = tab.dataset.cat;
+    panes.forEach(pn => { pn.style.display = (pn.dataset.pane === cat) ? '' : 'none'; });
   }));
 
   // Sertifikat: loop tak berujung + momentum (drag lalu berputar lama, licin)
