@@ -868,7 +868,7 @@ function initProjects(root){
 
   // Background LiquidEther (emas) + judul "Projects" di atas GlassSurface (layer terpisah)
   const projBg = root.querySelector('#projBg');
-  if(projBg && window.__mountProjLiquid) window.__mountProjLiquid(projBg);
+  if(projBg && window.innerWidth > 820 && window.__mountProjLiquid) window.__mountProjLiquid(projBg);
   const titlebar = root.querySelector('#projTitlebar');
   if(titlebar && window.__mountProjTitle) window.__mountProjTitle(titlebar, c.title);
 
