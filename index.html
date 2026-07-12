@@ -1416,17 +1416,51 @@ function buildTopR(idx){
   PAGES[idx].init && PAGES[idx].init(topLayerR);
 }
 
+/* ---------------------------------------------------------------
+   Layer "intip" (kiri & kanan) TIDAK dibangun bersamaan dengan
+   halaman aktif — itu penyebab jeda tiap ganti halaman, karena
+   3 halaman + semua React-nya (Waves, kaca, masonry, Stack, Lanyard)
+   dirender sekaligus. Sekarang keduanya dibangun saat browser senggang,
+   dan dipaksa selesai kalau user keburu menarik pegangan.
+   --------------------------------------------------------------- */
+let pendingPreview = null, previewIdle = null;
+
+function schedulePreviews(){
+  cancelPreviews();
+  pendingPreview = { l: (state.base + 1) % N, r: (state.base - 1 + N) % N };
+  const run = () => { previewIdle = null; flushPreviews(); };
+  previewIdle = (typeof requestIdleCallback === 'function')
+    ? requestIdleCallback(run, { timeout: 260 })
+    : setTimeout(run, 120);
+}
+function cancelPreviews(){
+  if(previewIdle !== null){
+    if(typeof cancelIdleCallback === 'function') cancelIdleCallback(previewIdle);
+    clearTimeout(previewIdle);
+    previewIdle = null;
+  }
+}
+function flushPreviews(){
+  if(!pendingPreview) return;
+  const p = pendingPreview;
+  pendingPreview = null;
+  cancelPreviews();
+  buildTopL(p.l);
+  buildTopR(p.r);
+}
+
 function doSwap(){
   state.base = (state.dir === 'back') ? (state.base - 1 + N) % N : (state.base + 1) % N;
-  buildBase(state.base);
-  buildTopL((state.base + 1) % N);
-  buildTopR((state.base - 1 + N) % N);
+  buildBase(state.base);                    // hanya halaman yang dilihat user
+  swipeBtn.style.borderColor = PAGES[(state.base + 1) % N].swipeBtn;
+  swipeBtn.style.color = PAGES[(state.base + 1) % N].swipeBtn;
   state.active = 'L'; state.dir = 'fwd';
   drawRempty();
   preIntro(); setIntroTargets();
   state.phase = 'intro'; state.committed = false;
   draw();
   ensureLoop();
+  schedulePreviews();                       // layer intip dibangun saat senggang
 }
 function commit(){
   if(state.committed) return;
@@ -1438,6 +1472,7 @@ function commit(){
 /* ---- mulai gerakan maju (pegangan kiri/atas) ---- */
 function onDownFwd(e){
   if(state.phase === 'close1' || state.phase === 'close2' || state.phase === 'drag') return;
+  flushPreviews();          // user menarik → pastikan layer intip sudah jadi
   if(state.active !== 'L'){                 // pindah dari mode mundur -> reset
     drawRempty();
     const b = restBtn();
@@ -1455,6 +1490,7 @@ function onDownFwd(e){
 /* ---- mulai gerakan mundur (tepi kanan/bawah, tak terlihat) ---- */
 function onDownBack(e){
   if(state.phase === 'close1' || state.phase === 'close2' || state.phase === 'drag') return;
+  flushPreviews();          // user menarik → pastikan layer intip sudah jadi
   drawLrest();                              // bekukan pegangan kiri di posisi diam
   state.active = 'R'; state.dir = 'back';
   const cross = MOBILE ? e.clientX : e.clientY;
@@ -1703,11 +1739,10 @@ window.LANYARD_CONFIG = CONFIG.contact.lanyard; // default sinkron untuk React (
   window.dispatchEvent(new Event('lanyard-config-updated'));
 
   applyMode();
-  buildBase(0);
-  buildTopL(1);
-  buildTopR((0 - 1 + N) % N);
+  buildBase(0);                              // halaman pertama tampil secepatnya
   drawRempty();
   preIntro(); setIntroTargets(); draw(); ensureLoop();
+  schedulePreviews();                        // layer intip menyusul saat senggang
 })();
 </script>
 </body>
