@@ -933,6 +933,15 @@ document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal();
 /* =====================================================================
    INITS
    ===================================================================== */
+/* Hanya layer utama yang menganimasi saat diam. Layer "intip" ikut hidup
+   HANYA ketika sedang diintip/di-drag → hemat CPU, tidak ngelag. */
+window.__layerLive = (el) => {
+  if(!el || !el.isConnected) return false;
+  if(document.body.dataset.peek === '1') return true;      // sedang diintip → semua hidup
+  const base = document.getElementById('baseLayer');
+  return !!(base && base.contains(el));                    // diam → hanya halaman aktif
+};
+
 let typingToken = 0;
 let proxToken = 0;
 function stopProx(){ proxToken++; }
@@ -1120,6 +1129,7 @@ function initProjects(root){
       page.addEventListener('pointerleave', () => { if(fade) fade.style.opacity = '1'; });
       (function loop(){
         if(!gray.isConnected) return;
+        if(!window.__layerLive(gray)){ requestAnimationFrame(loop); return; }   // hemat CPU
         cx += (tx - cx) * 0.16; cy += (ty - cy) * 0.16;
         gray.style.setProperty('--x', cx + 'px');
         gray.style.setProperty('--y', cy + 'px');
@@ -1174,6 +1184,10 @@ function startProximity(root){
     if(dead){
       window.removeEventListener('mousemove', mm);
       window.removeEventListener('resize', rs);
+      return;
+    }
+    if(!window.__layerLive(cache.length ? cache[0].el : root)){
+      requestAnimationFrame(loop);   // layer sedang tak terlihat → jangan bekerja
       return;
     }
     for(let i = 0; i < cache.length; i++){
@@ -1440,11 +1454,13 @@ function loop(now){
       state.py.vel = state.px.vel = state.pw.vel = state.bx.vel = state.by.vel = 0;
       drawLrest(); draw();
     }
-    state.phase = 'idle'; state.lastRAF = 0; state.raf = null; return;
+    state.phase = 'idle'; state.lastRAF = 0; state.raf = null;
+    document.body.dataset.peek = '0';    // diam → layer intip dibekukan
+    return;
   }
   state.raf = requestAnimationFrame(loop);
 }
-function ensureLoop(){ if(!state.raf){ state.lastRAF = 0; state.raf = requestAnimationFrame(loop); } }
+function ensureLoop(){ document.body.dataset.peek = '1'; if(!state.raf){ state.lastRAF = 0; state.raf = requestAnimationFrame(loop); } }
 
 function buildBase(idx){ document.body.dataset.page = PAGES[idx].key; document.body.dataset.lanyardUp = '0'; if(window.__unmountActivityStack) window.__unmountActivityStack(); if(window.__unmountProjExtras) window.__unmountProjExtras(); baseLayer.innerHTML = PAGES[idx].render(); stopTyping(); stopProx(); PAGES[idx].init && PAGES[idx].init(baseLayer); }
 function clearLayer(el){
