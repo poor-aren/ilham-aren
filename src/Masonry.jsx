@@ -51,7 +51,7 @@ const Masonry = ({
   const columns = useMedia(
     ['(min-width:1100px)', '(min-width:750px)', '(min-width:500px)'],
     [maxColumns, 3, 2],
-    1
+    2                      // HP: tetap 2 kolom (dulu 1)
   );
 
   const [containerRef, { width }] = useMeasure();

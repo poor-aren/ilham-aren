@@ -216,8 +216,8 @@ window.__mountGlassPanel = (container, radius) => {
   glassRoots.push(root);
   root.render(createElement(GlassSurface, {
     width: '100%', height: '100%', borderRadius: radius || 18,
-    brightness: 60, opacity: 0.9, blur: 10, displace: 0.4,
-    distortionScale: -140, backgroundOpacity: 0.06, saturation: 1.4,
+    brightness: 72, opacity: 0.95, blur: 12, displace: 0.6,
+    distortionScale: -160, backgroundOpacity: 0.14, saturation: 1.7,
     className: 'proj-title-glass'
   }));
 };
@@ -275,13 +275,14 @@ const MENU_ITEMS = [
 
 (function mountMobileMenu() {
   const isMobile = () => window.matchMedia('(max-width: 820px)').matches;
-  if (!isMobile()) return;
-
   const host = document.getElementById('mobile-menu-root');
   if (!host) return;
-  const root = createRoot(host);
+
+  let root = null;
 
   const draw = () => {
+    if (!isMobile()) return;
+    if (!root) root = createRoot(host);          // dipasang saat dibutuhkan (juga saat layar diputar)
     const cur = document.body.dataset.page || 'home';
     const next = PAGE_ORDER[(PAGE_ORDER.indexOf(cur) + 1) % PAGE_ORDER.length];
     const nextBg = PAGE_BG[next];
@@ -297,5 +298,12 @@ const MENU_ITEMS = [
   };
 
   draw();
-  window.addEventListener('page-changed', () => setTimeout(draw, 20));
+  window.addEventListener('page-changed', () => setTimeout(draw, 30));
+  window.addEventListener('resize', draw);
+  window.addEventListener('orientationchange', () => setTimeout(draw, 120));
+  window.addEventListener('pageshow', draw);                       // kembali dari bfcache
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) draw(); });
+
+  // jaring pengaman: kalau host sempat kosong, pasang lagi
+  setInterval(() => { if (isMobile() && host.childElementCount === 0) { root = null; draw(); } }, 1500);
 })();
