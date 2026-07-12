@@ -1,6 +1,7 @@
 import { useEffect, useState, createElement } from 'react';
 import { createRoot } from 'react-dom/client';
 import Lanyard from './Lanyard.jsx';
+import StaggeredMenu from './StaggeredMenu.jsx';
 import Stack from './Stack.jsx';
 import Waves from './Waves.jsx';
 import GlassSurface from './GlassSurface.jsx';
@@ -256,3 +257,45 @@ window.addEventListener('app-data-ready', prewarm);
 
 const el = document.getElementById('lanyard-root');
 if (el) createRoot(el).render(<App />);
+
+
+/* =====================================================================
+   NAVBAR HP (StaggeredMenu) — menggantikan swipe liquid di layar kecil.
+   Warna mengikuti halaman BERIKUTNYA, sama seperti warna blob swipe.
+   ===================================================================== */
+const PAGE_ORDER = ['home', 'projects', 'activity', 'contact'];
+const PAGE_BG = { home: '#ffffff', projects: '#101018', activity: '#871003', contact: '#57A45B' };
+const PAGE_FG = { home: '#1b1b1b', projects: '#F0E3D2', activity: '#F5E7D8', contact: '#0e2a10' };
+const MENU_ITEMS = [
+  { key: 'home', label: 'Home' },
+  { key: 'projects', label: 'Projects' },
+  { key: 'activity', label: 'Activity' },
+  { key: 'contact', label: 'Contact' }
+];
+
+(function mountMobileMenu() {
+  const isMobile = () => window.matchMedia('(max-width: 820px)').matches;
+  if (!isMobile()) return;
+
+  const host = document.getElementById('mobile-menu-root');
+  if (!host) return;
+  const root = createRoot(host);
+
+  const draw = () => {
+    const cur = document.body.dataset.page || 'home';
+    const next = PAGE_ORDER[(PAGE_ORDER.indexOf(cur) + 1) % PAGE_ORDER.length];
+    const nextBg = PAGE_BG[next];
+    root.render(createElement(StaggeredMenu, {
+      items: MENU_ITEMS,
+      colors: [PAGE_BG[cur] === '#ffffff' ? '#e6e2db' : '#1b1b1b', nextBg],
+      panelBg: nextBg,
+      panelFg: PAGE_FG[next],
+      accent: '#E7B996',
+      btnColor: PAGE_FG[cur],
+      onSelect: (key) => { if (window.__goPage) window.__goPage(key); }
+    }));
+  };
+
+  draw();
+  window.addEventListener('page-changed', () => setTimeout(draw, 20));
+})();
