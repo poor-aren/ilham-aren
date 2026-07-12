@@ -2,7 +2,7 @@ import { useEffect, useState, createElement } from 'react';
 import { createRoot } from 'react-dom/client';
 import Lanyard from './Lanyard.jsx';
 import Stack from './Stack.jsx';
-import FloatingLines from './FloatingLines.jsx';
+import Waves from './Waves.jsx';
 import GlassSurface from './GlassSurface.jsx';
 import Masonry from './Masonry.jsx';
 
@@ -171,32 +171,24 @@ window.__unmountActivityStack = () => {}; // no-op: Stack persisten
 /* ---- Home: background dikosongkan (putih polos) ---- */
 window.__mountHomeLiquid = () => {}; // no-op
 
-/* ---- FloatingLines untuk halaman Projects (garis ungu, penuh; persisten) ---- */
-let projLiquidHost = null, projLiquidRoot = null;
-function ensureProjLiquid() {
-  if (projLiquidRoot) return;
-  projLiquidHost = document.createElement('div');
-  projLiquidHost.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;opacity:.55;';
-  projLiquidRoot = createRoot(projLiquidHost);
-  projLiquidRoot.render(createElement(FloatingLines, {
-    // Warna garis — krim emas
-    linesGradient: ['#7a6a3a', '#d8be7e', '#f4ead0'],
-    enabledWaves: ['top', 'middle', 'bottom'],
-    lineCount: 7,
-    lineDistance: 8,
-    animationSpeed: 0.5,
-    interactive: true,
-    bendRadius: 6,
-    bendStrength: -1.4,
-    parallax: true,
-    parallaxStrength: 0.16,
-    mixBlendMode: 'screen'
-  }));
-}
+/* ---- Waves (canvas 2D) untuk halaman Projects — instan, muncul juga saat mengintip ---- */
+let waveRoots = [];
 window.__mountProjLiquid = (container) => {
   if (!container) return;
-  ensureProjLiquid();
-  container.appendChild(projLiquidHost);
+  const root = createRoot(container);
+  waveRoots.push(root);
+  root.render(createElement(Waves, {
+    lineColor: 'rgba(231,185,150,0.32)',   // krim emas lembut
+    backgroundColor: 'transparent',
+    waveSpeedX: 0.014, waveSpeedY: 0.008,
+    waveAmpX: 36, waveAmpY: 18,
+    xGap: 14, yGap: 38,
+    friction: 0.9, tension: 0.008, maxCursorMove: 110
+  }));
+};
+window.__unmountProjWaves = () => {
+  waveRoots.forEach(r => { try { r.unmount(); } catch (_) {} });
+  waveRoots = [];
 };
 
 /* ---- Judul "Projects" di atas GlassSurface (layer terpisah) ---- */
@@ -249,6 +241,7 @@ window.__unmountProjExtras = () => {
   masonryRoots = [];
   glassRoots.forEach(r => { try { r.unmount(); } catch (_) {} });
   glassRoots = [];
+  if (window.__unmountProjWaves) window.__unmountProjWaves();
 };
 
 // Pre-warm Stack setelah data final (event dari index) → kunjungan pertama instan
