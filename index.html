@@ -129,7 +129,7 @@ body.dragging #swipeBtn .pulse { display: none; }
 .photo .ph-label { font-family:"JetBrains Mono",monospace; font-size:.78rem; color:#8a8177; text-align:center; padding:20px; line-height:1.6; }
 
 /* ============ PAGE 2 — PROJECTS ============ */
-.page.projects { background: radial-gradient(120% 90% at 20% 0%, #191720 0%, #101018 45%, #0b0b0f 100%); }
+.page.projects { background: #0a0a0c; }   /* polos & ringan — tanpa animasi background */
 .proj-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
 .feature-empty { align-items: center; justify-content: flex-start; min-height: 150px; cursor: default; }
 .feature-empty:hover { transform: none; border-color: rgba(255,255,255,.16); }
@@ -417,6 +417,9 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   .proj-titlebar { width: 150px; height: 54px; }
   #edgeBack { top: auto; bottom: 0; left: 0; right: 0; width: 100%; height: 26px; }
 
+  .home .page-inner { padding-top: clamp(72px, 12vh, 104px); }   /* beri ruang untuk MENU + */
+  .home-right { margin-top: 4px; }
+  .photo-wrap { max-height: 46vh; }
   .home-left, .act-left, .c-left { width: 100%; }
   .home-right, .act-right, .c-right { width: 100%; justify-content: flex-start; }
   .home-right { order: -1; }
@@ -431,6 +434,31 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   .modal-card .m-gallery img { height: 180px; }
 }
 @media (prefers-reduced-motion: reduce) { #swipeBtn .pulse { animation: none; } }
+/* Modal Activity: teks hijau, kaca kemerahan */
+.modal-card.act {
+  background: linear-gradient(135deg, rgba(160,40,25,.34), rgba(90,14,8,.42));
+  backdrop-filter: blur(30px) saturate(1.6); -webkit-backdrop-filter: blur(30px) saturate(1.6);
+  border: 1px solid rgba(255,180,150,.26);
+  box-shadow: 0 30px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.18);
+}
+.modal-card.act .m-title, .modal-card.act .m-desc, .modal-card.act .m-close { color: #7FE39A; }
+.modal-card.act .m-meta .tag { color: #7FE39A; border-color: rgba(127,227,154,.4); }
+
+/* Kaca (GlassSurface) — nuansa emas agar terlihat di latar hitam */
+.proj-title-glass, .seg-glass, .proj-titlebar {
+  --glass-tint: rgba(231,185,150,.12);
+}
+.seg-glass::after, .proj-titlebar::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+  background: linear-gradient(135deg, rgba(231,185,150,.18), rgba(231,185,150,.04));
+  border: 1px solid rgba(231,185,150,.28);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.14);
+}
+
+/* ---- Transisi halaman (HP): 4 panel warna menyapu dari ATAS ---- */
+#pageTrans { position: fixed; inset: 0; z-index: 90; pointer-events: none; display: flex; }
+#pageTrans .tl { flex: 1 1 auto; height: 100%; transform: translateY(-101%); will-change: transform; }
+
 /* ---- Topbar HP ---- */
 #mobileTop { display: none; }
 @media (max-width: 820px) {
@@ -549,6 +577,7 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   </button>
 </div>
 
+<div id="pageTrans" aria-hidden="true"><div class="tl"></div><div class="tl"></div><div class="tl"></div><div class="tl"></div></div>
 <div id="mobileTop" aria-hidden="true"><span class="mt-brand">PORTOFOLIO</span></div>
 <div id="mobile-menu-root"></div>
 
@@ -913,7 +942,7 @@ const N = PAGES.length;
    MODAL
    ===================================================================== */
 const modalRoot = document.getElementById('modalRoot');
-function openModal({ title, desc, images, tags, palette, link }){
+function openModal({ title, desc, images, tags, palette, link, theme }){
   const pal = palette || { bg:'#1c1c1c', fg:'#E7B996' };
   const one = (images||[]).map(src => `<img src="${img(src,'image',pal.bg,pal.fg,700,540)}" alt="" draggable="false">`).join("");
   const loop = (images||[]).length > 1;
@@ -921,7 +950,7 @@ function openModal({ title, desc, images, tags, palette, link }){
   const tagHtml = (tags && tags.length) ? `<div class="m-meta">${tags.map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>` : "";
   const linkHtml = (link && link.trim()) ? `<a class="m-link" href="${esc(link)}" target="_blank" rel="noopener">Visit project →</a>` : "";
   modalRoot.innerHTML = `
-    <div class="modal-card" style="color:${pal.fg}">
+    <div class="modal-card${theme ? " " + theme : ""}" style="color:${pal.fg}">
       <div class="m-head"><h3>${esc(title)}</h3><button class="m-close" aria-label="Close">✕</button></div>
       <div class="m-body">${tagHtml}<p class="m-desc">${esc(desc)}</p>${linkHtml}</div>
       ${one ? `<div class="m-gallery${loop?' loop':''}">${galleryInner}</div>` : ""}
@@ -1043,9 +1072,7 @@ function initProjects(root){
   // Klik pada segmented tab TIDAK boleh membuka modal feature
   root.querySelectorAll('.seg').forEach(s => s.addEventListener('click', e => e.stopPropagation()));
 
-  // Background Waves (canvas 2D) — dipasang di SEMUA layer agar tampil instan & saat mengintip
-  const projBg = root.querySelector('#projBg');
-  if(projBg && window.__mountProjLiquid) window.__mountProjLiquid(projBg);
+  // Background Projects: polos (animasi dibuang — penyebab lag)
   const titlebar = root.querySelector('#projTitlebar');
   if(titlebar && window.__mountProjTitle) window.__mountProjTitle(titlebar, c.title);
 
@@ -1166,13 +1193,13 @@ function initProjects(root){
    CLICK SPARKLE — tiap klik keluar 4 sparkle (bintang 4 titik, ✨)
    ke 4 sudut. Warna menyesuaikan halaman.
    ===================================================================== */
-(function initSparkle(){
+(function initClickSpark(){
   const cv = document.createElement('canvas');
   cv.id = 'sparkCanvas';
   document.body.appendChild(cv);
   const ctx = cv.getContext('2d');
   let sparks = [];
-  const DUR = 620, DIST = 34, SIZE = 11;
+  const SIZE = 12, RADIUS = 18, COUNT = 8, DUR = 500;
 
   const resize = () => {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -1182,50 +1209,36 @@ function initProjects(root){
   resize();
   addEventListener('resize', resize);
 
-  const COLORS = { home: '#D6A243', projects: '#F0E3D2', activity: '#F5E7D8', contact: '#FFFFFF' };
-  const color = () => COLORS[document.body.dataset.page] || '#ffffff';
-  const ease = t => 1 - Math.pow(1 - t, 3);
-
-  // bintang 4 titik (sparkle) — lengkung cekung di antara ujungnya
-  function star(x, y, r, rot){
-    const inner = r * 0.24;
-    ctx.beginPath();
-    for(let i = 0; i < 4; i++){
-      const a = rot + i * Math.PI / 2;
-      const b = a + Math.PI / 4;
-      ctx.lineTo(x + Math.cos(a) * r, y + Math.sin(a) * r);
-      ctx.quadraticCurveTo(x, y, x + Math.cos(b) * inner, y + Math.sin(b) * inner);
-    }
-    ctx.closePath();
-    ctx.fill();
-  }
+  const COLORS = { home: '#1b1b1b', projects: '#E7B996', activity: '#F5E7D8', contact: '#ffffff' };
+  const ease = t => t * (2 - t);
 
   addEventListener('pointerdown', e => {
     const now = performance.now();
-    const col = color();
-    for(let i = 0; i < 4; i++){                       // 4 sudut saja
-      sparks.push({
-        x: e.clientX, y: e.clientY,
-        angle: Math.PI / 4 + i * Math.PI / 2,          // diagonal: 4 sudut
-        t0: now, col, spin: (Math.random() - .5) * 2
-      });
+    const col = COLORS[document.body.dataset.page] || '#ffffff';
+    for(let i = 0; i < COUNT; i++){
+      sparks.push({ x: e.clientX, y: e.clientY, angle: (2 * Math.PI * i) / COUNT, t0: now, col });
     }
   });
 
   (function draw(now){
     ctx.clearRect(0, 0, cv.width, cv.height);
     sparks = sparks.filter(s => {
-      const p = (now - s.t0) / DUR;
-      if(p >= 1) return false;
-      const e2 = ease(p);
-      const d = e2 * DIST;
-      const x = s.x + Math.cos(s.angle) * d;
-      const y = s.y + Math.sin(s.angle) * d;
-      const r = SIZE * (1 - p * 0.65);
-      ctx.globalAlpha = 1 - e2;
-      ctx.fillStyle = s.col;
-      star(x, y, r, s.spin * e2);
-      ctx.globalAlpha = 1;
+      const el = now - s.t0;
+      if(el >= DUR) return false;
+      const e2 = ease(el / DUR);
+      const d = e2 * RADIUS;
+      const len = SIZE * (1 - e2);
+      const x1 = s.x + d * Math.cos(s.angle);
+      const y1 = s.y + d * Math.sin(s.angle);
+      const x2 = s.x + (d + len) * Math.cos(s.angle);
+      const y2 = s.y + (d + len) * Math.sin(s.angle);
+      ctx.strokeStyle = s.col;
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
       return true;
     });
     requestAnimationFrame(draw);
@@ -1352,7 +1365,8 @@ function initActivity(root){
           title: it.title,
           desc: it.text,
           images: imagesPerItem[i] || [],
-          palette: { bg:'#141414', fg:'#E7B996' }
+          palette: { bg:'#3a0f08', fg:'#7FE39A' },
+          theme: 'act'
         });
       });
     }
@@ -1556,13 +1570,35 @@ function loop(now){
   state.raf = requestAnimationFrame(loop);
 }
 /* HP: pindah halaman langsung (dipanggil StaggeredMenu) */
+const PAGE_COLORS = { home:'#ffffff', projects:'#0a0a0c', activity:'#871003', contact:'#57A45B' };
+let transBusy = false;
 window.__goPage = (key) => {
   const idx = PAGES.findIndex(p => p.key === key);
-  if(idx < 0 || idx === state.base) return;
-  state.base = idx;
-  buildBase(idx);
-  schedulePreviews();
-  window.dispatchEvent(new CustomEvent('page-changed', { detail: key }));
+  if(idx < 0 || idx === state.base || transBusy) return;
+  transBusy = true;
+
+  const layers = [...document.querySelectorAll('#pageTrans .tl')];
+  const cur = PAGES[state.base].key;
+  // 4 panel: gradasi dari warna halaman sekarang → warna halaman tujuan
+  const cols = [PAGE_COLORS[cur], '#1b1b1b', PAGE_COLORS[key], PAGE_COLORS[key]];
+  layers.forEach((el, i) => {
+    el.style.background = cols[i];
+    el.style.transition = 'none';
+    el.style.transform = 'translateY(-101%)';
+    void el.offsetWidth;
+    el.style.transition = `transform .5s cubic-bezier(.7,0,.3,1) ${i * 0.06}s`;
+    el.style.transform = 'translateY(0)';    // menutup dari ATAS
+  });
+
+  setTimeout(() => {
+    state.base = idx;
+    buildBase(idx);
+    layers.forEach((el, i) => {
+      el.style.transition = `transform .5s cubic-bezier(.7,0,.3,1) ${i * 0.06}s`;
+      el.style.transform = 'translateY(101%)';   // keluar ke bawah
+    });
+    setTimeout(() => { transBusy = false; }, 640);
+  }, 640);
 };
 
 function ensureLoop(){ document.body.dataset.peek = '1'; if(!state.raf){ state.lastRAF = 0; state.raf = requestAnimationFrame(loop); } }
