@@ -182,7 +182,7 @@ window.__mountProjLiquid = (container) => {
     backgroundColor: 'transparent',
     waveSpeedX: 0.014, waveSpeedY: 0.008,
     waveAmpX: 36, waveAmpY: 18,
-    xGap: 14, yGap: 38,
+    xGap: 26, yGap: 62,          // grid lebih kasar → jauh lebih ringan (garis & titik jauh lebih sedikit)
     friction: 0.9, tension: 0.008, maxCursorMove: 110
   }));
 };
