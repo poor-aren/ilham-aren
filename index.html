@@ -1493,10 +1493,25 @@ let pendingPreview = null, previewIdle = null;
 function schedulePreviews(){
   cancelPreviews();
   pendingPreview = { l: (state.base + 1) % N, r: (state.base - 1 + N) % N };
-  const run = () => { previewIdle = null; flushPreviews(); };
-  previewIdle = (typeof requestIdleCallback === 'function')
-    ? requestIdleCallback(run, { timeout: 260 })
-    : setTimeout(run, 120);
+  // tunggu transisi selesai dulu, lalu bangun SATU per SATU (tidak sekaligus)
+  const idle = (fn, t) => (typeof requestIdleCallback === 'function')
+    ? requestIdleCallback(fn, { timeout: t })
+    : setTimeout(fn, 60);
+  previewIdle = setTimeout(() => {
+    previewIdle = idle(() => {
+      if(!pendingPreview) return;
+      const l = pendingPreview.l;
+      buildTopL(l);
+      pendingPreview.l = null;
+      previewIdle = idle(() => {                 // layer kedua menyusul di frame senggang berikutnya
+        if(!pendingPreview) return;
+        const r = pendingPreview.r;
+        pendingPreview = null;
+        buildTopR(r);
+        previewIdle = null;
+      }, 400);
+    }, 300);
+  }, 420);
 }
 function cancelPreviews(){
   if(previewIdle !== null){
@@ -1510,8 +1525,8 @@ function flushPreviews(){
   const p = pendingPreview;
   pendingPreview = null;
   cancelPreviews();
-  buildTopL(p.l);
-  buildTopR(p.r);
+  if(p.l !== null) buildTopL(p.l);
+  if(p.r !== null) buildTopR(p.r);
 }
 
 /* Halaman yang tadi "diintip" LANGSUNG dipakai: node DOM-nya dipindahkan
@@ -1523,9 +1538,10 @@ function promoteInto(src, idx){
   baseLayer.innerHTML = '';
   while(src.firstChild) baseLayer.appendChild(src.firstChild);   // pindah, bukan render ulang
   src.innerHTML = '';
-  if(baseLayer._proxRecompute) requestAnimationFrame(baseLayer._proxRecompute);
-  baseLayer._proxRecompute = src._proxRecompute;                  // efek hover tebal ikut pindah
-  if(baseLayer._proxRecompute) requestAnimationFrame(baseLayer._proxRecompute);
+  // efek hover-tebal: hidupkan ulang untuk konten yang baru pindah
+  stopProx();
+  startProximity(baseLayer);
+  requestAnimationFrame(() => { if(baseLayer._proxRecompute) baseLayer._proxRecompute(); });
 }
 
 function doSwap(){
