@@ -938,7 +938,7 @@ let proxToken = 0;
 function stopProx(){ proxToken++; }
 function initHome(root){
   const c = CONFIG.home;
-  const isBase = root.id === 'baseLayer';
+  const isBase = true;   // semua layer (termasuk 'intip') di-init penuh
   const [n2a, n2b] = c.nameLine2.split("|");
   const nl1 = root.querySelector('#nl1'), nl2a = root.querySelector('#nl2a'), nl2b = root.querySelector('#nl2b');
   const descEl = root.querySelector('#homeDesc');
@@ -1018,7 +1018,7 @@ function initProjects(root){
   if(titlebar && window.__mountProjTitle) window.__mountProjTitle(titlebar, c.title);
 
   // Kaca betulan (GlassSurface) — di tab tech/art dalam card feature (+ judul). Ringan.
-  if(root.id === 'baseLayer' && window.__mountGlassPanel){
+  if(window.__mountGlassPanel){
     root.querySelectorAll('.seg-glass').forEach(sg => window.__mountGlassPanel(sg, 13));
   }
 
@@ -1059,8 +1059,10 @@ function initProjects(root){
     };
     let down = false, moved = false, startX = 0, startLeft = 0, lastX = 0, vel = 0, momRaf = null;
     const stopMom = () => { if(momRaf){ cancelAnimationFrame(momRaf); momRaf = null; } };
+    let pressedCert = null;
     track.addEventListener('pointerdown', (e) => {
       measure(); down = true; moved = false; startX = e.clientX; startLeft = track.scrollLeft; lastX = e.clientX; vel = 0;
+      pressedCert = e.target.closest ? e.target.closest('.cert-item') : null;
       stopMom(); track.classList.add('dragging'); track.setPointerCapture(e.pointerId);
     });
     track.addEventListener('pointermove', (e) => {
@@ -1074,6 +1076,19 @@ function initProjects(root){
     const release = (e) => {
       if(!down) return;
       down = false; track.classList.remove('dragging'); try{ track.releasePointerCapture(e.pointerId); }catch(_){}
+
+      // KLIK (bukan geser) → buka detail sertifikat.
+      // Catatan: setPointerCapture menelan event 'click', jadi ditangani di sini.
+      if(!moved && pressedCert){
+        const ct = (c.certificates||[])[+pressedCert.dataset.ci];
+        pressedCert = null;
+        if(ct){
+          openModal({ title:ct.title, desc:(ct.issuer? ('Issued by ' + ct.issuer) : ''), images:[ct.image], link:ct.url, palette:{ bg:'#141414', fg:'#E7B996' } });
+          return;
+        }
+      }
+      pressedCert = null;
+
       (function mom(){
         if(!track.isConnected || Math.abs(vel) < 0.12){ momRaf = null; return; }
         track.scrollLeft += vel; wrap();
@@ -1086,17 +1101,10 @@ function initProjects(root){
     track.addEventListener('wheel', (e) => {
       if(Math.abs(e.deltaY) > Math.abs(e.deltaX)){ stopMom(); track.scrollLeft += e.deltaY; wrap(); e.preventDefault(); }
     }, { passive: false });
-    [...track.querySelectorAll('.cert-item')].forEach(card => {
-      card.addEventListener('click', () => {
-        if(moved) return;
-        const ct = (c.certificates||[])[+card.dataset.ci]; if(!ct) return;
-        openModal({ title:ct.title, desc:(ct.issuer? ('Issued by ' + ct.issuer) : ''), images:[ct.image], link:ct.url, palette:{ bg:'#141414', fg:'#E7B996' } });
-      });
-    });
   }
 
-  // Efek Chroma (grayscale → warna asli di sekitar kursor) — hanya layer utama
-  if(root.id === 'baseLayer'){
+  // Efek Chroma (grayscale → warna asli di sekitar kursor) — di semua layer
+  {
     const gray = root.querySelector('.proj-gray');
     const fade = root.querySelector('.proj-gray .chroma-fade');
     const page = root.querySelector('.page.projects');
@@ -1162,7 +1170,8 @@ function startProximity(root){
   window.addEventListener('resize', rs);
   recompute();
   (function loop(){
-    if(myTok !== proxToken){
+    const dead = (myTok !== proxToken) || (cache.length && !cache[0].el.isConnected);
+    if(dead){
       window.removeEventListener('mousemove', mm);
       window.removeEventListener('resize', rs);
       return;
@@ -1181,7 +1190,7 @@ function startProximity(root){
 
 function initActivity(root){
   const items = CONFIG.activity.items;
-  const isBase = root.id === 'baseLayer';
+  const isBase = true;   // semua layer (termasuk 'intip') di-init penuh
   const eyebrowEl = root.querySelector('.eyebrow');
   const titleEl = root.querySelector('#actTitle');
   const textEl = root.querySelector('#actText');
@@ -1217,6 +1226,27 @@ function initActivity(root){
     startProximity(root);
     // Stack React persisten dipindah ke sini (instan). Swipe=ganti projek, tap=ganti gambar.
     window.__mountActivityStack(stackEl, imagesPerItem, (topId) => setText((topId - 1 + items.length) % items.length));
+
+    // Tekan gambar (tanpa geser) → buka detail + semua gambarnya
+    if(stackEl){
+      let px = 0, py = 0, drag = false;
+      stackEl.addEventListener('pointerdown', e => { px = e.clientX; py = e.clientY; drag = false; });
+      stackEl.addEventListener('pointermove', e => {
+        if(Math.hypot(e.clientX - px, e.clientY - py) > 6) drag = true;
+      });
+      stackEl.addEventListener('pointerup', () => {
+        if(drag) return;
+        const i = ((window.__activityTopId || 1) - 1 + items.length) % items.length;
+        const it = items[i];
+        if(!it) return;
+        openModal({
+          title: it.title,
+          desc: it.text,
+          images: imagesPerItem[i] || [],
+          palette: { bg:'#141414', fg:'#E7B996' }
+        });
+      });
+    }
   } else if(stackEl){
     // Sliver / fallback: gambar utama statis
     stackEl.innerHTML = '';
@@ -1355,12 +1385,24 @@ function preIntro(){
   state.bx.v = b.x; state.bx.vel = 0;   // tombol LANGSUNG di posisi diam -> bisa langsung ditarik
   state.by.v = b.y; state.by.vel = 0;
 }
+let btnEnterT = 0;   // waktu mulai animasi masuk tombol swipe
 function draw(){
   const dpath = (state.active === 'L' ? buildPathL : buildPathR)(state.py.v, state.px.v, state.pw.v);
   (state.active === 'L' ? blobPathL : blobPathR).setAttribute('d', dpath);
-  swipeBtn.style.transform = `translate(${state.bx.v}px, ${state.by.v}px)`;
+
+  // animasi masuk: tombol mengecil→membesar + memudar masuk (tidak nongol mendadak)
+  let k = 1;
+  if(btnEnterT){
+    k = Math.min(1, (performance.now() - btnEnterT) / 460);
+    if(k >= 1) btnEnterT = 0;
+  }
+  const e = 1 - Math.pow(1 - k, 3);                 // ease-out
+  const sc = 0.55 + 0.45 * e;
+
+  swipeBtn.style.transform = `translate(${state.bx.v}px, ${state.by.v}px) scale(${sc})`;
   const prog = MOBILE ? state.by.v : state.bx.v;
-  swipeBtn.style.opacity = Math.max(0, Math.min(1, (140 - prog) / 100));
+  const baseOp = Math.max(0, Math.min(1, (140 - prog) / 100));
+  swipeBtn.style.opacity = baseOp * e;
   swipeBtn.style.display = (isClosing() || state.active !== 'L') ? 'none' : 'flex';
 }
 function loop(now){
@@ -1383,7 +1425,7 @@ function loop(now){
     state.raf = requestAnimationFrame(loop); return;
   }
   if(state.phase === 'drag'){ state.raf = requestAnimationFrame(loop); return; }
-  if((state.phase === 'intro' || state.phase === 'return') && scal.every(settled)){
+  if((state.phase === 'intro' || state.phase === 'return') && scal.every(settled) && !btnEnterT){
     if(state.restoreL && state.active === 'R'){
       // batal swipe-mundur → kembalikan pegangan maju (kiri) + tombol '>'
       state.restoreL = false;
@@ -1405,13 +1447,20 @@ function loop(now){
 function ensureLoop(){ if(!state.raf){ state.lastRAF = 0; state.raf = requestAnimationFrame(loop); } }
 
 function buildBase(idx){ document.body.dataset.page = PAGES[idx].key; document.body.dataset.lanyardUp = '0'; if(window.__unmountActivityStack) window.__unmountActivityStack(); if(window.__unmountProjExtras) window.__unmountProjExtras(); baseLayer.innerHTML = PAGES[idx].render(); stopTyping(); stopProx(); PAGES[idx].init && PAGES[idx].init(baseLayer); }
+function clearLayer(el){
+  // kalau layer ini yang memegang React halaman Projects, lepaskan dulu
+  if(el.querySelector('#projBg') && window.__unmountProjExtras) window.__unmountProjExtras();
+  el.innerHTML = '';
+}
 function buildTopL(idx){
+  clearLayer(topLayer);
   topLayer.innerHTML = PAGES[idx].render();
   PAGES[idx].init && PAGES[idx].init(topLayer);
   swipeBtn.style.borderColor = PAGES[idx].swipeBtn;
   swipeBtn.style.color = PAGES[idx].swipeBtn;
 }
 function buildTopR(idx){
+  clearLayer(topLayerR);
   topLayerR.innerHTML = PAGES[idx].render();
   PAGES[idx].init && PAGES[idx].init(topLayerR);
 }
@@ -1449,18 +1498,39 @@ function flushPreviews(){
   buildTopR(p.r);
 }
 
+/* Halaman yang tadi "diintip" LANGSUNG dipakai: node DOM-nya dipindahkan
+   ke layer utama. Tidak dirender ulang, tidak di-init ulang → data tidak
+   berkedip hilang, animasi/React yang sudah hidup tetap hidup. */
+function promoteInto(src, idx){
+  document.body.dataset.page = PAGES[idx].key;
+  document.body.dataset.lanyardUp = '0';
+  baseLayer.innerHTML = '';
+  while(src.firstChild) baseLayer.appendChild(src.firstChild);   // pindah, bukan render ulang
+  src.innerHTML = '';
+  if(baseLayer._proxRecompute) requestAnimationFrame(baseLayer._proxRecompute);
+  baseLayer._proxRecompute = src._proxRecompute;                  // efek hover tebal ikut pindah
+  if(baseLayer._proxRecompute) requestAnimationFrame(baseLayer._proxRecompute);
+}
+
 function doSwap(){
-  state.base = (state.dir === 'back') ? (state.base - 1 + N) % N : (state.base + 1) % N;
-  buildBase(state.base);                    // hanya halaman yang dilihat user
+  const back = (state.dir === 'back');
+  const nextIdx = back ? (state.base - 1 + N) % N : (state.base + 1) % N;
+  const src = back ? topLayerR : topLayer;
+
+  state.base = nextIdx;
+  if(src.firstChild) promoteInto(src, nextIdx);   // ← pakai layer intip apa adanya
+  else buildBase(nextIdx);                        // cadangan: kalau belum sempat dibangun
+
   swipeBtn.style.borderColor = PAGES[(state.base + 1) % N].swipeBtn;
   swipeBtn.style.color = PAGES[(state.base + 1) % N].swipeBtn;
   state.active = 'L'; state.dir = 'fwd';
   drawRempty();
   preIntro(); setIntroTargets();
   state.phase = 'intro'; state.committed = false;
+  btnEnterT = performance.now();            // tombol swipe masuk beranimasi
   draw();
   ensureLoop();
-  schedulePreviews();                       // layer intip dibangun saat senggang
+  schedulePreviews();                       // dua layer intip dibangun saat senggang
 }
 function commit(){
   if(state.committed) return;
