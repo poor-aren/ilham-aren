@@ -170,6 +170,11 @@ const Waves = ({
     }
 
     function tick(t) {
+      // hemat CPU: kalau layer ini tidak sedang tampil/diintip, jangan menggambar
+      if (window.__layerLive && !window.__layerLive(container)) {
+        frameIdRef.current = requestAnimationFrame(tick);
+        return;
+      }
       const mouse = mouseRef.current;
       mouse.sx += (mouse.x - mouse.sx) * 0.1;
       mouse.sy += (mouse.y - mouse.sy) * 0.1;
