@@ -131,7 +131,6 @@ body.dragging #swipeBtn .pulse { display: none; }
 /* ============ PAGE 2 — PROJECTS ============ */
 .page.projects { background: radial-gradient(120% 90% at 20% 0%, #191720 0%, #101018 45%, #0b0b0f 100%); }
 .proj-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
-.proj-canvas { width: 100%; height: 100%; display: block; }
 .feature-empty { align-items: center; justify-content: flex-start; min-height: 150px; cursor: default; }
 .feature-empty:hover { transform: none; border-color: rgba(255,255,255,.16); }
 .feat-empty {
@@ -798,7 +797,7 @@ function renderProjects(){
 
   return `
     <div class="page projects">
-      <div class="proj-bg" id="projBg"><canvas class="proj-canvas"></canvas></div>
+      <div class="proj-bg" id="projBg"></div>
 
       <div class="proj-scroll"><div class="proj-wrap">
         <div class="proj-title-spacer"></div>
@@ -874,115 +873,6 @@ function renderContact(){
         </form>
       </div>
     </div></div>`;
-}
-
-/* =====================================================================
-   BACKGROUND PROJECTS — bubble pastel imut, interaktif (canvas 2D).
-   Ringan & instan: jalan di layer mana pun (termasuk saat mengintip),
-   dan otomatis berhenti ketika elemennya dilepas dari DOM.
-   ===================================================================== */
-function initCuteBg(canvas){
-  const ctx = canvas.getContext('2d');
-  if(!ctx) return;
-  const PALETTE = [
-    'rgba(255,183,197,',  // pink
-    'rgba(255,224,178,',  // peach
-    'rgba(187,222,251,',  // biru muda
-    'rgba(209,196,233,',  // lavender
-    'rgba(255,245,200,',  // krem
-    'rgba(178,235,214,'   // mint
-  ];
-  const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const mouse = { x: -9999, y: -9999 };
-  let W = 0, H = 0, dpr = 1, bubbles = [], raf = null;
-
-  function resize(){
-    const r = canvas.getBoundingClientRect();
-    W = r.width || window.innerWidth;
-    H = r.height || window.innerHeight;
-    dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-    canvas.width = W * dpr; canvas.height = H * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-  function make(seeded){
-    const r = 26 + Math.random() * 78;
-    return {
-      x: Math.random() * W,
-      y: seeded ? Math.random() * H : H + r + Math.random() * 90,
-      r,
-      c: PALETTE[(Math.random() * PALETTE.length) | 0],
-      a: 0.1 + Math.random() * 0.16,          // opacity lembut
-      vy: 0.14 + Math.random() * 0.34,        // naik pelan
-      drift: (Math.random() - 0.5) * 0.22,    // goyang kiri-kanan
-      ph: Math.random() * Math.PI * 2,
-      ox: 0, oy: 0                            // dorongan dari kursor
-    };
-  }
-  function build(){
-    const count = Math.max(12, Math.min(26, Math.round(W / 62)));
-    bubbles = Array.from({ length: count }, () => make(true));
-  }
-
-  function draw(){
-    if(!canvas.isConnected){ raf = null; return; }   // elemen dibuang → loop berhenti
-    ctx.clearRect(0, 0, W, H);
-
-    for(const b of bubbles){
-      if(!REDUCED){
-        b.y -= b.vy;
-        b.ph += 0.008;
-        b.x += Math.sin(b.ph) * b.drift;
-
-        // interaksi: bubble menghindar lembut dari kursor, lalu kembali
-        const dx = (b.x + b.ox) - mouse.x;
-        const dy = (b.y + b.oy) - mouse.y;
-        const d = Math.hypot(dx, dy);
-        const R = 150;
-        if(d < R && d > 0.01){
-          const f = (1 - d / R) * 2.4;
-          b.ox += (dx / d) * f;
-          b.oy += (dy / d) * f;
-        }
-        b.ox *= 0.92; b.oy *= 0.92;   // pegas balik
-
-        if(b.y + b.r < -20){ Object.assign(b, make(false)); }
-        if(b.x < -b.r - 40) b.x = W + b.r;
-        if(b.x > W + b.r + 40) b.x = -b.r;
-      }
-
-      const px = b.x + b.ox, py = b.y + b.oy;
-      const g = ctx.createRadialGradient(px - b.r * 0.3, py - b.r * 0.35, b.r * 0.1, px, py, b.r);
-      g.addColorStop(0, b.c + (b.a + 0.14) + ')');
-      g.addColorStop(0.6, b.c + b.a + ')');
-      g.addColorStop(1, b.c + '0)');
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.arc(px, py, b.r, 0, Math.PI * 2);
-      ctx.fill();
-
-      // kilau kecil → kesan gelembung
-      ctx.fillStyle = 'rgba(255,255,255,' + (b.a * 0.5) + ')';
-      ctx.beginPath();
-      ctx.arc(px - b.r * 0.32, py - b.r * 0.34, Math.max(1.6, b.r * 0.1), 0, Math.PI * 2);
-      ctx.fill();
-    }
-    raf = requestAnimationFrame(draw);
-  }
-
-  const onMove = (e) => {
-    const r = canvas.getBoundingClientRect();
-    mouse.x = e.clientX - r.left;
-    mouse.y = e.clientY - r.top;
-  };
-  const onLeave = () => { mouse.x = -9999; mouse.y = -9999; };
-  const onResize = () => { resize(); build(); };
-
-  window.addEventListener('pointermove', onMove);
-  window.addEventListener('pointerleave', onLeave);
-  window.addEventListener('resize', onResize);
-
-  resize(); build();
-  raf = requestAnimationFrame(draw);
 }
 
 /* =====================================================================
@@ -1121,9 +1011,9 @@ function initProjects(root){
   // Klik pada segmented tab TIDAK boleh membuka modal feature
   root.querySelectorAll('.seg').forEach(s => s.addEventListener('click', e => e.stopPropagation()));
 
-  // Background bubble imut (canvas 2D, ringan, muncul instan + di preview)
-  const bgCanvas = root.querySelector('.proj-canvas');
-  if(bgCanvas) initCuteBg(bgCanvas);
+  // Background Waves (canvas 2D) — dipasang di SEMUA layer agar tampil instan & saat mengintip
+  const projBg = root.querySelector('#projBg');
+  if(projBg && window.__mountProjLiquid) window.__mountProjLiquid(projBg);
   const titlebar = root.querySelector('#projTitlebar');
   if(titlebar && window.__mountProjTitle) window.__mountProjTitle(titlebar, c.title);
 
