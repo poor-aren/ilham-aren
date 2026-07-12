@@ -417,11 +417,17 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   .proj-titlebar { width: 150px; height: 54px; }
   #edgeBack { top: auto; bottom: 0; left: 0; right: 0; width: 100%; height: 26px; }
 
-  .home .page-inner { padding-top: clamp(84px, 14vh, 120px); }   /* ruang aman untuk MENU + */
-  .home-right { margin-top: 8px; }
-  .photo-wrap { max-height: 40vh; }
-  .photo { width: min(66vw, 290px); border-radius: 18px; }
-  .home-meta { gap: 10px; flex-wrap: wrap; }
+  .home .page-inner {
+    padding-top: clamp(88px, 15vh, 124px);   /* aman dari MENU + */
+    overflow-y: auto; padding-bottom: 36px;
+  }
+  .home-right { order: 1; margin-top: 18px; }   /* foto DI BAWAH teks → lebih clean */
+  .photo-wrap { max-height: 38vh; }
+  .photo { width: min(62vw, 260px); border-radius: 16px; }
+  .home-meta { display: none; }                 /* kurangi keramaian di HP */
+  .home-socials { margin-top: 14px; }
+  .name { font-size: clamp(2.1rem, 10vw, 3rem); line-height: 1.05; }
+
   .home-left, .act-left, .c-left { width: 100%; }
   .home-right, .act-right, .c-right { width: 100%; justify-content: flex-start; }
   .home-right { order: -1; }
@@ -436,28 +442,32 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   .modal-card .m-gallery img { height: 180px; }
 }
 @media (prefers-reduced-motion: reduce) { #swipeBtn .pulse { animation: none; } }
-/* ---- Activity: tata ulang ala referensi (garis, Bebas Neue, justify) ---- */
-.activity .eyebrow {
-  font-family: "Inter", sans-serif; font-weight: 600;
-  font-size: .78rem; letter-spacing: 3px; text-transform: uppercase;
-}
-.act-rule { height: 1px; background: rgba(245,231,216,.45); margin: 12px 0 18px; }
-.act-rule.bottom { margin: 22px 0 0; }
-.act-title, #actTitle {
-  font-family: "Bebas Neue", "Inter", sans-serif !important;
-  font-weight: 400 !important;
-  letter-spacing: 2px;
-  line-height: .92;
-  font-size: clamp(2.6rem, 6vw, 5rem);
-}
-#actText { text-align: justify; text-justify: inter-word; line-height: 1.8; }
-#actMeta .k { letter-spacing: 2px; text-transform: uppercase; }
+/* ---- Activity: penataan HANYA untuk HP (desktop tidak diubah) ---- */
+.act-rule { display: none; }                      /* desktop: tanpa garis */
 
 @media (max-width: 820px) {
-  .activity .page-inner { padding-top: clamp(64px, 10vh, 90px); }
-  .act-stack { margin: 0 auto; }                 /* kartu foto benar-benar di tengah */
+  .activity .page-inner {
+    padding-top: clamp(64px, 10vh, 90px);
+    overflow-y: auto;                             /* bisa digulir ke bawah */
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 40px;
+  }
+  .activity .eyebrow {
+    font-family: "Inter", sans-serif; font-weight: 600;
+    font-size: .74rem; letter-spacing: 3px; text-transform: uppercase;
+  }
+  .act-rule { display: block; height: 1px; background: rgba(245,231,216,.45); margin: 10px 0 16px; }
+  .act-rule.bottom { margin: 20px 0 0; }
+  #actTitle {
+    font-family: "Bebas Neue", "Inter", sans-serif !important;
+    font-weight: 400 !important; letter-spacing: 2px; line-height: .92;
+    font-size: clamp(2.6rem, 12vw, 4rem);
+  }
+  #actText { text-align: justify; text-justify: inter-word; line-height: 1.75; }
+
+  /* kartu foto: benar-benar di tengah (digeser ke kiri) */
   .act-right { display: flex; justify-content: center; }
-  #actTitle { font-size: clamp(2.6rem, 12vw, 4rem); }
+  .act-stack { margin: 0 auto 0 -6%; }
 }
 
 /* Modal Activity: teks hijau, kaca kemerahan */
@@ -470,15 +480,15 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 .modal-card.act .m-title, .modal-card.act .m-desc, .modal-card.act .m-close { color: #7FE39A; }
 .modal-card.act .m-meta .tag { color: #7FE39A; border-color: rgba(127,227,154,.4); }
 
-/* Kaca (GlassSurface) — nuansa emas agar terlihat di latar hitam */
-.proj-title-glass, .seg-glass, .proj-titlebar {
-  --glass-tint: rgba(231,185,150,.12);
-}
-.seg-glass::after, .proj-titlebar::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
-  background: linear-gradient(135deg, rgba(231,185,150,.18), rgba(231,185,150,.04));
-  border: 1px solid rgba(231,185,150,.28);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.14);
+/* Kaca (GlassSurface) — nuansa emas, tanpa garis kotak */
+.seg-glass, .proj-titlebar { position: relative; }
+.seg-glass::after, .proj-titlebar::after { content: none !important; }   /* buang garis petak */
+
+@media (max-width: 820px) {
+  /* judul kaca sejajar dengan tombol MENU + */
+  .proj-titlebar { position: relative; top: -6px; margin-top: 0; }
+  .proj-scroll { padding-top: 14px !important; }
+  .proj-head { padding-top: 6px; }
 }
 
 /* ---- Transisi halaman (HP): 4 panel warna menyapu dari ATAS ---- */
