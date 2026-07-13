@@ -543,6 +543,54 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 #pageTrans { position: fixed; inset: 0; z-index: 90; pointer-events: none; display: flex; }
 #pageTrans .tl { flex: 1 1 auto; height: 100%; transform: translateY(-101%); will-change: transform; }
 
+/* ================= HOME versi HP (foto layar penuh + nama berjalan) ================= */
+.home-m { display: none; }
+
+@media (max-width: 820px) {
+  .home-m {
+    display: block; position: absolute; inset: 0; z-index: 4; overflow: hidden;
+    background: #0b0b0b;
+  }
+  .hm-photo { position: absolute; inset: 0; }
+  .hm-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 22%; display: block; }
+  .hm-photo::after {                       /* gelap di bawah agar teks terbaca */
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,.72) 0%, rgba(0,0,0,.28) 34%, rgba(0,0,0,0) 60%);
+  }
+
+  /* nama besar berjalan di tengah */
+  .hm-marquee {
+    position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%);
+    overflow: hidden; pointer-events: none; z-index: 2;
+  }
+  .hm-track {
+    display: flex; width: max-content; white-space: nowrap;
+    font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+    font-weight: 700; letter-spacing: -.02em;
+    font-size: clamp(3.6rem, 19vw, 7rem); line-height: 1;
+    color: #ffffff; will-change: transform;
+  }
+  .hm-track span { padding-right: .28em; }
+
+  /* teks kiri bawah */
+  .hm-bottom {
+    position: absolute; left: 20px; right: 20px; bottom: 26px; z-index: 3;
+    font-family: "Inter", "Helvetica Neue", Arial, sans-serif; color: #fff;
+  }
+  .hm-role {
+    font-size: 1rem; font-weight: 500; letter-spacing: -.01em; line-height: 1.5;
+  }
+  .hm-caret { opacity: .9; animation: hmBlink 1s step-end infinite; margin-left: 1px; }
+  @keyframes hmBlink { 50% { opacity: 0; } }
+  .hm-name {
+    margin-top: 2px; font-size: 1rem; font-weight: 500; letter-spacing: -.01em; color: #fff;
+  }
+
+  /* sembunyikan tampilan desktop di HP */
+  .home .page-inner { display: none !important; }
+  .page.home { background: #0b0b0b; }
+}
+
 /* ---- Topbar HP ---- */
 #mobileTop { display: none; }
 @media (max-width: 820px) {
@@ -687,7 +735,8 @@ const CONFIG = {
     description: "Building intelligent systems and creating visual stories. Passionate about embedded systems and IoT innovations.",
     cvUrl: "https://raw.githubusercontent.com/poor-aren/ilham-aren/main/assets/cv.pdf",
     copyright: "© 2025 ilham | aren",
-    photo: ""   // taruh foto di folder public/, lalu tulis: "/home.jpg"
+    photo: "",       // foto desktop
+    photoMobile: ""  // foto khusus HP (tampil layar penuh)
   },
 
   projects: {
@@ -844,6 +893,9 @@ function renderHome(){
   const c = CONFIG.home;
   const [n2a, n2b] = c.nameLine2.split("|");
   const bar = c.nameLine2.includes("|") ? `<span class="bar">|</span>` : "";
+  const mphoto = (c.photoMobile && c.photoMobile.trim())
+    ? `<img src="${esc(c.photoMobile)}" alt="">`
+    : (c.photo && c.photo.trim() ? `<img src="${esc(c.photo)}" alt="">` : '');
   const photo = (c.photo && c.photo.trim())
     ? `<img src="${esc(c.photo)}" alt="Muhammad Ilham" />`
     : `<div class="ph-label">taruh foto kamu di sini<br>(CONFIG.home.photo)</div>`;
@@ -875,6 +927,16 @@ function renderHome(){
           <div class="copyright">${esc(c.copyright)}</div>
         </div>
       </div>
+      <!-- ===== Versi HP: foto layar penuh + nama berjalan ===== -->
+      <div class="home-m" aria-hidden="false">
+        <div class="hm-photo">${mphoto}</div>
+        <div class="hm-marquee"><div class="hm-track" id="hmTrack"></div></div>
+        <div class="hm-bottom">
+          <div class="hm-role"><span id="hmRole"></span><span class="hm-caret">|</span></div>
+          <div class="hm-name">${esc(c.nameLine1)} ${esc(c.nameLine2)}</div>
+        </div>
+      </div>
+
       <div class="home-right">
         <div class="photo-wrap">
           <div class="photo">${photo}</div>
@@ -1117,6 +1179,43 @@ function initHome(root){
   if(isBase && window.__mountHomeLiquid){
     const bg = root.querySelector('#homeBg');
     if(bg) window.__mountHomeLiquid(bg);
+  }
+
+  // ---- Home versi HP: nama berjalan + role diketik ----
+  if(MOBILE){
+    const track = root.querySelector('#hmTrack');
+    if(track){
+      const word = `<span>${esc((c.nameLine2 || 'ILHAM AREN').replace('|','').trim())}</span>`;
+      track.innerHTML = word.repeat(8);
+      let x = 0, half = 0;
+      const measure = () => { half = track.scrollWidth / 2; };
+      requestAnimationFrame(measure);
+      (function tick(){
+        if(!track.isConnected) return;
+        if(!half) measure();
+        x -= 0.7;
+        if(half && x <= -half) x += half;
+        track.style.transform = `translateX(${x}px)`;
+        requestAnimationFrame(tick);
+      })();
+      window.addEventListener('resize', measure);
+    }
+
+    const rEl = root.querySelector('#hmRole');
+    if(rEl){
+      const list = (c.roles && c.roles.length) ? c.roles : ['IoT Engineer'];
+      let li = 0, ci = 0, del = false;
+      (function type(){
+        if(!rEl.isConnected) return;
+        const w = list[li % list.length];
+        ci += del ? -1 : 1;
+        rEl.textContent = w.slice(0, ci);
+        let wait = del ? 45 : 90;
+        if(!del && ci === w.length){ del = true; wait = 1400; }
+        else if(del && ci === 0){ del = false; li++; wait = 260; }
+        setTimeout(type, wait);
+      })();
+    }
   }
 
   // Efek tilt 3D + tooltip "this is me" (gaya TiltedCard React Bits) — DESKTOP saja
@@ -2054,6 +2153,7 @@ async function loadFromSupabase(){
     if(P.description) h.description = P.description;
     if(P.copyright) h.copyright = P.copyright;
     if(P.home_photo_url) h.photo = P.home_photo_url;
+    if(P.home_photo_mobile) h.photoMobile = P.home_photo_mobile;
     if(P.cv_url) h.cvUrl = P.cv_url;
     if(P.email) c.email = P.email;
     if(P.socials){
