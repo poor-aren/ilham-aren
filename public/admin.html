@@ -141,10 +141,17 @@
         <div class="divider"></div>
         <div class="grid2">
           <div class="field">
-            <label>Foto Home</label>
+            <label>Foto Home (desktop)</label>
             <div class="filerow">
               <img class="thumb" id="p_photo_prev" alt="">
               <div><input type="file" accept="image/*" data-single="home_photo_url" data-prev="p_photo_prev" data-folder="home"><div class="filename" id="p_photo_name"></div></div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Foto Home (HP / layar penuh)</label>
+            <div class="filerow">
+              <img class="thumb" id="p_photom_prev" alt="">
+              <div><input type="file" accept="image/*" data-single="home_photo_mobile" data-prev="p_photom_prev" data-folder="home"><div class="filename" id="p_photom_name"></div></div>
             </div>
           </div>
           <div class="field">
@@ -379,6 +386,7 @@ async function loadProfile(){
   $('p_roles').value = joinList(data.roles); $('p_desc').value = data.description||'';
   $('p_email').value = data.email||''; $('p_copy').value = data.copyright||'';
   if(data.home_photo_url) $('p_photo_prev').src = data.home_photo_url;
+  if(data.home_photo_mobile) $('p_photom_prev').src = data.home_photo_mobile;
   $('cv_current').textContent = data.cv_url ? ('CV saat ini: '+data.cv_url) : '';
   // lanyard
   $('l_name').value = data.lanyard_name||''; $('l_role').value = data.lanyard_role||'';
@@ -393,6 +401,7 @@ $('saveProfile').addEventListener('click', async ()=>{
     email:$('p_email').value, copyright:$('p_copy').value,
     updated_at: new Date().toISOString(),
     ...('home_photo_url' in profileFiles ? { home_photo_url:profileFiles.home_photo_url } : {}),
+    ...('home_photo_mobile' in profileFiles ? { home_photo_mobile:profileFiles.home_photo_mobile } : {}),
     ...('cv_url' in profileFiles ? { cv_url:profileFiles.cv_url } : {})
   };
   const { error } = await sb.from('profile').update(patch).eq('id',1);
