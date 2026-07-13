@@ -450,7 +450,12 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   .home-left::after {                    /* garis pemisah */
     content: ""; display: block; height: 1px; background: rgba(27,27,27,.16); margin: 14px 0;
   }
-  .home-socials { margin-top: 12px; display: flex; gap: 10px; }
+  /* Home HP: semuanya rata tengah */
+  .home-left { text-align: center; }
+  .name, .role { text-align: center; }
+  .home-cta { display: flex; justify-content: center; margin-top: 0; }
+  .home-socials { margin-top: 12px; display: flex; gap: 10px; justify-content: center; }
+  .home-copy { text-align: center; }
 
   .home-left, .act-left, .c-left { width: 100%; }
   .home-right, .act-right, .c-right { width: 100%; }
@@ -502,6 +507,16 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 .seg-glass::after, .proj-titlebar::after { content: none !important; }   /* buang garis petak */
 
 @media (max-width: 820px) {
+  /* judul kartu projek: jangan menutupi gambar */
+  .masonry-list .item-wrapper > .item-img .item-cap {
+    font-size: .78rem !important;
+    line-height: 1.2 !important;
+    padding: 16px 10px 9px !important;
+  }
+  /* garis tegak "|" di ujung tab tech/art → dari border ganda, dibuang */
+  .seg-glass { border: none !important; }
+  .seg { border-color: rgba(231,185,150,.22); }
+
   /* judul kaca sejajar dengan baris MENU + (menu: top 18px, tinggi ±20px) */
   .proj-titlebar {
     position: absolute;
