@@ -418,15 +418,23 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   #edgeBack { top: auto; bottom: 0; left: 0; right: 0; width: 100%; height: 26px; }
 
   .home .page-inner {
-    padding-top: clamp(88px, 15vh, 124px);   /* aman dari MENU + */
-    overflow-y: auto; padding-bottom: 36px;
+    padding-top: clamp(80px, 13vh, 110px);
+    padding-bottom: 24px;
+    overflow: hidden;                       /* Home: cukup satu layar, tanpa gulir */
+    justify-content: flex-start;
   }
-  .home-right { order: 1; margin-top: 18px; }   /* foto DI BAWAH teks → lebih clean */
-  .photo-wrap { max-height: 38vh; }
-  .photo { width: min(62vw, 260px); border-radius: 16px; }
-  .home-meta { display: none; }                 /* kurangi keramaian di HP */
-  .home-socials { margin-top: 14px; }
-  .name { font-size: clamp(2.1rem, 10vw, 3rem); line-height: 1.05; }
+  .home-right { order: 1; margin-top: 14px; }
+  .photo-wrap { max-height: 30vh; }
+  .photo { width: min(52vw, 210px); border-radius: 14px; }
+  .home-desc { display: none; }             /* deskripsi disembunyikan di HP */
+  .home-meta { display: none; }
+  .name { font-size: clamp(2rem, 9vw, 2.7rem); line-height: 1.05; }
+  .role { font-size: .95rem; }
+  .home-left::after {                       /* garis pemisah */
+    content: ""; display: block; height: 1px; background: rgba(27,27,27,.18); margin: 16px 0 14px;
+  }
+  .home-socials { margin-top: 12px; display: flex; gap: 12px; }
+  .home-cta { margin-top: 4px; }
 
   .home-left, .act-left, .c-left { width: 100%; }
   .home-right, .act-right, .c-right { width: 100%; justify-content: flex-start; }
@@ -446,18 +454,13 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 .act-rule { display: none; }                      /* desktop: tanpa garis */
 
 @media (max-width: 820px) {
-  .activity .page-inner {
-    padding-top: clamp(64px, 10vh, 90px);
-    overflow-y: auto;                             /* bisa digulir ke bawah */
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 40px;
-  }
+  .activity .page-inner { padding-top: clamp(64px, 10vh, 90px); }
   .activity .eyebrow {
     font-family: "Inter", sans-serif; font-weight: 600;
     font-size: .74rem; letter-spacing: 3px; text-transform: uppercase;
   }
   .act-rule { display: block; height: 1px; background: rgba(245,231,216,.45); margin: 10px 0 16px; }
-  .act-rule.bottom { margin: 20px 0 0; }
+  .act-rule.bottom { margin: 22px 0 8px; }
   #actTitle {
     font-family: "Bebas Neue", "Inter", sans-serif !important;
     font-weight: 400 !important; letter-spacing: 2px; line-height: .92;
@@ -465,9 +468,9 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   }
   #actText { text-align: justify; text-justify: inter-word; line-height: 1.75; }
 
-  /* kartu foto: benar-benar di tengah (digeser ke kiri) */
+  /* kartu foto benar-benar di tengah */
   .act-right { display: flex; justify-content: center; }
-  .act-stack { margin: 0 auto 0 -6%; }
+  .act-stack { margin: 0 auto 0 -8%; }
 }
 
 /* Modal Activity: teks hijau, kaca kemerahan */
@@ -485,10 +488,9 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 .seg-glass::after, .proj-titlebar::after { content: none !important; }   /* buang garis petak */
 
 @media (max-width: 820px) {
-  /* judul kaca sejajar dengan tombol MENU + */
-  .proj-titlebar { position: relative; top: -6px; margin-top: 0; }
-  .proj-scroll { padding-top: 14px !important; }
-  .proj-head { padding-top: 6px; }
+  /* judul kaca sejajar dgn baris MENU +, tidak menempel tepi atas */
+  .proj-scroll { padding-top: 66px !important; }
+  .proj-titlebar { position: relative; top: 0; margin-top: 0; }
 }
 
 /* ---- Transisi halaman (HP): 4 panel warna menyapu dari ATAS ---- */
@@ -498,6 +500,10 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 /* ---- Topbar HP ---- */
 #mobileTop { display: none; }
 @media (max-width: 820px) {
+  /* semua halaman bisa digulir penuh di HP */
+  .page { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .page-inner { height: auto; min-height: 100%; padding-bottom: 64px; align-items: flex-start; }
+
   #mobileTop {
     display: block; position: fixed; top: 20px; left: 18px; z-index: 71; pointer-events: none;
     font-family: "Inter", sans-serif; font-weight: 700; font-size: .74rem; letter-spacing: 2.4px; text-transform: uppercase;
