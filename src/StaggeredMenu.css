@@ -94,3 +94,9 @@
   opacity: var(--sm-num-opacity, 0);
   pointer-events: none;
 }
+
+/* Home di HP berlatar foto gelap → tombol "MENU +" putih (mengalahkan style inline) */
+body[data-page="home"] .sm-toggle { color: #ffffff !important; }
+body[data-page="home"] .sm-toggle .sm-icon-line { background: #ffffff !important; }
+/* saat panel terbuka, ikuti warna teks panel lagi */
+body[data-page="home"] .sm-wrap[data-open] .sm-toggle { color: inherit !important; }
