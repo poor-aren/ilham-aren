@@ -426,26 +426,30 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 
   .home .page-inner {
     flex-direction: column;
-    padding-top: clamp(78px, 12vh, 104px);
+    padding-top: clamp(74px, 12vh, 100px);
     padding-bottom: 20px;
     gap: 0;
-    overflow: hidden;                        /* Home: muat satu layar */
     justify-content: flex-start;
     align-items: stretch;
   }
-  .home-left  { order: 0; width: 100%; }
-  .home-right { order: 1; width: 100%; display: flex; justify-content: center; margin-top: 14px; }
-  .photo-wrap { position: relative; max-height: 34vh; }
-  .photo { width: min(58vw, 230px); border-radius: 16px; }
+  .home-right { order: -1; width: 100%; display: flex; justify-content: center; }
+  .home-left  { order: 0; width: 100%; margin-top: 16px; }
 
-  .home-desc { display: none; }              /* deskripsi panjang: tak perlu di HP */
+  /* biang bentrok: gambar meluber keluar kotaknya → sekarang dikunci */
+  .photo-wrap { position: relative; max-height: none; overflow: visible; }
+  .photo {
+    width: auto; max-width: 76vw;
+    height: auto; max-height: 34vh;      /* tinggi dikunci → tak menimpa teks */
+    object-fit: cover; border-radius: 16px; display: block;
+  }
+
+  .home-desc { display: none; }          /* deskripsi panjang disembunyikan di HP */
   .home-meta { display: none; }
-  .name { font-size: clamp(1.9rem, 8.5vw, 2.6rem); line-height: 1.06; }
+  .name { font-size: clamp(1.9rem, 8.5vw, 2.6rem); line-height: 1.08; }
   .role { font-size: .95rem; margin-top: 6px; }
-  .home-left::after {                        /* garis pemisah */
+  .home-left::after {                    /* garis pemisah */
     content: ""; display: block; height: 1px; background: rgba(27,27,27,.16); margin: 14px 0;
   }
-  .home-cta { margin-top: 0; }
   .home-socials { margin-top: 12px; display: flex; gap: 10px; }
 
   .home-left, .act-left, .c-left { width: 100%; }
@@ -498,9 +502,13 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 .seg-glass::after, .proj-titlebar::after { content: none !important; }   /* buang garis petak */
 
 @media (max-width: 820px) {
-  /* judul kaca: tetap melayang, tapi turun di bawah baris MENU + */
-  .proj-titlebar { position: absolute; top: 72px !important; left: 20px !important; }
-  .proj-scroll { padding-top: 146px !important; }   /* konten mulai di bawah kaca */
+  /* judul kaca sejajar dengan baris MENU + (menu: top 18px, tinggi ±20px) */
+  .proj-titlebar {
+    position: absolute;
+    top: 8px !important; left: 20px !important;
+    width: 132px !important; height: 40px !important;
+  }
+  .proj-scroll { padding-top: 64px !important; }
 }
 
 /* ---- Transisi halaman (HP): 4 panel warna menyapu dari ATAS ---- */
@@ -1153,10 +1161,11 @@ function initProjects(root){
 
     const ratios = await Promise.all(rest.map(o => ratioOf(o.p.cover)));
     const mItems = rest.map((o, k) => {
-      const r = Math.min(Math.max(ratios[k] || 1, 0.5), 2.2);   // batasi agar tak ekstrem
+      const r = ratios[k] || 1;                    // rasio ASLI gambar yang diunggah
       return {
         id: 'p'+o.i,
         img: img(o.p.cover, o.p.title, '#1c1c1c', '#5a5148', 600, Math.round(600*r)),
+        ratio: r,                                  // dipakai Masonry → kotak = rasio gambar
         height: Math.round(600 * r),
         title: o.p.title,
         _idx: o.i
