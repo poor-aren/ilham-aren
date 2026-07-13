@@ -434,10 +434,13 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   }
 
   /* foto di atas, melebar penuh */
-  .home-right { order: -1; width: 100%; display: flex; justify-content: stretch; }
+  .home-right {
+    order: -1; width: 100%; display: flex; justify-content: stretch;
+    flex: 0 0 auto;                 /* jangan memanjang → tak ada jarak menganga */
+  }
   .photo-wrap { position: relative; max-height: none; width: 100%; }
   .photo {
-    width: 100%; aspect-ratio: 4 / 3;      /* kotak tetap → tak ada ruang kosong/placeholder */
+    width: 100%; aspect-ratio: 1 / 1;      /* kotak persegi */
     border-radius: 18px; overflow: hidden;
     background: transparent;
   }
@@ -451,8 +454,9 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   .photo-cap { display: none; }
 
   /* teks di bawah foto — RATA KIRI (sesuai desain) */
-  .home-left { order: 0; width: 100%; margin-top: 18px; text-align: left; }
+  .home-left { order: 0; width: 100%; margin-top: 14px; text-align: left; flex: 0 0 auto; }
   .name br { display: none; }        /* jangan patah paksa → "MUHAMMAD ILHAM |" lalu "AREN" */
+  #nl2a::before { content: " "; }    /* spasi yang hilang saat <br> dimatikan */
   .home-right { perspective: none; }  /* tanpa efek 3D di HP */
   .photo, .photo img { transform: none !important; }
   .name { font-size: clamp(1.5rem, 6.8vw, 2rem); line-height: 1.14; }
@@ -460,8 +464,8 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   .home-desc { display: none; }               /* deskripsi panjang: tidak dipakai di HP */
   .home-meta { display: none; }
 
-  .cv-btn { display: inline-flex; align-items: center; justify-content: center; margin: 16px 0 0; }
-  .home-divider { margin: 18px 0 14px; }
+  .cv-btn { display: inline-flex; align-items: center; justify-content: center; margin: 14px 0 0; }
+  .home-divider { margin: 16px 0 12px; }
   .home-foot { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
   .home-socials { display: flex; gap: 10px; justify-content: flex-start; }
   .copyright { text-align: left; }
