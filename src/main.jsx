@@ -264,8 +264,8 @@ if (el) createRoot(el).render(<App />);
    Warna mengikuti halaman BERIKUTNYA, sama seperti warna blob swipe.
    ===================================================================== */
 const PAGE_ORDER = ['home', 'projects', 'activity', 'contact'];
-const PAGE_BG = { home: '#ffffff', projects: '#101018', activity: '#871003', contact: '#57A45B' };
-const PAGE_FG = { home: '#1b1b1b', projects: '#F0E3D2', activity: '#F5E7D8', contact: '#0e2a10' };
+const PAGE_BG = { home: '#0b0b0b', projects: '#101018', activity: '#871003', contact: '#57A45B' };
+const PAGE_FG = { home: '#ffffff', projects: '#F0E3D2', activity: '#F5E7D8', contact: '#0e2a10' };
 const MENU_ITEMS = [
   { key: 'home', label: 'Home' },
   { key: 'projects', label: 'Projects' },
@@ -288,7 +288,7 @@ const MENU_ITEMS = [
     const nextBg = PAGE_BG[next];
     root.render(createElement(StaggeredMenu, {
       items: MENU_ITEMS,
-      colors: [PAGE_BG[cur] === '#ffffff' ? '#e6e2db' : '#1b1b1b', nextBg],
+      colors: ['#1b1b1b', nextBg],
       panelBg: nextBg,
       panelFg: PAGE_FG[next],
       accent: '#E7B996',
