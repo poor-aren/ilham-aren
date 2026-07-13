@@ -426,36 +426,45 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 
   .home .page-inner {
     flex-direction: column;
-    padding-top: clamp(74px, 12vh, 100px);
-    padding-bottom: 20px;
+    padding-top: clamp(64px, 10vh, 88px);
+    padding-bottom: 18px;
     gap: 0;
     justify-content: flex-start;
     align-items: stretch;
   }
-  .home-right { order: -1; width: 100%; display: flex; justify-content: center; }
-  .home-left  { order: 0; width: 100%; margin-top: 16px; }
 
-  /* biang bentrok: gambar meluber keluar kotaknya → sekarang dikunci */
-  .photo-wrap { position: relative; max-height: none; overflow: visible; }
+  /* foto di atas, melebar penuh */
+  .home-right { order: -1; width: 100%; display: flex; justify-content: stretch; }
+  .photo-wrap { position: relative; max-height: none; width: 100%; }
   .photo {
-    width: auto; max-width: 76vw;
-    height: auto; max-height: 34vh;      /* tinggi dikunci → tak menimpa teks */
-    object-fit: cover; border-radius: 16px; display: block;
+    width: 100%; aspect-ratio: 4 / 3;      /* kotak tetap → tak ada ruang kosong/placeholder */
+    border-radius: 18px; overflow: hidden;
+    background: transparent;
   }
+  .photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;                     /* FIT penuh: dipotong, tidak dipenyet */
+    object-position: center;
+    display: block;
+  }
+  .ph-label { display: none; }             /* placeholder tak pernah tampil */
+  .photo-cap { display: none; }
 
-  .home-desc { display: none; }          /* deskripsi panjang disembunyikan di HP */
+  /* teks di bawah foto — RATA KIRI (sesuai desain) */
+  .home-left { order: 0; width: 100%; margin-top: 18px; text-align: left; }
+  .name br { display: none; }        /* jangan patah paksa → "MUHAMMAD ILHAM |" lalu "AREN" */
+  .home-right { perspective: none; }  /* tanpa efek 3D di HP */
+  .photo, .photo img { transform: none !important; }
+  .name { font-size: clamp(1.5rem, 6.8vw, 2rem); line-height: 1.14; }
+  .role { display: flex; justify-content: flex-start; font-size: .95rem; margin-top: 10px; }
+  .home-desc { display: none; }               /* deskripsi panjang: tidak dipakai di HP */
   .home-meta { display: none; }
-  .name { font-size: clamp(1.9rem, 8.5vw, 2.6rem); line-height: 1.08; }
-  .role { font-size: .95rem; margin-top: 6px; }
-  .home-left::after {                    /* garis pemisah */
-    content: ""; display: block; height: 1px; background: rgba(27,27,27,.16); margin: 14px 0;
-  }
-  /* Home HP: semuanya rata tengah */
-  .home-left { text-align: center; }
-  .name, .role { text-align: center; }
-  .home-cta { display: flex; justify-content: center; margin-top: 0; }
-  .home-socials { margin-top: 12px; display: flex; gap: 10px; justify-content: center; }
-  .home-copy { text-align: center; }
+
+  .cv-btn { display: inline-flex; align-items: center; justify-content: center; margin: 16px 0 0; }
+  .home-divider { margin: 18px 0 14px; }
+  .home-foot { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+  .home-socials { display: flex; gap: 10px; justify-content: flex-start; }
+  .copyright { text-align: left; }
 
   .home-left, .act-left, .c-left { width: 100%; }
   .home-right, .act-right, .c-right { width: 100%; }
@@ -1106,8 +1115,8 @@ function initHome(root){
     if(bg) window.__mountHomeLiquid(bg);
   }
 
-  // Efek tilt 3D + tooltip "this is me" (gaya TiltedCard React Bits)
-  const wrap = root.querySelector('.photo-wrap');
+  // Efek tilt 3D + tooltip "this is me" (gaya TiltedCard React Bits) — DESKTOP saja
+  const wrap = MOBILE ? null : root.querySelector('.photo-wrap');
   const ph = root.querySelector('.photo');
   const cap = root.querySelector('.photo-cap');
   if(wrap && ph){
