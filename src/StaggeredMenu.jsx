@@ -146,7 +146,7 @@ export default function StaggeredMenu({
       <button
         ref={toggleRef}
         className="sm-toggle"
-        style={{ color: btnColor }}
+        style={{ color: open ? panelFg : btnColor }}
         aria-label={open ? 'Tutup menu' : 'Buka menu'}
         onClick={toggle}
         type="button"
