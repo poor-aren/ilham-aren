@@ -22,7 +22,7 @@ img { display: block; max-width: 100%; }
 a { text-decoration: none; color: inherit; }
 
 /* ============ STAGE + LAYERS ============ */
-#stage { position: fixed; inset: 0; width: 100vw; height: 100vh; overflow: hidden; }
+#stage { position: fixed; top:0; left:0; right:0; width: 100vw; height: 100vh; height: 100dvh; overflow: hidden; }
 .layer { position: absolute; inset: 0; width: 100%; height: 100%; }
 #baseLayer { z-index: 1; }
 #topLayer  { z-index: 2; pointer-events: none; clip-path: url(#blobClip); -webkit-clip-path: url(#blobClip); }
@@ -543,53 +543,81 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 #pageTrans { position: fixed; inset: 0; z-index: 90; pointer-events: none; display: flex; }
 #pageTrans .tl { flex: 1 1 auto; height: 100%; transform: translateY(-101%); will-change: transform; }
 
-/* ================= HOME versi HP (foto layar penuh + nama berjalan) ================= */
-.home-m { display: none; }
+/* ================= HOME (desktop & HP sama) — foto penuh + nama berjalan ================= */
+.home .page-inner { display: block !important; padding: 0 !important; position: relative; }
+.home-left, .home-right { display: none !important; }      /* tampilan lama tidak dipakai */
+.page.home { background: #0b0b0b; }
+
+.home-m { display: block; position: absolute; inset: 0; z-index: 4; overflow: hidden; background: #0b0b0b; }
+.hm-photo { position: absolute; inset: 0; }
+.hm-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hm-img-d { object-position: center 20%; }                 /* foto desktop */
+.hm-img-m { display: none; object-position: center 22%; }  /* foto HP */
+.hm-photo::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.78) 0%, rgba(0,0,0,.34) 30%, rgba(0,0,0,0) 58%);
+}
+
+/* baris atas — DESKTOP saja (di HP sudah ada #mobileTop & MENU +) */
+.hm-top {
+  position: absolute; z-index: 3;
+  top: clamp(22px, 3vh, 40px);
+  left: clamp(20px, 4vw, 56px);
+  right: clamp(20px, 4vw, 56px);
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-size: .74rem; font-weight: 700; letter-spacing: 2.4px; text-transform: uppercase;
+  color: #fff; text-shadow: 0 2px 12px rgba(0,0,0,.5); pointer-events: none;
+}
+.hm-copy { letter-spacing: 1.6px; font-weight: 500; text-transform: none; opacity: .9; }
+
+/* nama besar berjalan di tengah */
+.hm-marquee {
+  position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%);
+  overflow: hidden; pointer-events: none; z-index: 2;
+}
+.hm-track {
+  display: flex; width: max-content; white-space: nowrap;
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 700; letter-spacing: -.02em;
+  font-size: clamp(3.6rem, 13vw, 12rem); line-height: 1;
+  color: #ffffff; will-change: transform;
+}
+.hm-track span { padding-right: .28em; }
+
+/* teks kiri bawah */
+.hm-bottom {
+  position: absolute; z-index: 3;
+  left: clamp(20px, 4vw, 56px);
+  bottom: calc(clamp(26px, 4vh, 48px) + env(safe-area-inset-bottom, 0px));
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif; color: #fff;
+  text-shadow: 0 2px 14px rgba(0,0,0,.55);
+}
+.hm-role { font-size: clamp(1rem, 1.2vw, 1.15rem); font-weight: 500; line-height: 1.5; }
+.hm-caret { opacity: .9; animation: hmBlink 1s step-end infinite; margin-left: 1px; }
+@keyframes hmBlink { 50% { opacity: 0; } }
+.hm-name { margin-top: 2px; font-size: clamp(1rem, 1.2vw, 1.15rem); font-weight: 500; color: #fff; }
+
+/* ikon email kanan bawah — DESKTOP saja */
+.hm-mail {
+  position: absolute; z-index: 3;
+  right: clamp(20px, 4vw, 56px);
+  bottom: clamp(26px, 4vh, 48px);
+  width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; border: 1px solid rgba(255,255,255,.5);
+  transition: background .25s, color .25s;
+}
+.hm-mail svg { width: 20px; height: 20px; }
+.hm-mail:hover { background: #fff; color: #0b0b0b; }
 
 @media (max-width: 820px) {
-  .home-m {
-    display: block; position: absolute; inset: 0; z-index: 4; overflow: hidden;
-    background: #0b0b0b;
-  }
-  .hm-photo { position: absolute; inset: 0; }
-  .hm-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 22%; display: block; }
-  .hm-photo::after {                       /* gelap di bawah agar teks terbaca */
-    content: ""; position: absolute; inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,.72) 0%, rgba(0,0,0,.28) 34%, rgba(0,0,0,0) 60%);
-  }
-
-  /* nama besar berjalan di tengah */
-  .hm-marquee {
-    position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%);
-    overflow: hidden; pointer-events: none; z-index: 2;
-  }
-  .hm-track {
-    display: flex; width: max-content; white-space: nowrap;
-    font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
-    font-weight: 700; letter-spacing: -.02em;
-    font-size: clamp(3.6rem, 19vw, 7rem); line-height: 1;
-    color: #ffffff; will-change: transform;
-  }
-  .hm-track span { padding-right: .28em; }
-
-  /* teks kiri bawah */
-  .hm-bottom {
-    position: absolute; left: 20px; right: 20px; bottom: 26px; z-index: 3;
-    font-family: "Inter", "Helvetica Neue", Arial, sans-serif; color: #fff;
-  }
-  .hm-role {
-    font-size: 1rem; font-weight: 500; letter-spacing: -.01em; line-height: 1.5;
-  }
-  .hm-caret { opacity: .9; animation: hmBlink 1s step-end infinite; margin-left: 1px; }
-  @keyframes hmBlink { 50% { opacity: 0; } }
-  .hm-name {
-    margin-top: 2px; font-size: 1rem; font-weight: 500; letter-spacing: -.01em; color: #fff;
-  }
-
-  /* sembunyikan ISI versi desktop (bukan wadahnya — .home-m ada di dalamnya) */
-  .home .page-inner { display: block !important; padding: 0 !important; position: relative; }
-  .home-left, .home-right { display: none !important; }
-  .page.home { background: #0b0b0b; }
+  .hm-img-d { display: none; }
+  .hm-img-m { display: block; }
+  .hm-mail  { display: none; }                    /* HP: tanpa ikon email */
+  .hm-top   { display: none; }                    /* HP: pakai PORTOFOLIO + MENU + */
+  .hm-track { font-size: clamp(3.6rem, 19vw, 7rem); }
+  .hm-bottom { right: 20px; bottom: calc(30px + env(safe-area-inset-bottom, 0px)); }
 }
 
 /* ---- Topbar HP ---- */
@@ -894,9 +922,6 @@ function renderHome(){
   const c = CONFIG.home;
   const [n2a, n2b] = c.nameLine2.split("|");
   const bar = c.nameLine2.includes("|") ? `<span class="bar">|</span>` : "";
-  const mphoto = (c.photoMobile && c.photoMobile.trim())
-    ? `<img src="${esc(c.photoMobile)}" alt="">`
-    : (c.photo && c.photo.trim() ? `<img src="${esc(c.photo)}" alt="">` : '');
   const photo = (c.photo && c.photo.trim())
     ? `<img src="${esc(c.photo)}" alt="Muhammad Ilham" />`
     : `<div class="ph-label">taruh foto kamu di sini<br>(CONFIG.home.photo)</div>`;
@@ -930,12 +955,24 @@ function renderHome(){
       </div>
       <!-- ===== Versi HP: foto layar penuh + nama berjalan ===== -->
       <div class="home-m" aria-hidden="false">
-        <div class="hm-photo">${mphoto}</div>
+        <div class="hm-photo">
+          <img class="hm-img-d" src="${esc(c.photo || '')}" alt="">
+          <img class="hm-img-m" src="${esc(c.photoMobile || c.photo || '')}" alt="">
+        </div>
+        <div class="hm-top">
+          <span class="hm-brand">${esc(c.eyebrow || 'PORTOFOLIO')}</span>
+          <span class="hm-copy">© 2025</span>
+        </div>
         <div class="hm-marquee"><div class="hm-track" id="hmTrack"></div></div>
         <div class="hm-bottom">
           <div class="hm-role"><span id="hmRole"></span><span class="hm-caret">|</span></div>
           <div class="hm-name">${esc(c.nameLine1)} ${esc(c.nameLine2)}</div>
         </div>
+        <a class="hm-mail" href="mailto:${esc(c.email || '')}" aria-label="Email">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <rect x="2.5" y="4.5" width="19" height="15" rx="2"/><path d="M3 6l9 7 9-7"/>
+          </svg>
+        </a>
       </div>
 
       <div class="home-right">
@@ -1152,7 +1189,7 @@ let proxToken = 0;
 function stopProx(){ proxToken++; }
 function initHome(root){
   const c = CONFIG.home;
-  const isBase = true;   // semua layer (termasuk 'intip') di-init penuh
+  const isBase = true;
   const [n2a, n2b] = c.nameLine2.split("|");
   const nl1 = root.querySelector('#nl1'), nl2a = root.querySelector('#nl2a'), nl2b = root.querySelector('#nl2b');
   const descEl = root.querySelector('#homeDesc');
@@ -1174,7 +1211,7 @@ function initHome(root){
     setTimeout(tick, deleting ? 55 : 95);
   })();
 
-  if(isBase) startProximity(root);
+  // Home tidak memakai bold hover lagi (desain baru + jauh lebih ringan)
 
   // Background LiquidEther (persisten) dipindah ke slot home
   if(isBase && window.__mountHomeLiquid){
@@ -1182,8 +1219,8 @@ function initHome(root){
     if(bg) window.__mountHomeLiquid(bg);
   }
 
-  // ---- Home versi HP: nama berjalan + role diketik ----
-  if(MOBILE){
+  // ---- Home: nama berjalan + role diketik (desktop & HP) ----
+  {
     const track = root.querySelector('#hmTrack');
     if(track){
       const word = `<span>${esc((c.nameLine2 || 'ILHAM AREN').replace('|','').trim())}</span>`;
@@ -1431,9 +1468,15 @@ function initProjects(root){
     for(let i = 0; i < COUNT; i++){
       sparks.push({ x: e.clientX, y: e.clientY, angle: (2 * Math.PI * i) / COUNT, t0: now, col });
     }
+    kick();
   });
+})();
 
-  (function draw(now){
+  let raf = null;
+  const kick = () => { if(raf === null) raf = requestAnimationFrame(draw); };
+
+  function draw(now){
+    raf = null;
     ctx.clearRect(0, 0, cv.width, cv.height);
     sparks = sparks.filter(s => {
       const el = now - s.t0;
@@ -1454,9 +1497,8 @@ function initProjects(root){
       ctx.stroke();
       return true;
     });
-    requestAnimationFrame(draw);
-  })(performance.now());
-})();
+    if(sparks.length) kick();          // berhenti total kalau tak ada percikan
+  }
 
 /* Pecah teks jadi span per-huruf (word-wrap tetap terjaga) untuk efek proximity */
 function proxWrap(el, text, base){
@@ -1491,15 +1533,18 @@ function startProximity(root){
     cache = [];
     root.querySelectorAll('.prox').forEach(el => {
       const r = el.getBoundingClientRect();
-      cache.push({ el, cx: r.left + r.width/2, cy: r.top + r.height/2, base: +el.dataset.base || 400 });
+      const base = +el.dataset.base || 400;
+      cache.push({ el, cx: r.left + r.width/2, cy: r.top + r.height/2, base, w: base });
     });
   };
   root._proxRecompute = recompute;
-  const mm = e => { cursor.x = e.clientX; cursor.y = e.clientY; };
-  const rs = () => recompute();
-  window.addEventListener('mousemove', mm);
+  let moved = true, lastMove = 0;
+  const mm = e => { cursor.x = e.clientX; cursor.y = e.clientY; moved = true; lastMove = performance.now(); };
+  const rs = () => { recompute(); moved = true; };
+  window.addEventListener('mousemove', mm, { passive: true });
   window.addEventListener('resize', rs);
   recompute();
+
   (function loop(){
     const dead = (myTok !== proxToken) || (cache.length && !cache[0].el.isConnected);
     if(dead){
@@ -1508,16 +1553,43 @@ function startProximity(root){
       return;
     }
     if(!window.__layerLive(cache.length ? cache[0].el : root)){
-      requestAnimationFrame(loop);   // layer sedang tak terlihat → jangan bekerja
+      requestAnimationFrame(loop);
       return;
     }
+
+    // Kursor diam & semua huruf sudah pada bobotnya → TIDAK ada pekerjaan sama sekali.
+    // (Dulu: 60×/detik menghitung jarak ke SEMUA huruf + menulis style → forced reflow.)
+    if(!moved){
+      requestAnimationFrame(loop);
+      return;
+    }
+    moved = false;
+
+    const R = RADIUS, R2 = R * R;
+    const cx = cursor.x, cy = cursor.y;
     for(let i = 0; i < cache.length; i++){
       const L = cache[i];
-      const d = Math.hypot(cursor.x - L.cx, cursor.y - L.cy);
-      const norm = d < RADIUS ? (1 - d/RADIUS) : 0;
-      const t = Math.pow(norm, 0.55);          // kurva lebih tajam → zona tebal lebih luas
-      const w = (L.base + (900 - L.base) * t) | 0;
-      L.el.style.fontVariationSettings = `'wght' ${w}`;
+      const dx = cx - L.cx;
+      if(dx > R || dx < -R){                      // buang cepat: di luar kotak
+        if(L.w !== L.base){ L.w = L.base; L.el.style.fontVariationSettings = `'wght' ${L.base}`; }
+        continue;
+      }
+      const dy = cy - L.cy;
+      if(dy > R || dy < -R){
+        if(L.w !== L.base){ L.w = L.base; L.el.style.fontVariationSettings = `'wght' ${L.base}`; }
+        continue;
+      }
+      const d2 = dx*dx + dy*dy;                   // tanpa akar kuadrat
+      let w = L.base;
+      if(d2 < R2){
+        const t = Math.pow(1 - Math.sqrt(d2) / R, 0.55);
+        w = (L.base + (900 - L.base) * t) | 0;
+      }
+      w = w - (w % 8);                            // dibulatkan → tulis style jauh lebih jarang
+      if(w !== L.w){
+        L.w = w;
+        L.el.style.fontVariationSettings = `'wght' ${w}`;
+      }
     }
     requestAnimationFrame(loop);
   })();
@@ -1593,7 +1665,7 @@ function initActivity(root){
     const im = document.createElement('img');
     im.className = 'act-stack-static'; im.src = imagesPerItem[startIdx][0]; im.alt = '';
     stackEl.appendChild(im);
-    if(isBase) startProximity(root);
+    // Home tidak memakai bold hover lagi (desain baru + jauh lebih ringan)
   }
 }
 
