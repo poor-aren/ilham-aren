@@ -549,9 +549,15 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 .page.home { background: #0b0b0b; }
 
 .home-m { display: block; position: absolute; inset: 0; z-index: 4; overflow: hidden; background: #0b0b0b; }
-.hm-photo { position: absolute; inset: 0; }
-.hm-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.hm-img-d { object-position: center 20%; }                 /* foto desktop */
+.hm-photo { position: absolute; inset: 0; overflow: hidden; }
+.hm-photo img {
+  position: absolute; inset: 0;
+  width: 100% !important; height: 100% !important;
+  max-width: none !important; min-width: 100%; min-height: 100%;
+  object-fit: cover;                       /* FULL: dipotong bila perlu, TIDAK dipenyet */
+  display: block;
+}
+.hm-img-d { object-position: center 25%; }                 /* foto desktop */
 .hm-img-m { display: none; object-position: center 22%; }  /* foto HP */
 .hm-photo::after {
   content: ""; position: absolute; inset: 0;
