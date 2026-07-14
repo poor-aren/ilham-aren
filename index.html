@@ -302,11 +302,14 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   margin-top: clamp(16px,2.2vw,24px);
   padding: 12px 22px; border-radius: 10px;
   font-family: "JetBrains Mono", monospace; font-size: .78rem; letter-spacing: 1.6px; text-transform: uppercase;
-  color: #57A45B; background: #123312; border: 1px solid #123312;
-  text-decoration: none; transition: background .25s, color .25s, transform .25s;
+  color: #ffffff; background: #300584; border: 1px solid #300584;   /* biru, senada judul LET'S CONNECT */
+  text-decoration: none; transition: background .25s, color .25s, border-color .25s, transform .25s;
 }
 .c-cv svg { width: 16px; height: 16px; }
-.c-cv:hover { background: transparent; color: #123312; transform: translateY(-2px); }
+.c-cv:hover {                                     /* hover → hijau muda, teks biru */
+  background: #A8E6AE; color: #300584; border-color: #A8E6AE;
+  transform: translateY(-2px);
+}
 
 .c-left .sub { margin-top: clamp(18px,2.6vw,28px); color:#2a1668; max-width:27ch; font-size:clamp(1.02rem,1.4vw,1.28rem); line-height:1.5; font-weight:500; }
 .socials { display:flex; gap:16px; flex-wrap:wrap; align-items:center; }
