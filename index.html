@@ -270,11 +270,11 @@ body.dragging #swipeBtn .pulse { display: none; }
 .act-right { flex: 1 1 48%; display: flex; align-items: center; justify-content: flex-end; gap: clamp(14px,2vw,26px); }
 
 .activity .eyebrow { font-family:"JetBrains Mono",monospace; font-size:.8rem; letter-spacing:3px; text-transform:uppercase; color:#62A461; opacity:.8; margin-bottom:16px; }
-.activity h2 { font-family:"Playfair Display",serif; font-weight:800; color:#62A461; font-size:clamp(2.6rem,6vw,4.6rem); line-height:1; }
-.activity .act-text { margin-top: clamp(18px,3vw,30px); color:#7ab878; max-width:42ch; font-size:clamp(1rem,1.4vw,1.2rem); line-height:1.8; }
+.activity h2 { font-family:"Anton",sans-serif; font-weight:400; color:#62A461; font-size:clamp(2.8rem,7vw,5.4rem); line-height:.9; letter-spacing:1px; text-transform:uppercase; }
+.activity .act-text { font-family:"Inter",sans-serif; font-weight:500; margin-top: clamp(18px,2.6vw,28px); color:#7ab878; max-width:36ch; font-size:clamp(1.02rem,1.4vw,1.28rem); line-height:1.5; }
 .activity .act-meta { margin-top:26px; display:flex; flex-wrap:wrap; gap:22px; }
 .activity .act-meta .item .k { font-family:"JetBrains Mono",monospace; font-size:.72rem; letter-spacing:1px; color:#4f8a4e; text-transform:uppercase; }
-.activity .act-meta .item .v { color:#62A461; font-weight:600; font-size:1.05rem; margin-top:4px; }
+.activity .act-meta .item .v { font-family:"Inter",sans-serif; color:#62A461; font-weight:600; font-size:1.05rem; margin-top:4px; }
 .act-stack {
   width: min(38vw, 440px); aspect-ratio: 5/4.2; position: relative;
 }
@@ -297,6 +297,17 @@ body[data-page="contact"] #lanyard-root { opacity: 1; }
 body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity: 0; }
 
 .connect { font-family:"Anton",sans-serif; color:#300584; font-size:clamp(3rem,7.5vw,6rem); line-height:.88; letter-spacing:1px; text-transform:uppercase; }
+.c-cv {
+  display: inline-flex; align-items: center; gap: 9px;
+  margin-top: clamp(16px,2.2vw,24px);
+  padding: 12px 22px; border-radius: 10px;
+  font-family: "JetBrains Mono", monospace; font-size: .78rem; letter-spacing: 1.6px; text-transform: uppercase;
+  color: #57A45B; background: #123312; border: 1px solid #123312;
+  text-decoration: none; transition: background .25s, color .25s, transform .25s;
+}
+.c-cv svg { width: 16px; height: 16px; }
+.c-cv:hover { background: transparent; color: #123312; transform: translateY(-2px); }
+
 .c-left .sub { margin-top: clamp(18px,2.6vw,28px); color:#2a1668; max-width:27ch; font-size:clamp(1.02rem,1.4vw,1.28rem); line-height:1.5; font-weight:500; }
 .socials { display:flex; gap:16px; flex-wrap:wrap; align-items:center; }
 .socials.main { margin-top: clamp(24px,4vw,40px); }
@@ -493,8 +504,8 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   .act-rule { display: block; height: 1px; background: rgba(245,231,216,.45); margin: 10px 0 16px; }
   .act-rule.bottom { margin: 22px 0 8px; }
   #actTitle {
-    font-family: "Bebas Neue", "Inter", sans-serif !important;
-    font-weight: 400 !important; letter-spacing: 2px; line-height: .92;
+    font-family: "Anton", sans-serif !important;
+    font-weight: 400 !important; letter-spacing: 1px; line-height: .92;
     font-size: clamp(2.6rem, 12vw, 4rem);
   }
   #actText { text-align: justify; text-justify: inter-word; line-height: 1.75; }
@@ -503,6 +514,13 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   .act-right { display: flex; justify-content: center; }
   .act-stack { margin: 0 auto 0 -8%; }
 }
+
+/* Activity: tanpa efek bold hover sama sekali */
+.activity h2, .activity .act-text, .activity .act-meta, .activity .eyebrow {
+  font-variation-settings: normal !important;
+  transition: none !important;
+}
+.activity .prox { font-variation-settings: normal !important; }
 
 /* Modal Activity: teks hijau, kaca kemerahan */
 .modal-card.act {
@@ -1099,6 +1117,10 @@ function renderContact(){
         <h2 class="connect">${esc(c.heading1)}<br>${esc(c.heading2)}</h2>
         <p class="sub">${esc(c.sub)}</p>
         ${row(c.general, 'main')}
+        <a class="c-cv" href="${esc(CONFIG.home.cvUrl || '')}" target="_blank" rel="noopener" download>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>
+          Download CV
+        </a>
         <div class="soc-groups">
           ${card(c.tech, 'tech', 'soc-tech')}
           ${card(c.art, 'art', 'soc-art')}
@@ -1613,21 +1635,21 @@ function initActivity(root){
   const textEl = root.querySelector('#actText');
   const metaEl = root.querySelector('#actMeta');
   const stackEl = root.querySelector('#actStackRoot');
-  if(isBase && eyebrowEl) proxWrap(eyebrowEl, eyebrowEl.textContent, 400);
+  // Activity: tanpa bold hover (lebih ringan)
 
   function setText(i){
     const it = items[i];
     if(isBase){
-      proxWrap(titleEl, it.title, 500);
-      proxWrap(textEl, it.text, 350);
+      // teks polos — tanpa pecah per-huruf (bold hover dimatikan → jauh lebih ringan)
+      titleEl.textContent = it.title;
+      textEl.textContent  = it.text;
       metaEl.innerHTML = '';
       (it.meta||[]).forEach(m => {
         const item = document.createElement('div'); item.className = 'item';
-        const k = document.createElement('div'); k.className = 'k'; proxWrap(k, m.k, 400);
-        const v = document.createElement('div'); v.className = 'v'; proxWrap(v, m.v, 450);
+        const k = document.createElement('div'); k.className = 'k'; k.textContent = m.k;
+        const v = document.createElement('div'); v.className = 'v'; v.textContent = m.v;
         item.appendChild(k); item.appendChild(v); metaEl.appendChild(item);
       });
-      if(root._proxRecompute) requestAnimationFrame(root._proxRecompute);
     } else {
       titleEl.textContent = it.title;
       textEl.textContent = it.text;
