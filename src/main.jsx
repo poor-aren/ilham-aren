@@ -216,8 +216,8 @@ window.__mountGlassPanel = (container, radius) => {
   glassRoots.push(root);
   root.render(createElement(GlassSurface, {
     width: '100%', height: '100%', borderRadius: radius || 18,
-    brightness: 72, opacity: 0.95, blur: 12, displace: 0.6,
-    distortionScale: -160, backgroundOpacity: 0.14, saturation: 1.7,
+    brightness: 30, opacity: 0.9, blur: 11, displace: 0.5,
+    distortionScale: -140, backgroundOpacity: 0.06, saturation: 1.1,
     className: 'proj-title-glass'
   }));
 };
@@ -264,8 +264,8 @@ if (el) createRoot(el).render(<App />);
    Warna mengikuti halaman BERIKUTNYA, sama seperti warna blob swipe.
    ===================================================================== */
 const PAGE_ORDER = ['home', 'projects', 'activity', 'contact'];
-const PAGE_BG = { home: '#0b0b0b', projects: '#101018', activity: '#871003', contact: '#57A45B' };
-const PAGE_FG = { home: '#ffffff', projects: '#F0E3D2', activity: '#F5E7D8', contact: '#0e2a10' };
+const PAGE_BG = { home: '#0b0b0b', projects: '#ffffff', activity: '#871003', contact: '#57A45B' };
+const PAGE_FG = { home: '#ffffff', projects: '#14141a', activity: '#F5E7D8', contact: '#0e2a10' };
 const MENU_ITEMS = [
   { key: 'home', label: 'Home' },
   { key: 'projects', label: 'Projects' },

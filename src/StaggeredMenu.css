@@ -100,3 +100,8 @@ body[data-page="home"] .sm-toggle { color: #ffffff !important; }
 body[data-page="home"] .sm-toggle .sm-icon-line { background: #ffffff !important; }
 /* saat panel terbuka, ikuti warna teks panel lagi */
 body[data-page="home"] .sm-wrap[data-open] .sm-toggle { color: inherit !important; }
+
+/* Projects kini PUTIH → tombol menu gelap */
+body[data-page="projects"] .sm-toggle { color: #14141a !important; }
+body[data-page="projects"] .sm-toggle .sm-icon-line { background: #14141a !important; }
+body[data-page="projects"] .sm-wrap[data-open] .sm-toggle { color: inherit !important; }
