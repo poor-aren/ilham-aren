@@ -144,7 +144,7 @@ body.dragging #swipeBtn .pulse { display: none; }
 }
 .proj-scroll::-webkit-scrollbar { width: 0; height: 0; display: none; }
 .proj-wrap { max-width: 1180px; margin: 0 auto; position: relative; z-index: 1; }
-.proj-title-spacer { height: clamp(64px,9vh,96px); }
+.proj-title-spacer { display: none; }   /* penyangga kaca judul — tak dipakai lagi */
 
 /* Judul "Projects" — layer terpisah di atas GlassSurface (tak ikut scroll) */
 .proj-titlebar { display: none !important;
@@ -1067,8 +1067,6 @@ function renderProjects(){
       <div class="proj-bg" id="projBg"></div>
 
       <div class="proj-scroll"><div class="proj-wrap">
-        <div class="proj-title-spacer"></div>
-
         <section class="cert-strip">
           <div class="cert-eyebrow">certificates</div>
           <div class="cert-track">${certs}</div>
@@ -1190,9 +1188,9 @@ function initModalGallery(track){
   let down=false, startX=0, startLeft=0, lastX=0, vel=0, raf=null, moved=false;
   const stop=()=>{ if(raf){ cancelAnimationFrame(raf); raf=null; } };
   track.addEventListener('pointerdown', e=>{ measure(); down=true; moved=false; startX=e.clientX; startLeft=track.scrollLeft; lastX=e.clientX; vel=0; stop(); track.classList.add('dragging'); track.setPointerCapture(e.pointerId); });
-  track.addEventListener('pointermove', e=>{ if(!down) return; const dx=e.clientX-startX; if(Math.abs(dx)>4) moved=true; track.scrollLeft = startLeft - dx; vel = -(e.clientX-lastX); lastX=e.clientX; wrap(); });
+  track.addEventListener('pointermove', e=>{ if(!down) return; const dx=e.clientX-startX; if(Math.abs(dx)>4) moved=true; track.scrollLeft = startLeft - dx; vel = -(e.clientX-lastX) * 0.5; lastX=e.clientX; wrap(); });
   const rel=e=>{ if(!down) return; down=false; track.classList.remove('dragging'); try{ track.releasePointerCapture(e.pointerId); }catch(_){}
-    (function mom(){ if(!track.isConnected || Math.abs(vel) < 0.12){ raf=null; return; } track.scrollLeft += vel; wrap(); vel *= 0.95; raf=requestAnimationFrame(mom); })();
+    (function mom(){ if(!track.isConnected || Math.abs(vel) < 0.12){ raf=null; return; } track.scrollLeft += vel; wrap(); vel *= 0.90; raf=requestAnimationFrame(mom); })();
   };
   track.addEventListener('pointerup', rel);
   track.addEventListener('pointercancel', rel);
@@ -1410,7 +1408,7 @@ function initProjects(root){
       const dx = e.clientX - startX;
       if(Math.abs(dx) > 4) moved = true;
       track.scrollLeft = startLeft - dx;
-      vel = -(e.clientX - lastX); lastX = e.clientX;
+      vel = -(e.clientX - lastX) * 0.5; lastX = e.clientX;   // separuh → tak meluncur jauh
       wrap();
     });
     const release = (e) => {
@@ -1432,7 +1430,7 @@ function initProjects(root){
       (function mom(){
         if(!track.isConnected || Math.abs(vel) < 0.12){ momRaf = null; return; }
         track.scrollLeft += vel; wrap();
-        vel *= 0.972;                 // gesekan kecil → berputar lama & licin
+        vel *= 0.90;                  // gesekan lebih besar → berhenti wajar
         momRaf = requestAnimationFrame(mom);
       })();
     };
