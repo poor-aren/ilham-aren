@@ -428,7 +428,7 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
     flex-direction: column; text-align: left; gap: 24px; overflow-y: auto;
     justify-content: flex-start; padding-top: clamp(42px, 8vh, 72px);   /* tak mepet, tak butuh lorong khusus */
   }
-  .proj-scroll { padding-top: 52px; }
+  .proj-scroll { padding-top: 48px; }
   .cert-item { width: 150px; }
   .feature { flex-direction: column; }
   .feat-media { flex: none; max-width: 100%; }
@@ -536,7 +536,8 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 .modal-card.act .m-meta .tag { color: #7FE39A; border-color: rgba(127,227,154,.4); }
 
 /* Kaca (GlassSurface) — netral (Projects kini putih) */
-.seg-glass, .proj-titlebar { display: none !important; position: relative; }
+.seg-glass { position: relative; }
+.proj-titlebar { display: none !important; }
 .seg-glass::after, .proj-titlebar::after { content: none !important; }   /* buang garis petak */
 
 @media (max-width: 820px) {
@@ -550,13 +551,8 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   .seg-glass { border: none !important; }
   .seg { border-color: rgba(231,185,150,.22); }
 
-  /* judul kaca sejajar dengan baris MENU + (menu: top 18px, tinggi ±20px) */
-  .proj-titlebar { display: none !important;
-    position: absolute;
-    top: 8px !important; left: 20px !important;
-    width: 132px !important; height: 40px !important;
-  }
-  .proj-scroll { padding-top: 64px !important; }
+  .proj-scroll { padding-top: 48px !important; }   /* pas di bawah PORTOFOLIO & MENU + */
+  .proj-head { margin-top: 0 !important; padding-top: 0 !important; }
 }
 
 /* ---- Transisi halaman (HP): 4 panel warna menyapu dari ATAS ---- */
