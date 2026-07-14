@@ -233,13 +233,13 @@ body.dragging #swipeBtn .pulse { display: none; }
   font-family: "JetBrains Mono", monospace; font-size: .6rem; letter-spacing: 1.5px; text-transform: uppercase;
   color: #ffffff; background: #14141a; padding: 4px 9px; border-radius: 6px; margin-bottom: 10px;
 }
-.feat-title { font-family: "Playfair Display", serif; font-weight: 800; color: #ffffff; font-size: clamp(1.2rem, 1.9vw, 1.55rem); line-height: 1.12; text-align: left; }
-.feat-desc { color: rgba(255,255,255,.74); font-family: "Inter", sans-serif; font-size: .87rem; line-height: 1.5; margin-top: 8px; max-width: 54ch; text-align: left; }
+.feat-title { font-family: "Playfair Display", serif; font-weight: 800; color: #14141a; font-size: clamp(1.2rem, 1.9vw, 1.55rem); line-height: 1.12; text-align: left; }
+.feat-desc { color: rgba(20,20,26,.72); font-family: "Inter", sans-serif; font-size: .87rem; line-height: 1.5; margin-top: 8px; max-width: 54ch; text-align: left; }
 .feat-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
 .feat-tags span {
   font-family: "JetBrains Mono", monospace; font-size: .64rem; letter-spacing: 1px; text-transform: uppercase;
-  color: #ffffff; border: 1px solid rgba(255,255,255,.35); border-radius: 7px; padding: 3px 9px;
-  background: rgba(255,255,255,.06);
+  color: #14141a; border: 1px solid rgba(20,20,26,.28); border-radius: 7px; padding: 3px 9px;
+  background: rgba(20,20,26,.04);
 }
 
 /* ---- Grid Projects (Masonry React di-mount ke sini) ---- */
@@ -642,7 +642,7 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
     font-family: "Inter", sans-serif; font-weight: 700; font-size: .74rem; letter-spacing: 2.4px; text-transform: uppercase;
   }
   body[data-page="home"]     #mobileTop { color: #ffffff; }
-  body[data-page="projects"] #mobileTop { color: #14141a; }
+  body[data-page="projects"] #mobileTop { display: none; }   /* Projects: tanpa PORTOFOLIO */
   body[data-page="activity"] #mobileTop { color: #F5E7D8; }
   body[data-page="contact"]  #mobileTop { color: #0e2a10; }
 
