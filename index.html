@@ -147,7 +147,7 @@ body.dragging #swipeBtn .pulse { display: none; }
 .proj-title-spacer { height: clamp(64px,9vh,96px); }
 
 /* Judul "Projects" — layer terpisah di atas GlassSurface (tak ikut scroll) */
-.proj-titlebar {
+.proj-titlebar { display: none !important;
   position: absolute; z-index: 40;
   top: clamp(22px,5vh,48px); left: clamp(24px,5vw,72px);
   width: clamp(170px,20vw,230px); height: clamp(58px,8vh,74px);
@@ -434,7 +434,7 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   .feat-media { flex: none; max-width: 100%; }
   .feat-media img { min-height: 170px; }
   .feat-body { padding-right: 0; }
-  .proj-titlebar { width: 150px; height: 54px; }
+  .proj-titlebar { display: none !important; width: 150px; height: 54px; }
   #edgeBack { top: auto; bottom: 0; left: 0; right: 0; width: 100%; height: 26px; }
 
   .home .page-inner {
@@ -536,7 +536,7 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 .modal-card.act .m-meta .tag { color: #7FE39A; border-color: rgba(127,227,154,.4); }
 
 /* Kaca (GlassSurface) — netral (Projects kini putih) */
-.seg-glass, .proj-titlebar { position: relative; }
+.seg-glass, .proj-titlebar { display: none !important; position: relative; }
 .seg-glass::after, .proj-titlebar::after { content: none !important; }   /* buang garis petak */
 
 @media (max-width: 820px) {
@@ -551,7 +551,7 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   .seg { border-color: rgba(231,185,150,.22); }
 
   /* judul kaca sejajar dengan baris MENU + (menu: top 18px, tinggi ±20px) */
-  .proj-titlebar {
+  .proj-titlebar { display: none !important;
     position: absolute;
     top: 8px !important; left: 20px !important;
     width: 132px !important; height: 40px !important;
@@ -663,7 +663,7 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
     font-family: "Inter", sans-serif; font-weight: 700; font-size: .74rem; letter-spacing: 2.4px; text-transform: uppercase;
   }
   body[data-page="home"]     #mobileTop { color: #ffffff; }
-  body[data-page="projects"] #mobileTop { display: none; }   /* Projects: tanpa PORTOFOLIO */
+  body[data-page="projects"] #mobileTop { color: #14141a; }
   body[data-page="activity"] #mobileTop { color: #F5E7D8; }
   body[data-page="contact"]  #mobileTop { color: #0e2a10; }
 
@@ -1336,7 +1336,7 @@ function initProjects(root){
 
   // Background Projects: polos (animasi dibuang — penyebab lag)
   const titlebar = root.querySelector('#projTitlebar');
-  if(titlebar && window.__mountProjTitle) window.__mountProjTitle(titlebar, c.title);
+  // judul kaca "Projects" dihapus (tidak dipasang lagi → GlassSurface tak jalan = lebih ringan)
 
   // Kaca betulan (GlassSurface) — di tab tech/art dalam card feature (+ judul). Ringan.
   if(false){   // tab TECH/ART: glassmorph CSS saja (GlassSurface dimatikan — berat)
