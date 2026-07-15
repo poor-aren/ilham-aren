@@ -2,9 +2,8 @@
 .masonry-list .item-wrapper { position: absolute; will-change: transform, width, height, opacity; padding: 8px; cursor: pointer; top: 0; left: 0; box-sizing: border-box; }
 .masonry-list .item-wrapper > .item-img {
   position: relative; background-size: cover; background-position: center center;
-  width: 100%; height: 100%; border-radius: 14px; overflow: hidden;
-  border: 1px solid rgba(255,255,255,.14);
-  box-shadow: 0 8px 26px rgba(0,0,0,.34);
+  width: 100%; height: 100%; border-radius: 0; overflow: hidden;
+  border: 1px solid rgba(20,20,26,.12);
 }
 .masonry-list .item-wrapper > .item-img .item-cap {
   position: absolute; left: 0; right: 0; bottom: 0; padding: 24px 14px 12px;
