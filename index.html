@@ -215,17 +215,20 @@ body.dragging #swipeBtn .pulse { display: none; }
   position: relative;
   display: flex; gap: clamp(14px,2vw,22px); align-items: stretch;
   border-radius: 16px; overflow: hidden; cursor: pointer;
-  margin: 0 0 18px; padding: 12px; border: 1px solid rgba(20,20,26,.12);
+  margin: 0 0 18px; padding: 0; border: 1px solid rgba(20,20,26,.12);
   background: linear-gradient(135deg, rgba(20,20,26,.04), rgba(20,20,26,.015));
   backdrop-filter: blur(12px) saturate(1.2); -webkit-backdrop-filter: blur(12px) saturate(1.2);
   box-shadow: 0 10px 30px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.7);
   transition: border-color .3s, transform .35s cubic-bezier(.2,.8,.2,1);
 }
 .feature:hover { border-color: rgba(20,20,26,.3); transform: translateY(-3px); }
-.feature .seg { position: absolute; top: 12px; right: 12px; z-index: 3; }
-.feat-media { flex: 0 0 30%; max-width: 30%; border-radius: 11px; overflow: hidden; align-self: stretch; }
+.feature .seg { position: absolute; top: 16px; right: 16px; z-index: 3; }
+.feat-media {
+  position: absolute; top: 0; left: 0; bottom: 0;   /* setinggi PENUH kartu, rata kiri */
+  width: 30%; border-radius: 0; overflow: hidden;
+}
 .feat-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.feat-body { flex: 1 1 auto; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; padding: 2px clamp(8px,7vw,120px) 2px 0; }
+.feat-body { flex: 1 1 auto; margin-left: calc(30% + clamp(14px,2vw,22px)); display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 2px clamp(8px,7vw,120px) 2px 0; min-height: clamp(200px,26vh,300px); }
 .feat-badge {
   align-self: flex-start;
   font-family: "JetBrains Mono", monospace; font-size: .6rem; letter-spacing: 1.5px; text-transform: uppercase;
@@ -429,9 +432,10 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   .proj-scroll { padding-top: 48px; }
   .cert-item { width: 150px; }
   .feature { flex-direction: column; }
-  .feat-media { flex: none; max-width: 100%; }
-  .feat-media img { min-height: 170px; }
-  .feat-body { padding-right: 0; }
+  .feature { padding: 12px; }
+  .feat-media { position: relative; width: 100%; height: auto; }
+  .feat-media img { height: auto; max-height: 220px; }
+  .feat-body { margin-left: 0; min-height: 0; padding: 12px 0 0; }
   .proj-titlebar { display: none !important; width: 150px; height: 54px; }
   #edgeBack { top: auto; bottom: 0; left: 0; right: 0; width: 100%; height: 26px; }
 
