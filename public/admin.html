@@ -329,7 +329,7 @@
           <div class="field"><label>Urutan</label><input id="eg_sort" type="number" value="0"></div>
         </div>
         <div class="field">
-          <label>Foto (boleh banyak — makin banyak, makin ramai pop-up-nya)</label>
+          <label>Foto (maksimal 10 — akan tersebar melingkar di layar)</label>
           <input type="file" accept="image/*" multiple id="eg_gallery_file" data-folder="easter">
           <div class="chips" id="eg_chips"></div>
           <p class="hint" id="eg_count">0 foto siap disimpan</p>
@@ -679,8 +679,11 @@ const egGallery = makeGallery($('eg_chips')); let egEditId = null;
 $('eg_gallery_file').addEventListener('change', async e => {
   const files = [...e.target.files];
   if(!files.length) return;
+  const sisa = 10 - egGallery.get().length;
+  if(sisa <= 0){ e.target.value = ''; return alert('Maksimal 10 foto per easter egg.'); }
+  if(files.length > sisa) alert('Maksimal 10 foto. Hanya ' + sisa + ' foto pertama yang diunggah.');
   let ok = 0;
-  for(const f of files){
+  for(const f of files.slice(0, sisa)){
     try { toast('Mengunggah ' + (ok + 1) + '/' + files.length + '…'); egGallery.add(await upload(f, 'easter')); ok++; }
     catch(x){ fail(x); }
   }
@@ -692,7 +695,7 @@ $('eg_gallery_file').addEventListener('change', async e => {
 // penanda jumlah foto yang sudah siap disimpan
 function egCount(){
   const el = $('eg_count');
-  if(el) el.textContent = egGallery.get().length + ' foto siap disimpan';
+  if(el) el.textContent = egGallery.get().length + ' / 10 foto siap disimpan';
 }
 function egReset(){
   egEditId = null;
