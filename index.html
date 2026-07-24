@@ -2227,6 +2227,8 @@ window.addEventListener('resize', () => {
    ===================================================================== */
 function initEasterEggs(){
   const AUTO_MS = 2600; // hilang otomatis ~2 detik (setelah animasi muncul)
+  // dibaca ulang tiap penekanan tombol, supaya data dari admin (Supabase) ikut terpakai
+  function buildEggs(){
   const raw = CONFIG.easter || {};
   const eggs = {};
   Object.keys(raw).forEach(k => {
@@ -2240,9 +2242,9 @@ function initEasterEggs(){
     }
     eggs[k.toLowerCase()] = { images: imgs.filter(Boolean), style, caption: cap };
   });
-  const words = Object.keys(eggs);
-  if(!words.length) return;
-  const maxLen = Math.max(...words.map(w => w.length));
+  return eggs;
+  }
+
   let buf = "", overlay = null, stage = null, confettiLayer = null, flash = null, hideTimer = null;
 
   function ensureOverlay(){
@@ -2273,10 +2275,9 @@ function initEasterEggs(){
       confettiLayer.appendChild(p);
     }
   }
-  function show(word){
+  function show(word, egg){
     ensureOverlay();
     clearTimeout(hideTimer);
-    const egg = eggs[word];
     const list = (egg.images && egg.images.length)
       ? egg.images
       : [placeholder(word + "  \u2726", "#141316", "#E7B996", 700, 500)];
@@ -2313,9 +2314,13 @@ function initEasterEggs(){
     if(overlay && overlay.classList.contains('show')){ hide(); return; }
     const t = e.target;
     if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
-    if(e.key && e.key.length === 1 && /[a-z]/i.test(e.key)){
+    if(e.key && e.key.length === 1 && /[a-z0-9]/i.test(e.key)){
+      const eggs = buildEggs();
+      const words = Object.keys(eggs);
+      if(!words.length) return;
+      const maxLen = Math.max(...words.map(w => w.length));
       buf = (buf + e.key.toLowerCase()).slice(-(maxLen + 2));
-      for(const w of words){ if(buf.endsWith(w)){ buf = ""; show(w); break; } }
+      for(const w of words){ if(buf.endsWith(w)){ buf = ""; show(w, eggs[w]); break; } }
     }
   });
 }
