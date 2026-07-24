@@ -330,8 +330,9 @@
         </div>
         <div class="field">
           <label>Foto (boleh banyak — makin banyak, makin ramai pop-up-nya)</label>
-          <input type="file" accept="image/*" multiple data-gallery="eggs" data-chips="eg_chips" data-folder="easter">
+          <input type="file" accept="image/*" multiple id="eg_gallery_file" data-folder="easter">
           <div class="chips" id="eg_chips"></div>
+          <p class="hint" id="eg_count">0 foto siap disimpan</p>
         </div>
         <div class="row">
           <button class="btn" id="eg_save">Simpan</button>
@@ -674,12 +675,32 @@ async function loadActs(){
 
 /* ---------------- EASTER EGG ---------------- */
 const egGallery = makeGallery($('eg_chips')); let egEditId = null;
+
+$('eg_gallery_file').addEventListener('change', async e => {
+  const files = [...e.target.files];
+  if(!files.length) return;
+  let ok = 0;
+  for(const f of files){
+    try { toast('Mengunggah ' + (ok + 1) + '/' + files.length + '…'); egGallery.add(await upload(f, 'easter')); ok++; }
+    catch(x){ fail(x); }
+  }
+  e.target.value = '';
+  egCount();
+  toast(ok + ' foto terunggah');
+});
+
+// penanda jumlah foto yang sudah siap disimpan
+function egCount(){
+  const el = $('eg_count');
+  if(el) el.textContent = egGallery.get().length + ' foto siap disimpan';
+}
 function egReset(){
   egEditId = null;
   $('eg_editTitle').textContent = 'Tambah easter egg baru';
   ['eg_word','eg_caption'].forEach(id => $(id).value = '');
   $('eg_style').value = 'confetti'; $('eg_sort').value = '0';
   egGallery.set([]);
+  egCount();
 }
 $('eg_reset').addEventListener('click', egReset);
 $('eg_save').addEventListener('click', async () => {
@@ -712,6 +733,7 @@ async function loadEggs(){
       $('eg_word').value = e.word || ''; $('eg_style').value = e.style || 'confetti';
       $('eg_caption').value = e.caption || ''; $('eg_sort').value = e.sort || 0;
       egGallery.set(e.images || []);
+      egCount();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
     el.querySelectorAll('button')[1].onclick = async () => {
