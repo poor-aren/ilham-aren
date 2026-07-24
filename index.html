@@ -710,23 +710,28 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 }
 .egg-stage{ position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; }
 
-/* Banyak foto → bertaburan acak di sekitar tengah layar */
+
+/* ---- Banyak foto → disebar melingkar (ditulis SETELAH aturan asli agar menang) ---- */
 .egg-stage.many{ position: absolute; inset: 0; display: block; }
-.egg-stage.many .egg-polaroid,
-.egg-stage.many .egg-pop-img{
-  position: absolute; left: 50%; top: 50%;
-  transform: translate(-50%, -50%) translate(var(--dx,0), var(--dy,0)) rotate(var(--rot,0deg)) scale(var(--sc,1));
-  animation: eggPop .5s cubic-bezier(.2,1.4,.35,1) both;
+.egg-stage.many.polaroid .egg-polaroid,
+.egg-stage.many.confetti .egg-pop-img{
+  position: absolute !important; left: 50% !important; top: 50% !important;
+  margin: 0 !important;
+  transform: translate(-50%,-50%) translate(var(--dx,0), var(--dy,0)) rotate(var(--rot,0deg)) scale(var(--sc,1)) !important;
+  animation: eggScatter .5s cubic-bezier(.2,1.4,.35,1) both !important;
 }
-.egg-stage.many .egg-pop-img{ max-width: 22vw; max-height: 26vh; border-radius: 10px; box-shadow: 0 14px 40px rgba(0,0,0,.45); }
-.egg-stage.many .egg-polaroid{ width: min(17vw, 168px); }
-@keyframes eggPop{
-  0%   { opacity:0; transform: translate(-50%,-50%) translate(var(--dx,0), var(--dy,0)) rotate(var(--rot,0deg)) scale(.3); }
+.egg-stage.many.confetti .egg-pop-img{
+  max-width: 22vw; max-height: 26vh; width: auto; height: auto;
+  border-radius: 10px; box-shadow: 0 14px 40px rgba(0,0,0,.45);
+}
+.egg-stage.many.polaroid .egg-polaroid{ width: min(17vw, 168px); }
+@keyframes eggScatter{
+  0%   { opacity:0; transform: translate(-50%,-50%) translate(var(--dx,0), var(--dy,0)) rotate(var(--rot,0deg)) scale(.25); }
   100% { opacity:1; transform: translate(-50%,-50%) translate(var(--dx,0), var(--dy,0)) rotate(var(--rot,0deg)) scale(var(--sc,1)); }
 }
 @media (max-width: 820px){
-  .egg-stage.many .egg-pop-img{ max-width: 34vw; max-height: 20vh; }
-  .egg-stage.many .egg-polaroid{ width: min(30vw, 132px); }
+  .egg-stage.many.confetti .egg-pop-img{ max-width: 34vw; max-height: 20vh; }
+  .egg-stage.many.polaroid .egg-polaroid{ width: min(30vw, 132px); }
 }
 
 /* kilatan cahaya saat muncul (semua gaya) */
