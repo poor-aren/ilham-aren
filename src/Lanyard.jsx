@@ -116,6 +116,11 @@ function Band({
       ctx.restore();
     };
 
+    // tutup sisi belakang lebih dulu → watermark bawaan komponen hilang
+    if (backImage) {
+      ctx.fillStyle = '#141316';
+      ctx.fillRect(BACK_UV_RECT.x * W, BACK_UV_RECT.y * H, BACK_UV_RECT.w * W, BACK_UV_RECT.h * H);
+    }
     if (frontImage && frontTex.image) drawFitted(frontTex.image, FRONT_UV_RECT);
     if (backImage && backTex.image) drawFitted(backTex.image, BACK_UV_RECT);
 
