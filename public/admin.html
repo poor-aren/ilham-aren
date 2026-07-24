@@ -121,6 +121,7 @@
       <button data-tab="projects">Projects</button>
       <button data-tab="certs">Sertifikat</button>
       <button data-tab="acts">Activity</button>
+      <button data-tab="eggs">Easter Egg</button>
     </nav>
 
     <!-- ---------- PROFIL & HOME ---------- -->
@@ -185,6 +186,12 @@
             <label>Gambar tali (band)</label>
             <div class="filerow"><img class="thumb" id="l_band_prev" alt="">
               <input type="file" accept="image/*" data-single="lanyard_band_url" data-prev="l_band_prev" data-folder="lanyard"></div>
+          </div>
+          <div class="field">
+            <label>Foto sisi BELAKANG kartu</label>
+            <div class="filerow">
+              <img class="thumb" id="l_back_prev" alt="">
+              <input type="file" accept="image/*" data-single="lanyard_back_url" data-prev="l_back_prev" data-folder="lanyard"></div>
           </div>
         </div>
         <div class="actions"><button class="btn" id="saveLanyard">Simpan Lanyard</button></div>
@@ -301,6 +308,39 @@
 
 <div class="status" id="status"></div>
 
+
+    <!-- ---------- EASTER EGG ---------- -->
+    <section class="panel" data-panel="eggs">
+      <h2 class="sec">Easter Egg</h2>
+      <p class="hint">Ketik kata kuncinya di halaman mana pun (bukan di dalam kotak isian) → foto bermunculan.</p>
+      <div class="card">
+        <h3 id="eg_editTitle">Tambah easter egg baru</h3>
+        <div class="grid2">
+          <div class="field"><label>Kata kunci</label><input id="eg_word" type="text" placeholder="mykisah"></div>
+          <div class="field"><label>Gaya</label>
+            <select id="eg_style">
+              <option value="confetti">Confetti (foto biasa)</option>
+              <option value="polaroid">Polaroid (berbingkai)</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="field"><label>Caption (opsional)</label><input id="eg_caption" type="text"></div>
+          <div class="field"><label>Urutan</label><input id="eg_sort" type="number" value="0"></div>
+        </div>
+        <div class="field">
+          <label>Foto (boleh banyak — makin banyak, makin ramai pop-up-nya)</label>
+          <input type="file" accept="image/*" multiple data-gallery="eggs" data-chips="eg_chips" data-folder="easter">
+          <div class="chips" id="eg_chips"></div>
+        </div>
+        <div class="row">
+          <button class="btn" id="eg_save">Simpan</button>
+          <button class="btn outline" id="eg_reset">Batal</button>
+        </div>
+      </div>
+      <div class="card"><h3>Daftar easter egg</h3><div id="eg_list"></div></div>
+    </section>
+
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
@@ -392,6 +432,7 @@ async function loadProfile(){
   $('l_name').value = data.lanyard_name||''; $('l_role').value = data.lanyard_role||'';
   if(data.lanyard_photo_url) $('l_photo_prev').src = data.lanyard_photo_url;
   if(data.lanyard_band_url)  $('l_band_prev').src  = data.lanyard_band_url;
+  if(data.lanyard_back_url)  $('l_back_prev').src  = data.lanyard_back_url;
   renderSocials(data.socials||{});
 }
 $('saveProfile').addEventListener('click', async ()=>{
@@ -413,7 +454,8 @@ $('saveLanyard').addEventListener('click', async ()=>{
     lanyard_name:$('l_name').value, lanyard_role:$('l_role').value,
     updated_at:new Date().toISOString(),
     ...('lanyard_photo_url' in profileFiles ? { lanyard_photo_url:profileFiles.lanyard_photo_url } : {}),
-    ...('lanyard_band_url'  in profileFiles ? { lanyard_band_url:profileFiles.lanyard_band_url } : {})
+    ...('lanyard_band_url'  in profileFiles ? { lanyard_band_url:profileFiles.lanyard_band_url } : {}),
+    ...('lanyard_back_url'  in profileFiles ? { lanyard_back_url:profileFiles.lanyard_back_url } : {})
   };
   const { error } = await sb.from('profile').update(patch).eq('id',1);
   if(error) return fail(error);
@@ -629,8 +671,60 @@ async function loadActs(){
   });
 }
 
+
+/* ---------------- EASTER EGG ---------------- */
+const egGallery = makeGallery($('eg_chips')); let egEditId = null;
+function egReset(){
+  egEditId = null;
+  $('eg_editTitle').textContent = 'Tambah easter egg baru';
+  ['eg_word','eg_caption'].forEach(id => $(id).value = '');
+  $('eg_style').value = 'confetti'; $('eg_sort').value = '0';
+  egGallery.set([]);
+}
+$('eg_reset').addEventListener('click', egReset);
+$('eg_save').addEventListener('click', async () => {
+  const word = ($('eg_word').value || '').trim().toLowerCase();
+  if(!word) return alert('Kata kunci wajib diisi.');
+  const payload = {
+    word, style: $('eg_style').value, caption: $('eg_caption').value,
+    images: egGallery.get(), sort: parseInt($('eg_sort').value) || 0
+  };
+  let error;
+  if(egEditId) ({ error } = await sb.from('easter_eggs').update(payload).eq('id', egEditId));
+  else         ({ error } = await sb.from('easter_eggs').insert(payload));
+  if(error) return fail(error);
+  toast('Easter egg tersimpan'); egReset(); loadEggs();
+});
+async function loadEggs(){
+  const { data, error } = await sb.from('easter_eggs').select('*').order('sort').order('created_at');
+  const box = $('eg_list'); if(!box) return;
+  if(error){ box.innerHTML = '<div class="empty">Gagal memuat</div>'; return; }
+  if(!data.length){ box.innerHTML = '<div class="empty">Belum ada easter egg.</div>'; return; }
+  box.innerHTML = '';
+  data.forEach(e => {
+    const el = document.createElement('div'); el.className = 'item';
+    el.innerHTML = `<img class="thumb" src="${(e.images && e.images[0]) || ''}">
+      <div class="meta"><div class="t">${e.word || ''}</div>
+      <div class="s">${(e.images || []).length} foto · ${e.style || 'confetti'}</div></div>
+      <button class="btn outline sm">Edit</button><button class="btn danger sm">Hapus</button>`;
+    el.querySelectorAll('button')[0].onclick = () => {
+      egEditId = e.id; $('eg_editTitle').textContent = 'Edit: ' + (e.word || '');
+      $('eg_word').value = e.word || ''; $('eg_style').value = e.style || 'confetti';
+      $('eg_caption').value = e.caption || ''; $('eg_sort').value = e.sort || 0;
+      egGallery.set(e.images || []);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+    el.querySelectorAll('button')[1].onclick = async () => {
+      if(!confirm('Hapus easter egg ini?')) return;
+      const { error } = await sb.from('easter_eggs').delete().eq('id', e.id);
+      if(error) return fail(error); toast('Terhapus'); loadEggs();
+    };
+    box.appendChild(el);
+  });
+}
+
 /* ---------------- load semua ---------------- */
-function loadAll(){ loadProfile(); loadProjects(); loadCerts(); loadActs(); }
+function loadAll(){ loadProfile(); loadProjects(); loadCerts(); loadActs(); loadEggs(); }
 
 refreshAuth();
 </script>
