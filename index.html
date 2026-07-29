@@ -2358,8 +2358,17 @@ async function sbGet(path){
   if(!r.ok) throw new Error('supabase ' + r.status);
   return r.json();
 }
-function socialsToArr(obj){
-  return obj ? Object.entries(obj).filter(([,v]) => v && String(v).trim()).map(([icon,url]) => ({ icon, url })) : [];
+const SOCIAL_ORDER = {
+  general: ['linkedin','scholar','instagram','facebook','discord','email'],
+  tech:    ['github'],
+  art:     ['vgen','twitter','tiktok','instagram','facebook']
+};
+function socialsToArr(obj, group){
+  if(!obj) return [];
+  const order = SOCIAL_ORDER[group] || Object.keys(obj);
+  const keys = [...new Set([...order, ...Object.keys(obj)])];   // ikon tak terdaftar tetap ikut
+  return keys.filter(icon => obj[icon] && String(obj[icon]).trim())
+             .map(icon => ({ icon, url: obj[icon] }));
 }
 function parseMeta(s){
   if(!s) return [];
@@ -2400,7 +2409,7 @@ async function loadFromSupabase(){
     if(P.cv_url) h.cvUrl = P.cv_url;
     if(P.email) c.email = P.email;
     if(P.socials){
-      const g = socialsToArr(P.socials.general), t = socialsToArr(P.socials.tech), a = socialsToArr(P.socials.art);
+      const g = socialsToArr(P.socials.general,'general'), t = socialsToArr(P.socials.tech,'tech'), a = socialsToArr(P.socials.art,'art');
       if(g.length) c.general = g;
       if(t.length) c.tech = t;
       if(a.length) c.art = a;
