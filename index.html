@@ -310,6 +310,12 @@ body.dragging #swipeBtn .pulse { display: none; }
 .page.activity { background: #871003; }
 .activity .page-inner { gap: clamp(30px,5vw,80px); }
 .act-left { flex: 1 1 52%; min-width: 0; }
+.act-hint{
+  width:100%; text-align:center; font-style: normal !important;
+  font-family:"JetBrains Mono",monospace; font-weight:400; font-size:.68rem;
+  letter-spacing:2px; text-transform:uppercase;
+  color:#62A461 !important;
+}
 .act-right { position:relative; flex: 1 1 48%; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 12px; font-style: normal; }
 
 .activity .eyebrow { font-family:"JetBrains Mono",monospace; font-size:.8rem; letter-spacing:3px; text-transform:uppercase; color:#62A461; opacity:.8; margin-bottom:16px; }
@@ -553,12 +559,6 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 .act-loc{
   font-family: "Inter", sans-serif; font-size:.95rem; font-weight:500;
   color: rgba(245,231,216,.85); margin: 6px 0 14px;
-}
-.act-hint{
-  width:100%; text-align:center; font-style: normal;
-  font-family:"JetBrains Mono",monospace; font-weight:400; font-size:.68rem;
-  letter-spacing:2px; text-transform:uppercase;
-  color:#62A461;
 }
 .act-rule.bottom { margin: 22px 0 8px; }
   #actTitle {
