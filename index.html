@@ -245,9 +245,9 @@ body.dragging #swipeBtn .pulse { display: none; }
 
 /* ---- Judul bagian (spt certificates) ---- */
 .proj-sechead{
-  font-family: "Playfair Display", serif; font-weight: 800;
-  font-size: clamp(1.5rem,3vw,2.3rem); letter-spacing: .5px; text-transform: uppercase;
-  color: #12121a; margin: 4px 0 18px;
+  font-family: "JetBrains Mono", monospace; font-weight: 400;
+  font-size: .7rem; letter-spacing: 3px; text-transform: uppercase;
+  color: rgba(20,20,26,.6); margin: 4px 0 18px;
 }
 
 /* ---- Daftar project: kartu memanjang, 1 kolom ---- */
@@ -310,7 +310,7 @@ body.dragging #swipeBtn .pulse { display: none; }
 .page.activity { background: #871003; }
 .activity .page-inner { gap: clamp(30px,5vw,80px); }
 .act-left { flex: 1 1 52%; min-width: 0; }
-.act-right { flex: 1 1 48%; display: flex; align-items: center; justify-content: flex-end; gap: clamp(14px,2vw,26px); }
+.act-right { position:relative; flex: 1 1 48%; display: flex; align-items: center; justify-content: flex-end; gap: clamp(14px,2vw,26px); }
 
 .activity .eyebrow { font-family:"JetBrains Mono",monospace; font-size:.8rem; letter-spacing:3px; text-transform:uppercase; color:#62A461; opacity:.8; margin-bottom:16px; }
 .activity h2 { font-family:"Anton",sans-serif; font-weight:400; color:#62A461; font-size:clamp(2.8rem,7vw,5.4rem); line-height:.9; letter-spacing:1px; text-transform:uppercase; }
@@ -554,9 +554,10 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   color: rgba(245,231,216,.85); margin: 6px 0 14px;
 }
 .act-hint{
-  margin-top:14px; text-align:center;
-  font-family: "JetBrains Mono", monospace; font-size:.68rem; letter-spacing:1.5px; text-transform:uppercase;
-  color: rgba(245,231,216,.5);
+  position:absolute; left:0; right:0; bottom:14px; z-index:5;
+  text-align:center; pointer-events:none;
+  font-family:"Inter",sans-serif; font-weight:300; font-size:.72rem; letter-spacing:1px;
+  color:#ffffff; text-shadow:0 1px 6px rgba(0,0,0,.55);
 }
 .act-rule.bottom { margin: 22px 0 8px; }
   #actTitle {
@@ -1204,12 +1205,12 @@ function renderActivity(){
   return `
     <div class="page activity"><div class="page-inner">
       <div class="act-left">
-        <div class="eyebrow">${esc(c.eyebrow)}</div>
+        <div class="act-meta" id="actMeta"></div>
         <div class="act-rule"></div>
         <h2 id="actTitle"></h2>
         <div class="act-loc" id="actLoc"></div>
         <p class="act-text" id="actText"></p>
-        <div class="act-meta" id="actMeta"></div>
+        <div class="eyebrow" id="actEyebrow">${esc(c.eyebrow)}</div>
         <div class="act-rule bottom"></div>
       </div>
       <div class="act-right">
