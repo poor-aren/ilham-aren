@@ -244,14 +244,14 @@ body.dragging #swipeBtn .pulse { display: none; }
 }
 
 /* ---- Judul bagian (spt certificates) ---- */
+.proj-sechead-row{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin:4px 0 18px; }
 .proj-sechead{
   font-family: "JetBrains Mono", monospace; font-weight: 400;
   font-size: .7rem; letter-spacing: 3px; text-transform: uppercase;
-  color: rgba(20,20,26,.6); margin: 4px 0 18px;
+  color: rgba(20,20,26,.6);
 }
 
 /* ---- Daftar project: kartu memanjang, 1 kolom ---- */
-.cat-pane .seg{ margin-bottom: 18px; }
 .prow-list{ display: flex; flex-direction: column; }
 .prow{
   position: relative;
@@ -310,7 +310,7 @@ body.dragging #swipeBtn .pulse { display: none; }
 .page.activity { background: #871003; }
 .activity .page-inner { gap: clamp(30px,5vw,80px); }
 .act-left { flex: 1 1 52%; min-width: 0; }
-.act-right { position:relative; flex: 1 1 48%; display: flex; align-items: center; justify-content: flex-end; gap: clamp(14px,2vw,26px); }
+.act-right { position:relative; flex: 1 1 48%; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 12px; }
 
 .activity .eyebrow { font-family:"JetBrains Mono",monospace; font-size:.8rem; letter-spacing:3px; text-transform:uppercase; color:#62A461; opacity:.8; margin-bottom:16px; }
 .activity h2 { font-family:"Anton",sans-serif; font-weight:400; color:#62A461; font-size:clamp(2.8rem,7vw,5.4rem); line-height:.9; letter-spacing:1px; text-transform:uppercase; }
@@ -549,15 +549,16 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
     font-size: .74rem; letter-spacing: 3px; text-transform: uppercase;
   }
   .act-rule { display: block; height: 1px; background: rgba(245,231,216,.45); margin: 10px 0 16px; }
+.act-meta { margin-bottom: 14px; }
 .act-loc{
   font-family: "Inter", sans-serif; font-size:.95rem; font-weight:500;
   color: rgba(245,231,216,.85); margin: 6px 0 14px;
 }
 .act-hint{
-  position:absolute; left:0; right:0; bottom:14px; z-index:5;
-  text-align:center; pointer-events:none;
-  font-family:"Inter",sans-serif; font-weight:300; font-size:.72rem; letter-spacing:1px;
-  color:#ffffff; text-shadow:0 1px 6px rgba(0,0,0,.55);
+  width:100%; text-align:center;
+  font-family:"JetBrains Mono",monospace; font-weight:400; font-size:.68rem;
+  letter-spacing:2px; text-transform:uppercase;
+  color: rgba(245,231,216,.55);
 }
 .act-rule.bottom { margin: 22px 0 8px; }
   #actTitle {
@@ -567,9 +568,10 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   }
   #actText { text-align: justify; text-justify: inter-word; line-height: 1.75; }
 
-  /* kartu foto benar-benar di tengah */
-  .act-right { display: flex; justify-content: center; }
-  .act-stack { margin: 0 auto 0 -8%; }
+  /* kartu foto di tengah, hint DI BAWAH foto */
+  .act-right { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+  .act-stack { margin: 0 auto; }
+  .act-hint{ position: static; width: 100%; text-align: center; }
 }
 
 /* Activity: tanpa efek bold hover sama sekali */
@@ -1151,7 +1153,6 @@ function renderProjects(){
     const hidden = cat==='art' ? ' style="display:none"' : '';
     if(!idxs.length){
       return `<div class="cat-pane" data-pane="${cat}"${hidden}>
-        ${segHtml(cat)}
         <div class="feat-empty">Belum ada karya di kategori ini.</div>
       </div>`;
     }
@@ -1168,7 +1169,6 @@ function renderProjects(){
       </div>`;
     };
     return `<div class="cat-pane" data-pane="${cat}"${hidden}>
-      ${segHtml(cat)}
       <div class="prow-list" data-list="${cat}">${idxs.map(rowHtml).join("")}</div>
     </div>`;
   };
@@ -1188,7 +1188,14 @@ function renderProjects(){
 
         <div class="proj-divider"></div>
 
-        <div class="proj-sechead">work experience</div>
+        <div class="proj-sechead-row">
+          <span class="proj-sechead">work experience</span>
+          <div class="seg" id="projSeg">
+            <div class="seg-glass"></div>
+            <button class="ptab active" data-cat="tech">tech</button>
+            <button class="ptab" data-cat="art">art</button>
+          </div>
+        </div>
 
         <div class="proj-body">
           ${pane('tech')}
@@ -1215,7 +1222,7 @@ function renderActivity(){
       </div>
       <div class="act-right">
         <div class="act-stack" id="actStackRoot"></div>
-        <div class="act-hint">tahan &amp; geser untuk berpindah foto</div>
+        <div class="act-hint">hold &amp; drag to switch photo</div>
       </div>
     </div></div>`;
 }
@@ -1493,6 +1500,7 @@ function initProjects(root){
   const panes = [...root.querySelectorAll('.cat-pane')];
   tabs.forEach(tab => tab.addEventListener('click', () => {
     const cat = tab.dataset.cat;
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.cat === cat));
     panes.forEach(pn => { pn.style.display = (pn.dataset.pane === cat) ? '' : 'none'; });
   }));
 
