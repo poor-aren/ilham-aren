@@ -310,12 +310,12 @@ body.dragging #swipeBtn .pulse { display: none; }
 .page.activity { background: #871003; }
 .activity .page-inner { gap: clamp(30px,5vw,80px); }
 .act-left { flex: 1 1 52%; min-width: 0; }
-.act-right { position:relative; flex: 1 1 48%; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 12px; }
+.act-right { position:relative; flex: 1 1 48%; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 12px; font-style: normal; }
 
 .activity .eyebrow { font-family:"JetBrains Mono",monospace; font-size:.8rem; letter-spacing:3px; text-transform:uppercase; color:#62A461; opacity:.8; margin-bottom:16px; }
 .activity h2 { font-family:"Anton",sans-serif; font-weight:400; color:#62A461; font-size:clamp(2.8rem,7vw,5.4rem); line-height:.9; letter-spacing:1px; text-transform:uppercase; }
 .activity .act-text { font-family:"Inter",sans-serif; font-weight:500; margin-top: clamp(18px,2.6vw,28px); color:#7ab878; max-width:36ch; font-size:clamp(1.02rem,1.4vw,1.28rem); line-height:1.5; }
-.activity .act-meta { margin-top:26px; display:flex; flex-wrap:wrap; gap:22px; }
+.activity .act-meta { margin: 0 0 20px; display:flex; flex-wrap:wrap; gap:22px; }
 .activity .act-meta .item .k { font-family:"JetBrains Mono",monospace; font-size:.72rem; letter-spacing:1px; color:#4f8a4e; text-transform:uppercase; }
 .activity .act-meta .item .v { font-family:"Inter",sans-serif; color:#62A461; font-weight:600; font-size:1.05rem; margin-top:4px; }
 .act-stack {
@@ -555,10 +555,10 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   color: rgba(245,231,216,.85); margin: 6px 0 14px;
 }
 .act-hint{
-  width:100%; text-align:center;
+  width:100%; text-align:center; font-style: normal;
   font-family:"JetBrains Mono",monospace; font-weight:400; font-size:.68rem;
   letter-spacing:2px; text-transform:uppercase;
-  color: rgba(245,231,216,.55);
+  color:#62A461;
 }
 .act-rule.bottom { margin: 22px 0 8px; }
   #actTitle {
