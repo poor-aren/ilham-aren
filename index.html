@@ -49,27 +49,23 @@ a { text-decoration: none; color: inherit; }
 }
 @keyframes btnPulse { 0%{transform:scale(1);opacity:.5} 70%{transform:scale(1.9);opacity:0} 100%{opacity:0} }
 /* Hint tulisan tangan yang menunjuk ke tombol swipe (hanya Home) */
-/* Hint menempel pada tombol swipe → ikut ke mana pun tombol digeser.
-   Duduk di kiri-atas tombol; panah menukik turun menunjuk ke tombol. */
+/* Hint tulisan tangan di kiri tombol swipe. Posisi vertikalnya (top) diikat ke tombol via JS. */
 #swipeHint{
-  position: absolute; z-index: 6;
-  right: 100%; bottom: 100%;                 /* pojok kiri-atas tombol */
-  margin-right: 4px; margin-bottom: 2px;
+  position: absolute; z-index: 6; left: 66px; top: 0;
   display: none; pointer-events: none; color: #ffffff;
+  transform: rotate(-4deg);
   animation: hintFloat 2.8s ease-in-out infinite;
 }
 body[data-page="home"] #swipeHint{ display: block; }
 body.dragging #swipeHint{ display: none !important; }
 .sh-text{
   font-family: "Caveat", "Segoe Script", "Bradley Hand", cursive;
-  font-size: 1.5rem; font-weight: 700; letter-spacing: .5px; white-space: nowrap;
+  font-size: 1.1rem; font-weight: 700; letter-spacing: .5px; white-space: nowrap;
   display: inline-block; color: #ffffff; text-shadow: 0 1px 10px rgba(0,0,0,.45);
-  transform: rotate(-4deg);
 }
-.sh-arrow{ display: block; width: 46px; height: 40px; margin: 2px 0 0 auto; opacity: .95; }
-@keyframes hintFloat{ 0%,100%{ transform: translate(0,0); } 50%{ transform: translate(-3px,-4px); } }
+.sh-arrow{ position: absolute; left: -14px; top: 30px; width: 74px; height: 56px; opacity: .95; }
+@keyframes hintFloat{ 0%,100%{ transform: rotate(-4deg) translate(0,0); } 50%{ transform: rotate(-4deg) translate(4px,-4px); } }
 @media (prefers-reduced-motion: reduce){ #swipeHint{ animation: none; } }
-/* HP: tanpa swipe liquid → tanpa hint */
 @media (max-width: 820px){ #swipeHint{ display: none !important; } }
 
 body.dragging { user-select: none; }
@@ -894,14 +890,14 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   <button id="swipeBtn" aria-label="Geser ke halaman berikutnya">
     <span class="pulse"></span>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg>
-    <div id="swipeHint" aria-hidden="true">
-      <span class="sh-text">hold &amp; drag here</span>
-      <svg class="sh-arrow" viewBox="0 0 120 90" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M18 78 C 40 60, 30 26, 46 14" />
-        <path d="M32 20 L 48 10 L 52 30" />
-      </svg>
-    </div>
   </button>
+  <div id="swipeHint" aria-hidden="true">
+    <span class="sh-text">hold &amp; drag here</span>
+    <svg class="sh-arrow" viewBox="0 0 120 90" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M58 8 C 58 32, 36 50, 14 50" />
+      <path d="M34 32 L 14 50 L 34 68" />
+    </svg>
+  </div>
 </div>
 
 <div id="pageTrans" aria-hidden="true"><div class="tl"></div><div class="tl"></div><div class="tl"></div><div class="tl"></div></div>
@@ -2007,6 +2003,8 @@ function draw(){
   const sc = 0.55 + 0.45 * e;
 
   swipeBtn.style.transform = `translate(${state.bx.v}px, ${state.by.v}px) scale(${sc})`;
+  const hint = document.getElementById('swipeHint');
+  if(hint) hint.style.top = (state.by.v - 58) + 'px';   // teks di atas, ujung panah turun tepat ke tombol
   const prog = MOBILE ? state.by.v : state.bx.v;
   const baseOp = Math.max(0, Math.min(1, (140 - prog) / 100));
   swipeBtn.style.opacity = baseOp * e;
