@@ -2004,7 +2004,7 @@ function draw(){
 
   swipeBtn.style.transform = `translate(${state.bx.v}px, ${state.by.v}px) scale(${sc})`;
   const hint = document.getElementById('swipeHint');
-  if(hint) hint.style.top = (state.by.v - 58) + 'px';   // teks di atas, ujung panah turun tepat ke tombol
+  if(hint) hint.style.top = (state.by.v - 43) + 'px';   // teks di atas, ujung panah turun tepat ke tombol
   const prog = MOBILE ? state.by.v : state.bx.v;
   const baseOp = Math.max(0, Math.min(1, (140 - prog) / 100));
   swipeBtn.style.opacity = baseOp * e;
