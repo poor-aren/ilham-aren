@@ -650,12 +650,11 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   .act-right { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
   .act-stack { margin: 0 auto; }
   .act-hint{ position: static; width: 100%; text-align: center; }
-  .act-scroll-hint {
-    position: static; transform: none; height: auto; top: auto;
-    writing-mode: horizontal-tb; flex-direction: row; gap: 6px;
-    justify-content: center; padding: 4px 24px 0;
-  }
-  .act-scroll-hint .arrow-down { animation: none; transform: rotate(0deg); }
+  .act-scroll-hint { display: none !important; }
+  /* HP: sertifikat tidak ikut di halaman activity — diakses lewat tombol di topbar */
+  .act-cert-divider, .act-cert-section { display: none !important; }
+  /* HP: kembalikan scroll ke .page seperti halaman lain (bukan layer absolut) */
+  .activity-scroll { position: static; overflow: visible; height: auto; }
 }
 
 /* Activity: tanpa efek bold hover sama sekali */
@@ -861,8 +860,11 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   }
   body[data-page="home"]     #mobileTop { color: #ffffff; }
   body[data-page="projects"] #mobileTop { color: #14141a; }
-  body[data-page="activity"] #mobileTop { color: #F5E7D8; }
+  body[data-page="activity"] #mobileTop { color: #62A461; }
   body[data-page="contact"]  #mobileTop { color: #0e2a10; }
+  /* saat jadi tombol "see my certificates" di halaman activity */
+  #mobileTop.mt-action { pointer-events: auto; cursor: pointer; }
+  #mobileTop.mt-action .mt-brand { border-bottom: 1px solid currentColor; padding-bottom: 3px; }
 
   /* HP: tanpa swipe liquid */
   #swipeBtn, #edgeBack, #blobL, #blobR, #blobSvg { display: none !important; }
@@ -1424,7 +1426,10 @@ const N = PAGES.length;
    MODAL
    ===================================================================== */
 const modalRoot = document.getElementById('modalRoot');
+/* Kalau modal dibuka DARI grid "See all", tombol ✕ kembali ke grid (bukan menutup semuanya). */
+let modalBack = null;
 function openModal({ title, desc, images, tags, palette, link, theme }){
+  modalBack = null;
   const pal = palette || { bg:'#1c1c1c', fg:'#E7B996' };
   const one = (images||[]).map(src => `<img src="${img(src,'image',pal.bg,pal.fg,700,540)}" alt="" draggable="false">`).join("");
   const loop = (images||[]).length > 1;
@@ -1444,6 +1449,7 @@ function openModal({ title, desc, images, tags, palette, link, theme }){
 /* Pop-up: SEMUA sertifikat dalam grid. Klik satu → buka detail + gambar besar. */
 function openCertGrid(list){
   if(!list || !list.length) return;
+  modalBack = null;   // ✕ pada grid = tutup semuanya
   const cells = list.map((ct, i) => `
     <button class="cg-cell" data-i="${i}" type="button">
       <div class="cg-thumb"><img src="${esc(ct.image || '')}" alt="" loading="lazy"></div>
@@ -1464,6 +1470,7 @@ function openCertGrid(list){
     cell.addEventListener('click', () => {
       const ct = list[+cell.dataset.i];
       openModal({ title:ct.title, desc:(ct.issuer? ('Issued by ' + ct.issuer) : ''), images:[ct.image], link:ct.url, palette:{ bg:'#62A461', fg:'#14240f' }, theme:'cert' });
+      modalBack = () => openCertGrid(list);   // ✕ pada detail = kembali ke grid
     });
   });
 }
@@ -1487,7 +1494,10 @@ function initModalGallery(track){
   track.addEventListener('click', e=>{ if(moved){ e.preventDefault(); e.stopPropagation(); } }, true);
   track.addEventListener('wheel', e=>{ stop(); track.scrollLeft += (Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX); wrap(); e.preventDefault(); }, { passive:false });
 }
-function closeModal(){ modalRoot.classList.remove('open'); modalRoot.innerHTML=""; }
+function closeModal(){
+  if(modalBack){ const back = modalBack; modalBack = null; back(); return; }
+  modalRoot.classList.remove('open'); modalRoot.innerHTML="";
+}
 modalRoot.addEventListener('click', e => { if(e.target === modalRoot) closeModal(); });
 document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
 
@@ -2197,6 +2207,27 @@ window.__goPage = (key) => {
 };
 
 function ensureLoop(){ document.body.dataset.peek = '1'; if(!state.raf){ state.lastRAF = 0; state.raf = requestAnimationFrame(loop); } }
+
+/* ---- Topbar HP: di halaman Activity berubah jadi tombol "see my certificates" ----
+   (di HP sertifikat tidak ditampilkan di halaman, jadi diakses lewat tombol ini) */
+(function initMobileTopAction(){
+  const mt = document.getElementById('mobileTop');
+  if(!mt) return;
+  const brand = mt.querySelector('.mt-brand');
+  const DEFAULT_TEXT = brand ? brand.textContent : 'PORTOFOLIO';
+  const sync = () => {
+    const isAct = document.body.dataset.page === 'activity';
+    if(brand) brand.textContent = isAct ? 'SEE MY CERTIFICATES' : DEFAULT_TEXT;
+    mt.classList.toggle('mt-action', isAct);
+    mt.setAttribute('aria-hidden', isAct ? 'false' : 'true');
+  };
+  mt.addEventListener('click', () => {
+    if(document.body.dataset.page !== 'activity') return;
+    openCertGrid((CONFIG.projects && CONFIG.projects.certificates) || []);
+  });
+  new MutationObserver(sync).observe(document.body, { attributes:true, attributeFilter:['data-page'] });
+  sync();
+})();
 
 function buildBase(idx){ document.body.dataset.page = PAGES[idx].key; document.body.dataset.lanyardUp = '0'; if(window.__unmountActivityStack) window.__unmountActivityStack(); if(window.__unmountProjExtras) window.__unmountProjExtras(); baseLayer.innerHTML = PAGES[idx].render(); stopTyping(); stopProx(); PAGES[idx].init && PAGES[idx].init(baseLayer); window.dispatchEvent(new CustomEvent('page-changed', { detail: PAGES[idx].key })); }
 function clearLayer(el){
