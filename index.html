@@ -345,15 +345,16 @@ body.dragging #swipeBtn .pulse { display: none; }
   color:#62A461 !important;
 }
 .act-right { position:relative; flex: 1 1 48%; display: flex; align-items: center; justify-content: flex-end; font-style: normal; }
-.act-stack-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-right: clamp(38px,5vw,70px); }
+.act-stack-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; }
 
-/* teks vertikal "scroll down to see my certificates" — mepet ke tepi kanan layar, ukuran ikut layar */
+/* teks vertikal "scroll down to see my certificates" — ditempel ke tepi kanan halaman activity (bukan page-inner yg ber-padding) */
 .act-scroll-hint {
-  position: absolute; top: 50%; right: 0; transform: translateY(-50%);
+  position: absolute; top: 0; right: 14px; height: 100vh; z-index: 6;
+  display: flex; align-items: center; gap: 10px;
   writing-mode: vertical-rl; text-orientation: mixed;
   font-family: "JetBrains Mono", monospace; font-size: clamp(.72rem,1.15vw,.95rem); letter-spacing: clamp(2px,.3vw,4px);
   text-transform: uppercase; color: #62A461; opacity: .85;
-  display: flex; align-items: center; gap: 10px; white-space: nowrap;
+  white-space: nowrap; pointer-events: none;
 }
 .act-scroll-hint .arrow-down {
   display: inline-block; animation: actArrowBob 1.8s ease-in-out infinite;
@@ -373,17 +374,16 @@ body.dragging #swipeBtn .pulse { display: none; }
   position: relative; z-index: 1;
 }
 .act-cert-glass {
-  border-radius: 24px; padding: clamp(22px,3vw,34px);
-  background: linear-gradient(135deg, #2f5c2e, #1e3d1d);
-  border: 1px solid rgba(127,227,154,.30);
-  box-shadow: 0 18px 50px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.10);
+  border-radius: 20px; padding: clamp(22px,3vw,34px);
+  background: #62A461;
+  border: none;
 }
 .act-cert-section .cert-head { margin-bottom: 18px; }
-.act-cert-section .cert-eyebrow { color: #9FE6A0; opacity: 1; }
-.act-cert-section .cert-title { color: #F5E7D8; font-size: .95rem; }
-.act-cert-section .cert-issuer { color: rgba(245,231,216,.65); font-size: .82rem; }
-.act-cert-section .cert-seeall { color: #9FE6A0; margin: 0; }
-.act-cert-section .cert-thumb { border-color: rgba(127,227,154,.28); border-radius: 10px; }
+.act-cert-section .cert-eyebrow { color: #1d3a1c; opacity: 1; }
+.act-cert-section .cert-title { color: #14240f; font-size: .95rem; }
+.act-cert-section .cert-issuer { color: rgba(20,36,15,.7); font-size: .82rem; }
+.act-cert-section .cert-seeall { color: #1d3a1c; margin: 0; }
+.act-cert-section .cert-thumb { border-color: rgba(20,36,15,.18); border-radius: 10px; }
 .act-cert-section .cert-item { width: clamp(190px,20vw,260px); }
 
 .activity .eyebrow { font-family:"JetBrains Mono",monospace; font-size:.8rem; letter-spacing:3px; text-transform:uppercase; color:#62A461; opacity:.8; margin-bottom:16px; }
@@ -640,10 +640,10 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   .act-right { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
   .act-stack { margin: 0 auto; }
   .act-hint{ position: static; width: 100%; text-align: center; }
-  .act-stack-wrap { margin-right: 0; }
   .act-scroll-hint {
-    position: static; transform: none;
+    position: static; transform: none; height: auto;
     writing-mode: horizontal-tb; flex-direction: row; gap: 6px;
+    justify-content: center; padding: 4px 24px 0;
   }
   .act-scroll-hint .arrow-down { animation: none; transform: rotate(0deg); }
 }
@@ -665,18 +665,17 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 }
 .cert-seeall:hover { opacity:.6; }
 
-/* Pop-up grid semua sertifikat — lebih ramping dari modal detail biasa */
+/* Pop-up grid semua sertifikat */
 .cg-grid {
-  display:grid; grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap: 18px;
-  padding: 8px 30px 30px; overflow-y:auto; max-height: 70vh;
-  justify-items: center;
+  display:grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+  padding: 8px 26px 26px; overflow-y:auto; max-height: 68vh;
 }
-.cg-cell { text-align:left; background:transparent; border:none; cursor:pointer; padding:0; width:100%; max-width:170px; }
-.cg-thumb { width:100%; aspect-ratio:4/3; overflow:hidden; border:1px solid rgba(20,20,26,.12); border-radius:10px; }
+.cg-cell { text-align:left; background:transparent; border:none; cursor:pointer; padding:0; width:100%; }
+.cg-thumb { width:100%; aspect-ratio:4/3; overflow:hidden; border:1px solid rgba(20,36,15,.18); border-radius:10px; }
 .cg-thumb img { width:100%; height:100%; object-fit:cover; display:block; transition: transform .3s; }
 .cg-cell:hover .cg-thumb img { transform: scale(1.05); }
-.cg-title { margin-top:8px; font-family:"Inter",sans-serif; font-weight:600; font-size:.82rem; color:#14141a; }
-.cg-issuer { margin-top:2px; font-family:"Inter",sans-serif; font-size:.72rem; color:rgba(20,20,26,.55); }
+.cg-title { margin-top:8px; font-family:"Inter",sans-serif; font-weight:600; font-size:.82rem; color:#14240f; }
+.cg-issuer { margin-top:2px; font-family:"Inter",sans-serif; font-size:.72rem; color:rgba(20,36,15,.7); }
 @media (max-width:820px){ .cg-grid { grid-template-columns: repeat(2, 1fr); gap:12px; padding:8px 18px 22px; } }
 
 /* Modal Activity: teks hijau, kaca kemerahan */
@@ -689,39 +688,41 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 .modal-card.act .m-title, .modal-card.act .m-desc, .modal-card.act .m-close { color: #7FE39A; }
 .modal-card.act .m-meta .tag { color: #7FE39A; border-color: rgba(127,227,154,.4); }
 
-/* Modal grid Certificates: hijau solid, sesuai tema section certificates di Activity */
+/* Modal grid Certificates: hijau polos, sama dgn card certificates di Activity */
 .modal-card.cg-modal {
-  width: min(760px,92vw);
-  background: linear-gradient(135deg, #2f5c2e, #173016);
+  width: min(820px,92vw);
+  background: #62A461;
   backdrop-filter: none; -webkit-backdrop-filter: none;
-  border: 1px solid rgba(127,227,154,.30);
-  box-shadow: 0 30px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.12);
+  border: none;
+  box-shadow: 0 30px 80px rgba(0,0,0,.45);
 }
 .modal-card.cg-modal::before { display: none; }
-.modal-card.cg-modal .m-head { padding: 24px 26px 10px; }
+.modal-card.cg-modal .m-head { padding: 22px 26px 10px; }
 .modal-card.cg-modal .m-title {
   font-family: "Anton", sans-serif; font-weight: 400; letter-spacing: 1px; text-transform: uppercase;
-  font-size: clamp(1.5rem,2.6vw,2rem); color: #9FE6A0;
+  font-size: clamp(1.4rem,2.4vw,1.9rem); color: #14240f;
 }
-.modal-card.cg-modal .m-close { color: #9FE6A0; }
-.modal-card.cg-modal .cg-title { color: #F5E7D8; }
-.modal-card.cg-modal .cg-issuer { color: rgba(245,231,216,.65); }
-.modal-card.cg-modal .cg-thumb { border-color: rgba(127,227,154,.28); }
+.modal-card.cg-modal .m-close { color: #14240f; }
+.modal-card.cg-modal .m-close:hover { background: rgba(0,0,0,.10); }
 
-/* Modal detail satu sertifikat: hijau solid (bukan kaca gelap) */
+/* Modal detail satu sertifikat: hijau polos, lebar mengikuti gambar (tidak menyisakan ruang kosong) */
 .modal-card.cert {
-  background: linear-gradient(135deg, #2f5c2e, #173016);
+  width: fit-content; max-width: 92vw; min-width: min(420px,90vw);
+  background: #62A461;
   backdrop-filter: none; -webkit-backdrop-filter: none;
-  border: 1px solid rgba(127,227,154,.30);
-  box-shadow: 0 30px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.12);
+  border: none;
+  box-shadow: 0 30px 80px rgba(0,0,0,.45);
 }
 .modal-card.cert::before { display: none; }
 .modal-card.cert h3 {
   font-family: "Anton", sans-serif; font-weight: 400; letter-spacing: 1px; text-transform: uppercase;
-  color: #9FE6A0;
+  color: #14240f;
 }
-.modal-card.cert .m-desc { color: rgba(245,231,216,.8); }
-.modal-card.cert .m-close, .modal-card.cert .m-link { color: #9FE6A0; }
+.modal-card.cert .m-desc { color: rgba(20,36,15,.78); }
+.modal-card.cert .m-close, .modal-card.cert .m-link { color: #14240f; }
+.modal-card.cert .m-close:hover, .modal-card.cert .m-link:hover { background: rgba(0,0,0,.10); }
+.modal-card.cert .m-gallery { padding: 18px 26px 26px; justify-content: center; }
+.modal-card.cert .m-gallery img { border-radius: 10px; }
 
 /* Kaca (GlassSurface) — netral (Projects kini putih) */
 .seg-glass { position: relative; }
@@ -1333,11 +1334,11 @@ function renderActivity(){
           <div class="act-stack" id="actStackRoot"></div>
           <div class="act-hint">hold &amp; drag to switch photo</div>
         </div>
-        <div class="act-scroll-hint">
-          <span>scroll down to see my certificates</span>
-          <span class="arrow-down" aria-hidden="true">↓</span>
-        </div>
       </div>
+    </div>
+    <div class="act-scroll-hint">
+      <span>scroll down to see my certificates</span>
+      <span class="arrow-down" aria-hidden="true">↓</span>
     </div>
     <div class="act-cert-divider"><div class="line"></div></div>
     <section class="act-cert-section cert-strip">
@@ -1450,7 +1451,7 @@ function openCertGrid(list){
   modalRoot.querySelectorAll('.cg-cell').forEach(cell => {
     cell.addEventListener('click', () => {
       const ct = list[+cell.dataset.i];
-      openModal({ title:ct.title, desc:(ct.issuer? ('Issued by ' + ct.issuer) : ''), images:[ct.image], link:ct.url, palette:{ bg:'#1e3d1d', fg:'#9FE6A0' }, theme:'cert' });
+      openModal({ title:ct.title, desc:(ct.issuer? ('Issued by ' + ct.issuer) : ''), images:[ct.image], link:ct.url, palette:{ bg:'#62A461', fg:'#14240f' }, theme:'cert' });
     });
   });
 }
@@ -1853,7 +1854,7 @@ function initActivity(root){
         const ct = (pc.certificates||[])[+pressedCert.dataset.ci];
         pressedCert = null;
         if(ct){
-          openModal({ title:ct.title, desc:(ct.issuer? ('Issued by ' + ct.issuer) : ''), images:[ct.image], link:ct.url, palette:{ bg:'#1e3d1d', fg:'#9FE6A0' }, theme:'cert' });
+          openModal({ title:ct.title, desc:(ct.issuer? ('Issued by ' + ct.issuer) : ''), images:[ct.image], link:ct.url, palette:{ bg:'#62A461', fg:'#14240f' }, theme:'cert' });
           return;
         }
       }
@@ -1874,7 +1875,7 @@ function initActivity(root){
       const it = e.target.closest && e.target.closest('.cert-item');
       if(!it) return;
       const ct = (pc.certificates||[])[+it.dataset.ci];
-      if(ct) openModal({ title:ct.title, desc:(ct.issuer? ('Issued by ' + ct.issuer) : ''), images:[ct.image], link:ct.url, palette:{ bg:'#1e3d1d', fg:'#9FE6A0' }, theme:'cert' });
+      if(ct) openModal({ title:ct.title, desc:(ct.issuer? ('Issued by ' + ct.issuer) : ''), images:[ct.image], link:ct.url, palette:{ bg:'#62A461', fg:'#14240f' }, theme:'cert' });
     });
     track.addEventListener('wheel', (e) => {
       if(Math.abs(e.deltaY) > Math.abs(e.deltaX)){ stopMom(); track.scrollLeft += e.deltaY; wrap(); e.preventDefault(); }
