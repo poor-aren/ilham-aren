@@ -336,7 +336,7 @@ body.dragging #swipeBtn .pulse { display: none; }
 }
 .activity-scroll::-webkit-scrollbar { width: 0; height: 0; display: none; }
 
-.activity .page-inner { gap: clamp(30px,5vw,80px); height: auto; min-height: 100%; position: relative; padding-right: clamp(56px,7vw,110px); }
+.activity .page-inner { gap: clamp(30px,5vw,80px); height: auto; min-height: 100%; }
 .act-left { flex: 1 1 52%; min-width: 0; }
 .act-hint{
   width:100%; text-align:center; font-style: normal !important;
@@ -345,9 +345,9 @@ body.dragging #swipeBtn .pulse { display: none; }
   color:#62A461 !important;
 }
 .act-right { position:relative; flex: 1 1 48%; display: flex; align-items: center; justify-content: flex-end; font-style: normal; }
-.act-stack-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-right: clamp(8px,2.4vw,34px); }
+.act-stack-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-right: clamp(38px,5vw,70px); }
 
-/* teks vertikal "scroll down to see my certificates" — mepet ke tepi kanan halaman, ukuran ikut layar */
+/* teks vertikal "scroll down to see my certificates" — mepet ke tepi kanan layar, ukuran ikut layar */
 .act-scroll-hint {
   position: absolute; top: 50%; right: 0; transform: translateY(-50%);
   writing-mode: vertical-rl; text-orientation: mixed;
@@ -357,10 +357,10 @@ body.dragging #swipeBtn .pulse { display: none; }
 }
 .act-scroll-hint .arrow-down {
   display: inline-block; animation: actArrowBob 1.8s ease-in-out infinite;
-  transform: rotate(90deg);   /* vertical-rl memutar teks 90°; putar balik supaya ↓ tetap menunjuk ke bawah */
+  transform: rotate(-90deg);   /* vertical-rl memutar teks 90° searah jarum jam; putar balik -90° supaya ↓ tetap menunjuk ke bawah */
   font-size: 1.1em;
 }
-@keyframes actArrowBob { 0%,100% { transform: rotate(90deg) translateY(0); } 50% { transform: rotate(90deg) translateY(6px); } }
+@keyframes actArrowBob { 0%,100% { transform: rotate(-90deg) translateY(0); } 50% { transform: rotate(-90deg) translateY(6px); } }
 @media (prefers-reduced-motion: reduce) { .act-scroll-hint .arrow-down { animation: none; } }
 
 /* ---- Certificates section (di bawah viewport pertama Activity) ---- */
@@ -374,15 +374,16 @@ body.dragging #swipeBtn .pulse { display: none; }
 }
 .act-cert-glass {
   border-radius: 24px; padding: clamp(22px,3vw,34px);
-  background: rgba(255,255,255,.05);
+  background: rgba(98,164,97,.08);
   backdrop-filter: blur(14px) saturate(1.4);
   -webkit-backdrop-filter: blur(14px) saturate(1.4);
-  border: 1px solid rgba(245,231,216,.14);
+  border: 1px solid rgba(98,164,97,.28);
 }
+.act-cert-section .cert-head { margin-bottom: 18px; }
 .act-cert-section .cert-eyebrow { color: #62A461; opacity: .85; }
 .act-cert-section .cert-title { color: #F5E7D8; font-size: .95rem; }
 .act-cert-section .cert-issuer { color: rgba(245,231,216,.6); font-size: .82rem; }
-.act-cert-section .cert-seeall { color: #62A461; }
+.act-cert-section .cert-seeall { color: #62A461; margin: 0; }
 .act-cert-section .cert-thumb { border-color: rgba(245,231,216,.2); }
 .act-cert-section .cert-item { width: clamp(190px,20vw,260px); }
 
@@ -540,7 +541,6 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   .home .page-inner, .activity .page-inner {
     flex-direction: column; justify-content: center; text-align: left; gap: 24px; overflow-y: auto;
     padding-top: 76px;                 /* lorong swipe di atas */
-    padding-right: clamp(28px,6vw,110px);   /* reset: desktop punya ruang ekstra utk teks vertikal, mobile tidak perlu */
   }
   .contact .page-inner {
     flex-direction: column; text-align: left; gap: 24px; overflow-y: auto;
@@ -666,13 +666,14 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 }
 .cert-seeall:hover { opacity:.6; }
 
-/* Pop-up grid semua sertifikat */
+/* Pop-up grid semua sertifikat — lebih ramping dari modal detail biasa */
 .cg-grid {
-  display:grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+  display:grid; grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap: 18px;
   padding: 8px 30px 30px; overflow-y:auto; max-height: 70vh;
+  justify-items: center;
 }
-.cg-cell { text-align:left; background:transparent; border:none; cursor:pointer; padding:0; }
-.cg-thumb { width:100%; aspect-ratio:4/3; overflow:hidden; border:1px solid rgba(20,20,26,.12); }
+.cg-cell { text-align:left; background:transparent; border:none; cursor:pointer; padding:0; width:100%; max-width:170px; }
+.cg-thumb { width:100%; aspect-ratio:4/3; overflow:hidden; border:1px solid rgba(20,20,26,.12); border-radius:10px; }
 .cg-thumb img { width:100%; height:100%; object-fit:cover; display:block; transition: transform .3s; }
 .cg-cell:hover .cg-thumb img { transform: scale(1.05); }
 .cg-title { margin-top:8px; font-family:"Inter",sans-serif; font-weight:600; font-size:.82rem; color:#14141a; }
@@ -688,9 +689,19 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 }
 .modal-card.act .m-title, .modal-card.act .m-desc, .modal-card.act .m-close { color: #7FE39A; }
 .modal-card.act .m-meta .tag { color: #7FE39A; border-color: rgba(127,227,154,.4); }
-.modal-card.act .cg-title { color: #F5E7D8; }
-.modal-card.act .cg-issuer { color: rgba(245,231,216,.6); }
-.modal-card.act .cg-thumb { border-color: rgba(245,231,216,.2); }
+
+/* Modal grid Certificates: kaca hijau, sesuai tema section certificates di Activity */
+.modal-card.cg-modal {
+  width: min(720px,92vw);
+  background: linear-gradient(135deg, rgba(98,164,97,.22), rgba(20,40,18,.5));
+  backdrop-filter: blur(30px) saturate(1.5); -webkit-backdrop-filter: blur(30px) saturate(1.5);
+  border: 1px solid rgba(127,227,154,.28);
+  box-shadow: 0 30px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.14);
+}
+.modal-card.cg-modal .m-title, .modal-card.cg-modal .m-close { color: #7FE39A; }
+.modal-card.cg-modal .cg-title { color: #F5E7D8; }
+.modal-card.cg-modal .cg-issuer { color: rgba(245,231,216,.6); }
+.modal-card.cg-modal .cg-thumb { border-color: rgba(127,227,154,.28); }
 
 /* Kaca (GlassSurface) — netral (Projects kini putih) */
 .seg-glass { position: relative; }
@@ -1313,9 +1324,9 @@ function renderActivity(){
       <div class="act-cert-glass">
         <div class="cert-head">
           <span class="cert-eyebrow">certificates</span>
+          <button class="cert-seeall" id="actCertSeeAll" type="button">See all →</button>
         </div>
         <div class="cert-track">${certs}</div>
-        <button class="cert-seeall" id="actCertSeeAll" type="button">See all →</button>
       </div>
     </section>
     </div></div>`;
@@ -1407,7 +1418,7 @@ function openCertGrid(list){
       <div class="cg-issuer">${esc(ct.issuer || '')}</div>
     </button>`).join('');
   modalRoot.innerHTML = `
-    <div class="modal-card act">
+    <div class="modal-card cg-modal">
       <div class="m-head">
         <div class="m-title">Certificates</div>
         <button class="m-close" aria-label="Tutup">✕</button>
