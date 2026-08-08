@@ -349,10 +349,10 @@ body.dragging #swipeBtn .pulse { display: none; }
 
 /* teks vertikal "scroll down to see my certificates" — ditempel ke tepi kanan halaman activity (bukan page-inner yg ber-padding) */
 .act-scroll-hint {
-  position: absolute; top: 0; right: 14px; height: 100vh; z-index: 6;
+  position: absolute; top: 50vh; right: 14px; transform: translateY(-50%); z-index: 6;
   display: flex; align-items: center; gap: 10px;
   writing-mode: vertical-rl; text-orientation: mixed;
-  font-family: "JetBrains Mono", monospace; font-size: clamp(.72rem,1.15vw,.95rem); letter-spacing: clamp(2px,.3vw,4px);
+  font-family: "JetBrains Mono", monospace; font-size: clamp(.62rem,.85vw,.8rem); letter-spacing: clamp(1.5px,.22vw,3px);
   text-transform: uppercase; color: #62A461; opacity: .85;
   white-space: nowrap; pointer-events: none;
 }
@@ -374,17 +374,27 @@ body.dragging #swipeBtn .pulse { display: none; }
   position: relative; z-index: 1;
 }
 .act-cert-glass {
-  border-radius: 20px; padding: clamp(22px,3vw,34px);
-  background: #62A461;
+  border-radius: 16px; padding: clamp(22px,3vw,34px);
+  background: #2e4a2d;
   border: none;
 }
-.act-cert-section .cert-head { margin-bottom: 18px; }
-.act-cert-section .cert-eyebrow { color: #1d3a1c; opacity: 1; }
-.act-cert-section .cert-title { color: #14240f; font-size: .95rem; }
-.act-cert-section .cert-issuer { color: rgba(20,36,15,.7); font-size: .82rem; }
-.act-cert-section .cert-seeall { color: #1d3a1c; margin: 0; }
-.act-cert-section .cert-thumb { border-color: rgba(20,36,15,.18); border-radius: 10px; }
-.act-cert-section .cert-item { width: clamp(190px,20vw,260px); }
+.act-cert-section .cert-head { margin-bottom: 22px; }
+.act-cert-section .cert-eyebrow { color: rgba(158,214,157,.75); opacity: 1; font-size: .68rem; margin-bottom: 0; }
+.act-cert-section .cert-seeall { color: #9ED69D; margin: 0; }
+.act-cert-section .cert-item { width: clamp(190px,20vw,250px); }
+/* thumbnail: alas putih + contain, supaya sertifikat tampil utuh (tidak terpotong) */
+.act-cert-section .cert-thumb {
+  border: none; border-radius: 10px; background: #fff;
+  aspect-ratio: 4/3; padding: 10px;
+}
+.act-cert-section .cert-thumb img { object-fit: contain; }
+.act-cert-section .cert-title {
+  color: #F2EFE6; font-size: 1rem; font-weight: 600; margin-top: 14px; line-height: 1.35;
+}
+.act-cert-section .cert-issuer {
+  color: rgba(242,239,230,.55); font-size: .74rem; margin-top: 5px;
+  font-family: "JetBrains Mono", monospace; letter-spacing: .3px;
+}
 
 .activity .eyebrow { font-family:"JetBrains Mono",monospace; font-size:.8rem; letter-spacing:3px; text-transform:uppercase; color:#62A461; opacity:.8; margin-bottom:16px; }
 .activity h2 { font-family:"Anton",sans-serif; font-weight:400; color:#62A461; font-size:clamp(2.8rem,7vw,5.4rem); line-height:.9; letter-spacing:1px; text-transform:uppercase; }
@@ -641,7 +651,7 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   .act-stack { margin: 0 auto; }
   .act-hint{ position: static; width: 100%; text-align: center; }
   .act-scroll-hint {
-    position: static; transform: none; height: auto;
+    position: static; transform: none; height: auto; top: auto;
     writing-mode: horizontal-tb; flex-direction: row; gap: 6px;
     justify-content: center; padding: 4px 24px 0;
   }
@@ -669,13 +679,15 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 .cg-grid {
   display:grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
   padding: 8px 26px 26px; overflow-y:auto; max-height: 68vh;
+  scrollbar-width: none; -ms-overflow-style: none;
 }
+.cg-grid::-webkit-scrollbar { width:0; height:0; display:none; }
 .cg-cell { text-align:left; background:transparent; border:none; cursor:pointer; padding:0; width:100%; }
-.cg-thumb { width:100%; aspect-ratio:4/3; overflow:hidden; border:1px solid rgba(20,36,15,.18); border-radius:10px; }
-.cg-thumb img { width:100%; height:100%; object-fit:cover; display:block; transition: transform .3s; }
-.cg-cell:hover .cg-thumb img { transform: scale(1.05); }
-.cg-title { margin-top:8px; font-family:"Inter",sans-serif; font-weight:600; font-size:.82rem; color:#14240f; }
-.cg-issuer { margin-top:2px; font-family:"Inter",sans-serif; font-size:.72rem; color:rgba(20,36,15,.7); }
+.cg-thumb { width:100%; aspect-ratio:4/3; overflow:hidden; border:none; border-radius:10px; background:#fff; padding:10px; }
+.cg-thumb img { width:100%; height:100%; object-fit:contain; display:block; transition: transform .3s; }
+.cg-cell:hover .cg-thumb img { transform: scale(1.04); }
+.cg-title { margin-top:12px; font-family:"Inter",sans-serif; font-weight:600; font-size:.92rem; color:#F2EFE6; line-height:1.35; }
+.cg-issuer { margin-top:5px; font-family:"JetBrains Mono",monospace; font-size:.72rem; letter-spacing:.3px; color:rgba(242,239,230,.55); }
 @media (max-width:820px){ .cg-grid { grid-template-columns: repeat(2, 1fr); gap:12px; padding:8px 18px 22px; } }
 
 /* Modal Activity: teks hijau, kaca kemerahan */
@@ -688,41 +700,41 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 .modal-card.act .m-title, .modal-card.act .m-desc, .modal-card.act .m-close { color: #7FE39A; }
 .modal-card.act .m-meta .tag { color: #7FE39A; border-color: rgba(127,227,154,.4); }
 
-/* Modal grid Certificates: hijau polos, sama dgn card certificates di Activity */
+/* Modal grid Certificates: sama dgn card certificates di Activity */
 .modal-card.cg-modal {
-  width: min(820px,92vw);
-  background: #62A461;
+  width: min(880px,92vw);
+  background: #2e4a2d;
   backdrop-filter: none; -webkit-backdrop-filter: none;
-  border: none;
+  border: none; border-radius: 16px;
   box-shadow: 0 30px 80px rgba(0,0,0,.45);
 }
 .modal-card.cg-modal::before { display: none; }
-.modal-card.cg-modal .m-head { padding: 22px 26px 10px; }
+.modal-card.cg-modal .m-head { padding: 24px 26px 14px; }
 .modal-card.cg-modal .m-title {
   font-family: "Anton", sans-serif; font-weight: 400; letter-spacing: 1px; text-transform: uppercase;
-  font-size: clamp(1.4rem,2.4vw,1.9rem); color: #14240f;
+  font-size: clamp(1.4rem,2.4vw,1.9rem); color: #9ED69D;
 }
-.modal-card.cg-modal .m-close { color: #14240f; }
-.modal-card.cg-modal .m-close:hover { background: rgba(0,0,0,.10); }
+.modal-card.cg-modal .m-close { color: #9ED69D; border-color: rgba(158,214,157,.5); }
+.modal-card.cg-modal .m-close:hover { background: rgba(255,255,255,.10); }
 
-/* Modal detail satu sertifikat: hijau polos, lebar mengikuti gambar (tidak menyisakan ruang kosong) */
+/* Modal detail satu sertifikat: lebar mengikuti gambar (tidak menyisakan ruang kosong) */
 .modal-card.cert {
   width: fit-content; max-width: 92vw; min-width: min(420px,90vw);
-  background: #62A461;
+  background: #2e4a2d;
   backdrop-filter: none; -webkit-backdrop-filter: none;
-  border: none;
+  border: none; border-radius: 16px;
   box-shadow: 0 30px 80px rgba(0,0,0,.45);
 }
 .modal-card.cert::before { display: none; }
 .modal-card.cert h3 {
   font-family: "Anton", sans-serif; font-weight: 400; letter-spacing: 1px; text-transform: uppercase;
-  color: #14240f;
+  color: #9ED69D;
 }
-.modal-card.cert .m-desc { color: rgba(20,36,15,.78); }
-.modal-card.cert .m-close, .modal-card.cert .m-link { color: #14240f; }
-.modal-card.cert .m-close:hover, .modal-card.cert .m-link:hover { background: rgba(0,0,0,.10); }
+.modal-card.cert .m-desc { color: rgba(242,239,230,.6); font-family:"JetBrains Mono",monospace; font-size:.78rem; letter-spacing:.3px; }
+.modal-card.cert .m-close, .modal-card.cert .m-link { color: #9ED69D; border-color: rgba(158,214,157,.5); }
+.modal-card.cert .m-close:hover, .modal-card.cert .m-link:hover { background: rgba(255,255,255,.10); }
 .modal-card.cert .m-gallery { padding: 18px 26px 26px; justify-content: center; }
-.modal-card.cert .m-gallery img { border-radius: 10px; }
+.modal-card.cert .m-gallery img { border-radius: 10px; background:#fff; }
 
 /* Kaca (GlassSurface) — netral (Projects kini putih) */
 .seg-glass { position: relative; }
