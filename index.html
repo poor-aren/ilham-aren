@@ -336,7 +336,7 @@ body.dragging #swipeBtn .pulse { display: none; }
 }
 .activity-scroll::-webkit-scrollbar { width: 0; height: 0; display: none; }
 
-.activity .page-inner { gap: clamp(30px,5vw,80px); height: auto; min-height: 100%; }
+.activity .page-inner { gap: clamp(30px,5vw,80px); height: auto; min-height: 100%; position: relative; padding-right: clamp(56px,7vw,110px); }
 .act-left { flex: 1 1 52%; min-width: 0; }
 .act-hint{
   width:100%; text-align:center; font-style: normal !important;
@@ -344,27 +344,47 @@ body.dragging #swipeBtn .pulse { display: none; }
   letter-spacing:2px; text-transform:uppercase;
   color:#62A461 !important;
 }
-.act-right { position:relative; flex: 1 1 48%; display: flex; flex-direction: row; align-items: center; justify-content: flex-end; gap: 22px; font-style: normal; }
+.act-right { position:relative; flex: 1 1 48%; display: flex; align-items: center; justify-content: flex-end; font-style: normal; }
 .act-stack-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-right: clamp(8px,2.4vw,34px); }
 
-/* teks vertikal "scroll down to see my certificates" di kanan card */
+/* teks vertikal "scroll down to see my certificates" — mepet ke tepi kanan halaman, ukuran ikut layar */
 .act-scroll-hint {
+  position: absolute; top: 50%; right: 0; transform: translateY(-50%);
   writing-mode: vertical-rl; text-orientation: mixed;
-  font-family: "JetBrains Mono", monospace; font-size: .7rem; letter-spacing: 2.5px;
+  font-family: "JetBrains Mono", monospace; font-size: clamp(.72rem,1.15vw,.95rem); letter-spacing: clamp(2px,.3vw,4px);
   text-transform: uppercase; color: #62A461; opacity: .85;
   display: flex; align-items: center; gap: 10px; white-space: nowrap;
 }
-.act-scroll-hint .arrow-down { display: inline-block; animation: actArrowBob 1.8s ease-in-out infinite; }
-@keyframes actArrowBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+.act-scroll-hint .arrow-down {
+  display: inline-block; animation: actArrowBob 1.8s ease-in-out infinite;
+  transform: rotate(90deg);   /* vertical-rl memutar teks 90°; putar balik supaya ↓ tetap menunjuk ke bawah */
+  font-size: 1.1em;
+}
+@keyframes actArrowBob { 0%,100% { transform: rotate(90deg) translateY(0); } 50% { transform: rotate(90deg) translateY(6px); } }
 @media (prefers-reduced-motion: reduce) { .act-scroll-hint .arrow-down { animation: none; } }
 
 /* ---- Certificates section (di bawah viewport pertama Activity) ---- */
-.act-cert-section { padding: 40px clamp(28px,6vw,110px) 90px; position: relative; z-index: 1; }
+.act-cert-divider {
+  max-width: 1400px; margin: 0 auto; padding: 0 clamp(28px,6vw,110px);
+}
+.act-cert-divider .line { height: 1px; background: rgba(245,231,216,.22); }
+.act-cert-section {
+  max-width: 1400px; margin: 0 auto; padding: 36px clamp(28px,6vw,110px) 90px;
+  position: relative; z-index: 1;
+}
+.act-cert-glass {
+  border-radius: 24px; padding: clamp(22px,3vw,34px);
+  background: rgba(255,255,255,.05);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  border: 1px solid rgba(245,231,216,.14);
+}
 .act-cert-section .cert-eyebrow { color: #62A461; opacity: .85; }
-.act-cert-section .cert-title { color: #F5E7D8; }
-.act-cert-section .cert-issuer { color: rgba(245,231,216,.6); }
+.act-cert-section .cert-title { color: #F5E7D8; font-size: .95rem; }
+.act-cert-section .cert-issuer { color: rgba(245,231,216,.6); font-size: .82rem; }
 .act-cert-section .cert-seeall { color: #62A461; }
 .act-cert-section .cert-thumb { border-color: rgba(245,231,216,.2); }
+.act-cert-section .cert-item { width: clamp(190px,20vw,260px); }
 
 .activity .eyebrow { font-family:"JetBrains Mono",monospace; font-size:.8rem; letter-spacing:3px; text-transform:uppercase; color:#62A461; opacity:.8; margin-bottom:16px; }
 .activity h2 { font-family:"Anton",sans-serif; font-weight:400; color:#62A461; font-size:clamp(2.8rem,7vw,5.4rem); line-height:.9; letter-spacing:1px; text-transform:uppercase; }
@@ -520,6 +540,7 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   .home .page-inner, .activity .page-inner {
     flex-direction: column; justify-content: center; text-align: left; gap: 24px; overflow-y: auto;
     padding-top: 76px;                 /* lorong swipe di atas */
+    padding-right: clamp(28px,6vw,110px);   /* reset: desktop punya ruang ekstra utk teks vertikal, mobile tidak perlu */
   }
   .contact .page-inner {
     flex-direction: column; text-align: left; gap: 24px; overflow-y: auto;
@@ -622,9 +643,10 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   .act-hint{ position: static; width: 100%; text-align: center; }
   .act-stack-wrap { margin-right: 0; }
   .act-scroll-hint {
+    position: static; transform: none;
     writing-mode: horizontal-tb; flex-direction: row; gap: 6px;
   }
-  .act-scroll-hint .arrow-down { animation: none; }
+  .act-scroll-hint .arrow-down { animation: none; transform: rotate(0deg); }
 }
 
 /* Activity: tanpa efek bold hover sama sekali */
@@ -645,7 +667,6 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 .cert-seeall:hover { opacity:.6; }
 
 /* Pop-up grid semua sertifikat */
-.cert-grid-card { background:#ffffff; color:#14141a; }
 .cg-grid {
   display:grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
   padding: 8px 30px 30px; overflow-y:auto; max-height: 70vh;
@@ -667,6 +688,9 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 }
 .modal-card.act .m-title, .modal-card.act .m-desc, .modal-card.act .m-close { color: #7FE39A; }
 .modal-card.act .m-meta .tag { color: #7FE39A; border-color: rgba(127,227,154,.4); }
+.modal-card.act .cg-title { color: #F5E7D8; }
+.modal-card.act .cg-issuer { color: rgba(245,231,216,.6); }
+.modal-card.act .cg-thumb { border-color: rgba(245,231,216,.2); }
 
 /* Kaca (GlassSurface) — netral (Projects kini putih) */
 .seg-glass { position: relative; }
@@ -1284,12 +1308,15 @@ function renderActivity(){
         </div>
       </div>
     </div>
+    <div class="act-cert-divider"><div class="line"></div></div>
     <section class="act-cert-section cert-strip">
-      <div class="cert-head">
-        <span class="cert-eyebrow">certificates</span>
+      <div class="act-cert-glass">
+        <div class="cert-head">
+          <span class="cert-eyebrow">certificates</span>
+        </div>
+        <div class="cert-track">${certs}</div>
+        <button class="cert-seeall" id="actCertSeeAll" type="button">See all →</button>
       </div>
-      <div class="cert-track">${certs}</div>
-      <button class="cert-seeall" id="actCertSeeAll" type="button">See all →</button>
     </section>
     </div></div>`;
 }
@@ -1380,7 +1407,7 @@ function openCertGrid(list){
       <div class="cg-issuer">${esc(ct.issuer || '')}</div>
     </button>`).join('');
   modalRoot.innerHTML = `
-    <div class="modal-card cert-grid-card" style="color:#14141a">
+    <div class="modal-card act">
       <div class="m-head">
         <div class="m-title">Certificates</div>
         <button class="m-close" aria-label="Tutup">✕</button>
