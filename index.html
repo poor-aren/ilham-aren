@@ -850,6 +850,7 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 
 /* ---- Topbar HP ---- */
 #mobileTop { display: none; }
+#mobileHeader { display: none; }
 @media (max-width: 820px) {
   /* semua halaman bisa digulir penuh di HP */
   .page { overflow-y: auto; -webkit-overflow-scrolling: touch; }
@@ -865,6 +866,21 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   body[data-page="contact"]  #mobileTop { color: #0e2a10; }
   /* saat jadi tombol "see my certificates" di halaman activity — desain teks tidak diubah */
   #mobileTop.mt-action { pointer-events: auto; cursor: pointer; }
+
+  /* Header kaca: transparan saat di puncak, jadi kaca begitu halaman digulir.
+     z-index 69 → tepat di belakang topbar (71) dan menu (70). */
+  #mobileHeader {
+    display: block; position: fixed; top: 0; left: 0; right: 0; height: 62px; z-index: 69;
+    pointer-events: none; opacity: 0; transition: opacity .25s ease;
+    backdrop-filter: blur(14px) saturate(1.5); -webkit-backdrop-filter: blur(14px) saturate(1.5);
+    background: rgba(255,255,255,.07);
+    border-bottom: 1px solid rgba(255,255,255,.14);
+  }
+  body.mt-scrolled #mobileHeader { opacity: 1; }
+  /* halaman Projects berlatar putih → tint gelap supaya kaca tetap terbaca */
+  body[data-page="projects"] #mobileHeader {
+    background: rgba(20,20,26,.05); border-bottom-color: rgba(20,20,26,.10);
+  }
 
   /* HP: tanpa swipe liquid */
   #swipeBtn, #edgeBack, #blobL, #blobR, #blobSvg { display: none !important; }
@@ -1004,6 +1020,7 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 </div>
 
 <div id="pageTrans" aria-hidden="true"><div class="tl"></div><div class="tl"></div><div class="tl"></div><div class="tl"></div></div>
+<div id="mobileHeader" aria-hidden="true"></div>
 <div id="mobileTop" aria-hidden="true"><span class="mt-brand">PORTOFOLIO</span></div>
 <div id="mobile-menu-root"></div>
 
@@ -2217,7 +2234,7 @@ function ensureLoop(){ document.body.dataset.peek = '1'; if(!state.raf){ state.l
   const DEFAULT_TEXT = brand ? brand.textContent : 'PORTOFOLIO';
   const sync = () => {
     const isAct = document.body.dataset.page === 'activity';
-    if(brand) brand.textContent = isAct ? 'SEE MY CERTIFICATES' : DEFAULT_TEXT;
+    if(brand) brand.textContent = isAct ? 'CERTIFICATES ›' : DEFAULT_TEXT;
     mt.classList.toggle('mt-action', isAct);
     mt.setAttribute('aria-hidden', isAct ? 'false' : 'true');
   };
@@ -2227,6 +2244,25 @@ function ensureLoop(){ document.body.dataset.peek = '1'; if(!state.raf){ state.l
   });
   new MutationObserver(sync).observe(document.body, { attributes:true, attributeFilter:['data-page'] });
   sync();
+})();
+
+/* ---- Header kaca HP: aktif begitu halaman digulir ----
+   Di HP yang menggulir adalah elemen .page (bukan window), dan elemennya berganti
+   tiap pindah halaman → pakai fase capture di document supaya menangkap semuanya. */
+(function initMobileHeaderOnScroll(){
+  let ticking = false;
+  const apply = (top) => document.body.classList.toggle('mt-scrolled', top > 8);
+  document.addEventListener('scroll', (e) => {
+    const el = e.target;
+    if(!el || el === document || !el.classList) return;
+    if(!el.classList.contains('page') && !el.classList.contains('activity-scroll') && !el.classList.contains('proj-scroll')) return;
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { apply(el.scrollTop); ticking = false; });
+  }, true);
+  // pindah halaman → posisi scroll kembali ke atas
+  new MutationObserver(() => document.body.classList.remove('mt-scrolled'))
+    .observe(document.body, { attributes:true, attributeFilter:['data-page'] });
 })();
 
 function buildBase(idx){ document.body.dataset.page = PAGES[idx].key; document.body.dataset.lanyardUp = '0'; if(window.__unmountActivityStack) window.__unmountActivityStack(); if(window.__unmountProjExtras) window.__unmountProjExtras(); baseLayer.innerHTML = PAGES[idx].render(); stopTyping(); stopProx(); PAGES[idx].init && PAGES[idx].init(baseLayer); window.dispatchEvent(new CustomEvent('page-changed', { detail: PAGES[idx].key })); }
