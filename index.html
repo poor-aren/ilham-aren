@@ -374,17 +374,16 @@ body.dragging #swipeBtn .pulse { display: none; }
 }
 .act-cert-glass {
   border-radius: 24px; padding: clamp(22px,3vw,34px);
-  background: rgba(98,164,97,.08);
-  backdrop-filter: blur(14px) saturate(1.4);
-  -webkit-backdrop-filter: blur(14px) saturate(1.4);
-  border: 1px solid rgba(98,164,97,.28);
+  background: linear-gradient(135deg, #2f5c2e, #1e3d1d);
+  border: 1px solid rgba(127,227,154,.30);
+  box-shadow: 0 18px 50px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.10);
 }
 .act-cert-section .cert-head { margin-bottom: 18px; }
-.act-cert-section .cert-eyebrow { color: #62A461; opacity: .85; }
+.act-cert-section .cert-eyebrow { color: #9FE6A0; opacity: 1; }
 .act-cert-section .cert-title { color: #F5E7D8; font-size: .95rem; }
-.act-cert-section .cert-issuer { color: rgba(245,231,216,.6); font-size: .82rem; }
-.act-cert-section .cert-seeall { color: #62A461; margin: 0; }
-.act-cert-section .cert-thumb { border-color: rgba(245,231,216,.2); }
+.act-cert-section .cert-issuer { color: rgba(245,231,216,.65); font-size: .82rem; }
+.act-cert-section .cert-seeall { color: #9FE6A0; margin: 0; }
+.act-cert-section .cert-thumb { border-color: rgba(127,227,154,.28); border-radius: 10px; }
 .act-cert-section .cert-item { width: clamp(190px,20vw,260px); }
 
 .activity .eyebrow { font-family:"JetBrains Mono",monospace; font-size:.8rem; letter-spacing:3px; text-transform:uppercase; color:#62A461; opacity:.8; margin-bottom:16px; }
@@ -690,18 +689,39 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 .modal-card.act .m-title, .modal-card.act .m-desc, .modal-card.act .m-close { color: #7FE39A; }
 .modal-card.act .m-meta .tag { color: #7FE39A; border-color: rgba(127,227,154,.4); }
 
-/* Modal grid Certificates: kaca hijau, sesuai tema section certificates di Activity */
+/* Modal grid Certificates: hijau solid, sesuai tema section certificates di Activity */
 .modal-card.cg-modal {
-  width: min(720px,92vw);
-  background: linear-gradient(135deg, rgba(98,164,97,.22), rgba(20,40,18,.5));
-  backdrop-filter: blur(30px) saturate(1.5); -webkit-backdrop-filter: blur(30px) saturate(1.5);
-  border: 1px solid rgba(127,227,154,.28);
-  box-shadow: 0 30px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.14);
+  width: min(760px,92vw);
+  background: linear-gradient(135deg, #2f5c2e, #173016);
+  backdrop-filter: none; -webkit-backdrop-filter: none;
+  border: 1px solid rgba(127,227,154,.30);
+  box-shadow: 0 30px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.12);
 }
-.modal-card.cg-modal .m-title, .modal-card.cg-modal .m-close { color: #7FE39A; }
+.modal-card.cg-modal::before { display: none; }
+.modal-card.cg-modal .m-head { padding: 24px 26px 10px; }
+.modal-card.cg-modal .m-title {
+  font-family: "Anton", sans-serif; font-weight: 400; letter-spacing: 1px; text-transform: uppercase;
+  font-size: clamp(1.5rem,2.6vw,2rem); color: #9FE6A0;
+}
+.modal-card.cg-modal .m-close { color: #9FE6A0; }
 .modal-card.cg-modal .cg-title { color: #F5E7D8; }
-.modal-card.cg-modal .cg-issuer { color: rgba(245,231,216,.6); }
+.modal-card.cg-modal .cg-issuer { color: rgba(245,231,216,.65); }
 .modal-card.cg-modal .cg-thumb { border-color: rgba(127,227,154,.28); }
+
+/* Modal detail satu sertifikat: hijau solid (bukan kaca gelap) */
+.modal-card.cert {
+  background: linear-gradient(135deg, #2f5c2e, #173016);
+  backdrop-filter: none; -webkit-backdrop-filter: none;
+  border: 1px solid rgba(127,227,154,.30);
+  box-shadow: 0 30px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.12);
+}
+.modal-card.cert::before { display: none; }
+.modal-card.cert h3 {
+  font-family: "Anton", sans-serif; font-weight: 400; letter-spacing: 1px; text-transform: uppercase;
+  color: #9FE6A0;
+}
+.modal-card.cert .m-desc { color: rgba(245,231,216,.8); }
+.modal-card.cert .m-close, .modal-card.cert .m-link { color: #9FE6A0; }
 
 /* Kaca (GlassSurface) — netral (Projects kini putih) */
 .seg-glass { position: relative; }
@@ -1430,7 +1450,7 @@ function openCertGrid(list){
   modalRoot.querySelectorAll('.cg-cell').forEach(cell => {
     cell.addEventListener('click', () => {
       const ct = list[+cell.dataset.i];
-      openModal({ title:ct.title, desc:(ct.issuer? ('Issued by ' + ct.issuer) : ''), images:[ct.image], link:ct.url, palette:{ bg:'#141414', fg:'#E7B996' } });
+      openModal({ title:ct.title, desc:(ct.issuer? ('Issued by ' + ct.issuer) : ''), images:[ct.image], link:ct.url, palette:{ bg:'#1e3d1d', fg:'#9FE6A0' }, theme:'cert' });
     });
   });
 }
@@ -1833,7 +1853,7 @@ function initActivity(root){
         const ct = (pc.certificates||[])[+pressedCert.dataset.ci];
         pressedCert = null;
         if(ct){
-          openModal({ title:ct.title, desc:(ct.issuer? ('Issued by ' + ct.issuer) : ''), images:[ct.image], link:ct.url, palette:{ bg:'#141414', fg:'#E7B996' } });
+          openModal({ title:ct.title, desc:(ct.issuer? ('Issued by ' + ct.issuer) : ''), images:[ct.image], link:ct.url, palette:{ bg:'#1e3d1d', fg:'#9FE6A0' }, theme:'cert' });
           return;
         }
       }
@@ -1854,7 +1874,7 @@ function initActivity(root){
       const it = e.target.closest && e.target.closest('.cert-item');
       if(!it) return;
       const ct = (pc.certificates||[])[+it.dataset.ci];
-      if(ct) openModal({ title:ct.title, desc:(ct.issuer? ('Issued by ' + ct.issuer) : ''), images:[ct.image], link:ct.url, palette:{ bg:'#141414', fg:'#E7B996' } });
+      if(ct) openModal({ title:ct.title, desc:(ct.issuer? ('Issued by ' + ct.issuer) : ''), images:[ct.image], link:ct.url, palette:{ bg:'#1e3d1d', fg:'#9FE6A0' }, theme:'cert' });
     });
     track.addEventListener('wheel', (e) => {
       if(Math.abs(e.deltaY) > Math.abs(e.deltaX)){ stopMom(); track.scrollLeft += e.deltaY; wrap(); e.preventDefault(); }
