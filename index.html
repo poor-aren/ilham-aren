@@ -328,7 +328,15 @@ body.dragging #swipeBtn .pulse { display: none; }
 
 /* ============ PAGE 3 — ACTIVITY ============ */
 .page.activity { background: #871003; }
-.activity .page-inner { gap: clamp(30px,5vw,80px); }
+
+/* Activity kini scrollable vertikal (dulu overflow:hidden spt page lain) — supaya cert-section di bawah viewport bisa dicapai */
+.activity-scroll {
+  position: absolute; inset: 0; z-index: 1; overflow-y: auto;
+  scrollbar-width: none; -ms-overflow-style: none;
+}
+.activity-scroll::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+.activity .page-inner { gap: clamp(30px,5vw,80px); height: auto; min-height: 100%; }
 .act-left { flex: 1 1 52%; min-width: 0; }
 .act-hint{
   width:100%; text-align:center; font-style: normal !important;
@@ -336,7 +344,27 @@ body.dragging #swipeBtn .pulse { display: none; }
   letter-spacing:2px; text-transform:uppercase;
   color:#62A461 !important;
 }
-.act-right { position:relative; flex: 1 1 48%; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 12px; font-style: normal; }
+.act-right { position:relative; flex: 1 1 48%; display: flex; flex-direction: row; align-items: center; justify-content: flex-end; gap: 22px; font-style: normal; }
+.act-stack-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-right: clamp(8px,2.4vw,34px); }
+
+/* teks vertikal "scroll down to see my certificates" di kanan card */
+.act-scroll-hint {
+  writing-mode: vertical-rl; text-orientation: mixed;
+  font-family: "JetBrains Mono", monospace; font-size: .7rem; letter-spacing: 2.5px;
+  text-transform: uppercase; color: #62A461; opacity: .85;
+  display: flex; align-items: center; gap: 10px; white-space: nowrap;
+}
+.act-scroll-hint .arrow-down { display: inline-block; animation: actArrowBob 1.8s ease-in-out infinite; }
+@keyframes actArrowBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+@media (prefers-reduced-motion: reduce) { .act-scroll-hint .arrow-down { animation: none; } }
+
+/* ---- Certificates section (di bawah viewport pertama Activity) ---- */
+.act-cert-section { padding: 40px clamp(28px,6vw,110px) 90px; position: relative; z-index: 1; }
+.act-cert-section .cert-eyebrow { color: #62A461; opacity: .85; }
+.act-cert-section .cert-title { color: #F5E7D8; }
+.act-cert-section .cert-issuer { color: rgba(245,231,216,.6); }
+.act-cert-section .cert-seeall { color: #62A461; }
+.act-cert-section .cert-thumb { border-color: rgba(245,231,216,.2); }
 
 .activity .eyebrow { font-family:"JetBrains Mono",monospace; font-size:.8rem; letter-spacing:3px; text-transform:uppercase; color:#62A461; opacity:.8; margin-bottom:16px; }
 .activity h2 { font-family:"Anton",sans-serif; font-weight:400; color:#62A461; font-size:clamp(2.8rem,7vw,5.4rem); line-height:.9; letter-spacing:1px; text-transform:uppercase; }
@@ -592,6 +620,11 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   .act-right { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
   .act-stack { margin: 0 auto; }
   .act-hint{ position: static; width: 100%; text-align: center; }
+  .act-stack-wrap { margin-right: 0; }
+  .act-scroll-hint {
+    writing-mode: horizontal-tb; flex-direction: row; gap: 6px;
+  }
+  .act-scroll-hint .arrow-down { animation: none; }
 }
 
 /* Activity: tanpa efek bold hover sama sekali */
@@ -1145,16 +1178,6 @@ function renderHome(){
 
 function renderProjects(){
   const c = CONFIG.projects;
-  const certOne = (ct,i) => `
-    <div class="cert-item" data-ci="${i}">
-      <div class="cert-thumb"><img src="${img(ct.image, ct.title, '#141414', '#7a7266', 420, 300)}" alt="" loading="lazy"></div>
-      <div class="cert-title">${esc(ct.title)}</div>
-      <div class="cert-issuer">${esc(ct.issuer||'')}</div>
-    </div>`;
-  const certList = (c.certificates||[]).map(certOne).join("");
-  // 3x salinan → ilusi loop tak berujung (drag momentum akan wrap di tengah)
-  const certs = certList + certList + certList;
-
   const segHtml = (cat) => `<div class="seg">
         <div class="seg-glass"></div>
         <button class="ptab${cat==='tech'?' active':''}" data-cat="tech">tech</button>
@@ -1205,15 +1228,7 @@ function renderProjects(){
       <div class="proj-bg" id="projBg"></div>
 
       <div class="proj-scroll"><div class="proj-wrap">
-        <section class="cert-strip">
-          <div class="cert-head">
-            <span class="cert-eyebrow">certificates</span>
-          </div>
-          <div class="cert-track">${certs}</div>
-          <button class="cert-seeall" id="certSeeAll" type="button">See all →</button>
-        </section>
-
-        <div class="proj-divider"></div>
+        <div class="proj-divider">
 
         <div class="proj-sechead-row">
           <span class="proj-sechead">work experience</span>
@@ -1236,8 +1251,19 @@ function renderProjects(){
 
 function renderActivity(){
   const c = CONFIG.activity;
+  const p = CONFIG.projects;
+  const certOne = (ct,i) => `
+    <div class="cert-item" data-ci="${i}">
+      <div class="cert-thumb"><img src="${img(ct.image, ct.title, '#141414', '#7a7266', 420, 300)}" alt="" loading="lazy"></div>
+      <div class="cert-title">${esc(ct.title)}</div>
+      <div class="cert-issuer">${esc(ct.issuer||'')}</div>
+    </div>`;
+  const certList = (p.certificates||[]).map(certOne).join("");
+  // 3x salinan → ilusi loop tak berujung (drag momentum akan wrap di tengah)
+  const certs = certList + certList + certList;
+
   return `
-    <div class="page activity"><div class="page-inner">
+    <div class="page activity"><div class="activity-scroll"><div class="page-inner">
       <div class="act-left">
         <div class="act-meta" id="actMeta"></div>
         <div class="act-rule"></div>
@@ -1248,9 +1274,23 @@ function renderActivity(){
         <div class="act-rule bottom"></div>
       </div>
       <div class="act-right">
-        <div class="act-stack" id="actStackRoot"></div>
-        <div class="act-hint">hold &amp; drag to switch photo</div>
+        <div class="act-stack-wrap">
+          <div class="act-stack" id="actStackRoot"></div>
+          <div class="act-hint">hold &amp; drag to switch photo</div>
+        </div>
+        <div class="act-scroll-hint">
+          <span>scroll down to see my certificates</span>
+          <span class="arrow-down" aria-hidden="true">↓</span>
+        </div>
       </div>
+    </div>
+    <section class="act-cert-section cert-strip">
+      <div class="cert-head">
+        <span class="cert-eyebrow">certificates</span>
+      </div>
+      <div class="cert-track">${certs}</div>
+      <button class="cert-seeall" id="actCertSeeAll" type="button">See all →</button>
+    </section>
     </div></div>`;
 }
 
@@ -1531,77 +1571,6 @@ function initProjects(root){
     panes.forEach(pn => { pn.style.display = (pn.dataset.pane === cat) ? '' : 'none'; });
   }));
 
-  // Sertifikat: loop tak berujung + momentum (drag lalu berputar lama, licin)
-  const track = root.querySelector('.cert-track');
-  if(track){
-    let oneSet = 0;
-    const measure = () => { oneSet = track.scrollWidth / 3; if(oneSet > 0 && track.scrollLeft < 1) track.scrollLeft = oneSet; };
-    requestAnimationFrame(measure);
-    const wrap = () => {
-      if(!oneSet) return;
-      if(track.scrollLeft < oneSet * 0.5) track.scrollLeft += oneSet;
-      else if(track.scrollLeft > oneSet * 1.5) track.scrollLeft -= oneSet;
-    };
-    let down = false, moved = false, startX = 0, startLeft = 0, lastX = 0, vel = 0, momRaf = null;
-    const stopMom = () => { if(momRaf){ cancelAnimationFrame(momRaf); momRaf = null; } };
-    let pressedCert = null;
-    track.addEventListener('pointerdown', (e) => {
-      measure(); down = true; moved = false; startX = e.clientX; startLeft = track.scrollLeft; lastX = e.clientX; vel = 0;
-      pressedCert = e.target.closest ? e.target.closest('.cert-item') : null;
-      stopMom(); track.classList.add('dragging'); track.setPointerCapture(e.pointerId);
-    });
-    track.addEventListener('pointermove', (e) => {
-      if(!down) return;
-      const dx = e.clientX - startX;
-      if(Math.abs(dx) > 4) moved = true;
-      track.scrollLeft = startLeft - dx;
-      vel = -(e.clientX - lastX) * 0.5; lastX = e.clientX;   // separuh → tak meluncur jauh
-      wrap();
-    });
-    const release = (e) => {
-      if(!down) return;
-      down = false; track.classList.remove('dragging'); try{ track.releasePointerCapture(e.pointerId); }catch(_){}
-
-      // KLIK (bukan geser) → buka detail sertifikat.
-      // Catatan: setPointerCapture menelan event 'click', jadi ditangani di sini.
-      if(!moved && pressedCert){
-        const ct = (c.certificates||[])[+pressedCert.dataset.ci];
-        pressedCert = null;
-        if(ct){
-          openModal({ title:ct.title, desc:(ct.issuer? ('Issued by ' + ct.issuer) : ''), images:[ct.image], link:ct.url, palette:{ bg:'#141414', fg:'#E7B996' } });
-          return;
-        }
-      }
-      pressedCert = null;
-
-      (function mom(){
-        if(!track.isConnected || Math.abs(vel) < 0.12){ momRaf = null; return; }
-        track.scrollLeft += vel; wrap();
-        vel *= 0.90;                  // gesekan lebih besar → berhenti wajar
-        momRaf = requestAnimationFrame(mom);
-      })();
-    };
-    track.addEventListener('pointerup', release);
-    track.addEventListener('pointercancel', release);
-    // fallback: sebagian HP tak mengirim pointerup setelah setPointerCapture
-    track.addEventListener('click', (e) => {
-      if(moved) { e.preventDefault(); return; }
-      const it = e.target.closest && e.target.closest('.cert-item');
-      if(!it) return;
-      const ct = (c.certificates||[])[+it.dataset.ci];
-      if(ct) openModal({ title:ct.title, desc:(ct.issuer? ('Issued by ' + ct.issuer) : ''), images:[ct.image], link:ct.url, palette:{ bg:'#141414', fg:'#E7B996' } });
-    });
-    track.addEventListener('wheel', (e) => {
-      if(Math.abs(e.deltaY) > Math.abs(e.deltaX)){ stopMom(); track.scrollLeft += e.deltaY; wrap(); e.preventDefault(); }
-    }, { passive: false });
-
-    // tombol "See all" → grid semua sertifikat
-    const seeAll = root.querySelector('#certSeeAll');
-    if(seeAll){
-      seeAll.addEventListener('click', () => openCertGrid(c.certificates || []));
-    }
-  }
-
   // Efek Chroma (grayscale → warna asli di sekitar kursor) — di semua layer
   {
     const gray = root.querySelector('.proj-gray');
@@ -1787,6 +1756,79 @@ function startProximity(root){
 
 function initActivity(root){
   const items = CONFIG.activity.items;
+  const pc = CONFIG.projects;
+
+  // Sertifikat: loop tak berujung + momentum (drag lalu berputar lama, licin)
+  const track = root.querySelector('.cert-track');
+  if(track){
+    let oneSet = 0;
+    const measure = () => { oneSet = track.scrollWidth / 3; if(oneSet > 0 && track.scrollLeft < 1) track.scrollLeft = oneSet; };
+    requestAnimationFrame(measure);
+    const wrap = () => {
+      if(!oneSet) return;
+      if(track.scrollLeft < oneSet * 0.5) track.scrollLeft += oneSet;
+      else if(track.scrollLeft > oneSet * 1.5) track.scrollLeft -= oneSet;
+    };
+    let down = false, moved = false, startX = 0, startLeft = 0, lastX = 0, vel = 0, momRaf = null;
+    const stopMom = () => { if(momRaf){ cancelAnimationFrame(momRaf); momRaf = null; } };
+    let pressedCert = null;
+    track.addEventListener('pointerdown', (e) => {
+      measure(); down = true; moved = false; startX = e.clientX; startLeft = track.scrollLeft; lastX = e.clientX; vel = 0;
+      pressedCert = e.target.closest ? e.target.closest('.cert-item') : null;
+      stopMom(); track.classList.add('dragging'); track.setPointerCapture(e.pointerId);
+    });
+    track.addEventListener('pointermove', (e) => {
+      if(!down) return;
+      const dx = e.clientX - startX;
+      if(Math.abs(dx) > 4) moved = true;
+      track.scrollLeft = startLeft - dx;
+      vel = -(e.clientX - lastX) * 0.5; lastX = e.clientX;   // separuh → tak meluncur jauh
+      wrap();
+    });
+    const release = (e) => {
+      if(!down) return;
+      down = false; track.classList.remove('dragging'); try{ track.releasePointerCapture(e.pointerId); }catch(_){}
+
+      // KLIK (bukan geser) → buka detail sertifikat.
+      // Catatan: setPointerCapture menelan event 'click', jadi ditangani di sini.
+      if(!moved && pressedCert){
+        const ct = (pc.certificates||[])[+pressedCert.dataset.ci];
+        pressedCert = null;
+        if(ct){
+          openModal({ title:ct.title, desc:(ct.issuer? ('Issued by ' + ct.issuer) : ''), images:[ct.image], link:ct.url, palette:{ bg:'#141414', fg:'#E7B996' } });
+          return;
+        }
+      }
+      pressedCert = null;
+
+      (function mom(){
+        if(!track.isConnected || Math.abs(vel) < 0.12){ momRaf = null; return; }
+        track.scrollLeft += vel; wrap();
+        vel *= 0.90;                  // gesekan lebih besar → berhenti wajar
+        momRaf = requestAnimationFrame(mom);
+      })();
+    };
+    track.addEventListener('pointerup', release);
+    track.addEventListener('pointercancel', release);
+    // fallback: sebagian HP tak mengirim pointerup setelah setPointerCapture
+    track.addEventListener('click', (e) => {
+      if(moved) { e.preventDefault(); return; }
+      const it = e.target.closest && e.target.closest('.cert-item');
+      if(!it) return;
+      const ct = (pc.certificates||[])[+it.dataset.ci];
+      if(ct) openModal({ title:ct.title, desc:(ct.issuer? ('Issued by ' + ct.issuer) : ''), images:[ct.image], link:ct.url, palette:{ bg:'#141414', fg:'#E7B996' } });
+    });
+    track.addEventListener('wheel', (e) => {
+      if(Math.abs(e.deltaY) > Math.abs(e.deltaX)){ stopMom(); track.scrollLeft += e.deltaY; wrap(); e.preventDefault(); }
+    }, { passive: false });
+
+    // tombol "See all" → grid semua sertifikat
+    const seeAll = root.querySelector('#actCertSeeAll');
+    if(seeAll){
+      seeAll.addEventListener('click', () => openCertGrid(pc.certificates || []));
+    }
+  }
+
   const isBase = true;   // semua layer (termasuk 'intip') di-init penuh
   const eyebrowEl = root.querySelector('.eyebrow');
   const titleEl = root.querySelector('#actTitle');
