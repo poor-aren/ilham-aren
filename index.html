@@ -352,7 +352,7 @@ body.dragging #swipeBtn .pulse { display: none; }
   position: absolute; top: 50vh; right: 14px; transform: translateY(-50%); z-index: 6;
   display: flex; align-items: center; gap: 10px;
   writing-mode: vertical-rl; text-orientation: mixed;
-  font-family: "JetBrains Mono", monospace; font-size: clamp(.62rem,.85vw,.8rem); letter-spacing: clamp(1.5px,.22vw,3px);
+  font-family: "JetBrains Mono", monospace; font-size: clamp(.78rem,1.05vh,1rem); letter-spacing: clamp(2px,.3vw,4px);
   text-transform: uppercase; color: #62A461; opacity: .85;
   white-space: nowrap; pointer-events: none;
 }
@@ -374,13 +374,13 @@ body.dragging #swipeBtn .pulse { display: none; }
   position: relative; z-index: 1;
 }
 .act-cert-glass {
-  border-radius: 16px; padding: clamp(22px,3vw,34px);
-  background: #2e4a2d;
+  padding: 0;
+  background: transparent;
   border: none;
 }
 .act-cert-section .cert-head { margin-bottom: 22px; }
-.act-cert-section .cert-eyebrow { color: rgba(158,214,157,.75); opacity: 1; font-size: .68rem; margin-bottom: 0; }
-.act-cert-section .cert-seeall { color: #9ED69D; margin: 0; }
+.act-cert-section .cert-eyebrow { color: #62A461; opacity: .9; font-size: .72rem; margin-bottom: 0; }
+.act-cert-section .cert-seeall { color: #62A461; margin: 0; }
 .act-cert-section .cert-item { width: clamp(190px,20vw,250px); }
 /* thumbnail: alas putih + contain, supaya sertifikat tampil utuh (tidak terpotong) */
 .act-cert-section .cert-thumb {
@@ -389,10 +389,10 @@ body.dragging #swipeBtn .pulse { display: none; }
 }
 .act-cert-section .cert-thumb img { object-fit: contain; }
 .act-cert-section .cert-title {
-  color: #F2EFE6; font-size: 1rem; font-weight: 600; margin-top: 14px; line-height: 1.35;
+  color: #F5E7D8; font-size: 1rem; font-weight: 600; margin-top: 14px; line-height: 1.35;
 }
 .act-cert-section .cert-issuer {
-  color: rgba(242,239,230,.55); font-size: .74rem; margin-top: 5px;
+  color: rgba(245,231,216,.6); font-size: .74rem; margin-top: 5px;
   font-family: "JetBrains Mono", monospace; letter-spacing: .3px;
 }
 
