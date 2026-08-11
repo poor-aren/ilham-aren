@@ -274,15 +274,13 @@ const MENU_ITEMS = [
 ];
 
 (function mountMobileMenu() {
-  const isMobile = () => window.matchMedia('(max-width: 820px)').matches;
   const host = document.getElementById('mobile-menu-root');
   if (!host) return;
 
   let root = null;
 
   const draw = () => {
-    if (!isMobile()) return;
-    if (!root) root = createRoot(host);          // dipasang saat dibutuhkan (juga saat layar diputar)
+    if (!root) root = createRoot(host);          // dipasang sekali, dipakai di semua ukuran layar
     const cur = document.body.dataset.page || 'home';
     const next = PAGE_ORDER[(PAGE_ORDER.indexOf(cur) + 1) % PAGE_ORDER.length];
     const nextBg = PAGE_BG[next];
@@ -305,5 +303,5 @@ const MENU_ITEMS = [
   document.addEventListener('visibilitychange', () => { if (!document.hidden) draw(); });
 
   // jaring pengaman: kalau host sempat kosong, pasang lagi
-  setInterval(() => { if (isMobile() && host.childElementCount === 0) { root = null; draw(); } }, 1500);
+  setInterval(() => { if (host.childElementCount === 0) { root = null; draw(); } }, 1500);
 })();

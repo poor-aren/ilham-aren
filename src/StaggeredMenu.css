@@ -105,3 +105,11 @@ body[data-page="home"] .sm-wrap[data-open] .sm-toggle { color: inherit !importan
 body[data-page="projects"] .sm-toggle { color: #14141a !important; }
 body[data-page="projects"] .sm-toggle .sm-icon-line { background: #14141a !important; }
 body[data-page="projects"] .sm-wrap[data-open] .sm-toggle { color: inherit !important; }
+
+body[data-page="activity"] .sm-toggle { color: #F5E7D8 !important; }
+body[data-page="activity"] .sm-toggle .sm-icon-line { background: #F5E7D8 !important; }
+body[data-page="activity"] .sm-wrap[data-open] .sm-toggle { color: inherit !important; }
+
+body[data-page="contact"] .sm-toggle { color: #0e2a10 !important; }
+body[data-page="contact"] .sm-toggle .sm-icon-line { background: #0e2a10 !important; }
+body[data-page="contact"] .sm-wrap[data-open] .sm-toggle { color: inherit !important; }
