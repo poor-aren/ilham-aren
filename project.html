@@ -749,6 +749,25 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   .hm-bottom { right: 20px; bottom: calc(30px + env(safe-area-inset-bottom, 0px)); }
 }
 
+/* ---- Header kaca saat scroll ----
+   Transparan saat halaman di posisi paling atas; begitu discroll, tombol menu
+   (fixed, selalu di atas) sering bentrok dengan konten di belakangnya — jadi begitu
+   discroll, area di belakang tombol menu diberi kaca (blur) supaya tetap terbaca.
+   z-index 69 → tepat di bawah tombol menu (.sm-toggle z-index 20 dalam .sm-wrap z-index 70,
+   dan #mobileTop di 71), di atas konten halaman. Berlaku di semua ukuran layar. */
+#scrollHeader {
+  position: fixed; top: 0; left: 0; right: 0; height: 68px; z-index: 69;
+  pointer-events: none; opacity: 0; transition: opacity .25s ease;
+  backdrop-filter: blur(14px) saturate(1.5); -webkit-backdrop-filter: blur(14px) saturate(1.5);
+  background: rgba(255,255,255,.07);
+  border-bottom: 1px solid rgba(255,255,255,.14);
+}
+body.scroll-veil #scrollHeader { opacity: 1; }
+/* halaman Projects berlatar putih → tint gelap supaya kaca tetap kelihatan */
+body[data-page="projects"] #scrollHeader {
+  background: rgba(20,20,26,.05); border-bottom-color: rgba(20,20,26,.10);
+}
+
 /* ---- Topbar HP ---- */
 #mobileTop { display: none; }
 @media (max-width: 820px) {
@@ -900,6 +919,7 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 
 <div id="pageTrans" aria-hidden="true"><div class="tl"></div><div class="tl"></div><div class="tl"></div><div class="tl"></div></div>
 <div id="mobileTop" aria-hidden="true"><span class="mt-brand">PORTOFOLIO</span></div>
+<div id="scrollHeader" aria-hidden="true"></div>
 <div id="mobile-menu-root"></div>
 
 <div id="modalRoot"></div>
@@ -2516,6 +2536,25 @@ async function loadFromSupabase(){
     }));
   }
 }
+
+/* ---- Header kaca saat scroll: aktif di halaman manapun, begitu halaman digulir ----
+   Yang digulir adalah elemen .page atau .proj-scroll (bukan window), dan elemennya
+   berganti tiap pindah halaman → pakai fase capture di document supaya menangkap
+   semuanya tanpa perlu pasang-lepas listener setiap ganti halaman. */
+(function initScrollHeader(){
+  let ticking = false;
+  const apply = (top) => document.body.classList.toggle('scroll-veil', top > 8);
+  document.addEventListener('scroll', (e) => {
+    const el = e.target;
+    if(!el || el === document || !el.classList) return;
+    if(!el.classList.contains('page') && !el.classList.contains('proj-scroll')) return;
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { apply(el.scrollTop); ticking = false; });
+  }, true);
+  // pindah halaman → posisi scroll kembali ke atas, veil ikut direset
+  window.addEventListener('page-changed', () => document.body.classList.remove('scroll-veil'));
+})();
 
 /* START */
 window.LANYARD_CONFIG = CONFIG.contact.lanyard; // default sinkron untuk React (di-update setelah fetch)
