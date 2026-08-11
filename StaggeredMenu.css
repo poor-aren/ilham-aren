@@ -1,0 +1,111 @@
+.sm-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* tombol MENU + di kanan atas */
+.sm-toggle {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 20;
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: transparent;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  font-family: "Inter", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: .74rem;
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+  line-height: 1;
+  transition: color .35s ease;
+}
+.sm-toggle-wrap { position: relative; display: inline-block; height: 1em; overflow: hidden; white-space: nowrap; }
+.sm-toggle-inner { display: flex; flex-direction: column; line-height: 1; }
+.sm-toggle-line { display: block; height: 1em; line-height: 1; }
+
+.sm-icon { position: relative; width: 14px; height: 14px; flex: 0 0 14px; display: inline-flex; }
+.sm-icon-line {
+  position: absolute; left: 50%; top: 50%;
+  width: 100%; height: 2px; background: currentColor; border-radius: 2px;
+  transform: translate(-50%, -50%);
+}
+
+/* layer warna bertumpuk — lebar mengikuti panel (35% kanan), bukan full-screen */
+.sm-prelayers {
+  position: absolute; top: 0; right: 0; bottom: 0;
+  width: 35%; min-width: min(340px, 100vw);
+  pointer-events: none;
+  z-index: 5;
+}
+.sm-prelayer { position: absolute; inset: 0; }
+
+/* panel — 35% dari kanan (sisa layar tetap menampilkan halaman di belakangnya) */
+.sm-panel {
+  position: absolute;
+  top: 0; right: 0;
+  width: 35%;
+  min-width: min(340px, 100vw);
+  height: 100%;
+  z-index: 10;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 5em 2em 3em;
+  box-shadow: -20px 0 60px rgba(0,0,0,.25);
+}
+
+@media (max-width: 640px) {
+  /* HP: layar sempit, panel tetap penuh supaya teksnya tidak terjepit */
+  .sm-prelayers, .sm-panel { width: 100%; min-width: 0; }
+  .sm-panel { box-shadow: none; }
+}
+
+.sm-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .35rem; counter-reset: smItem; }
+.sm-item-wrap { position: relative; overflow: hidden; line-height: 1; }
+.sm-item {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+  color: inherit;
+  font-family: "Bebas Neue", "Inter", sans-serif;
+  font-size: clamp(2.8rem, 13vw, 4.4rem);
+  line-height: 1.05;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding-right: 1.6em;
+  transition: color .25s;
+}
+.sm-item-label { display: inline-block; will-change: transform, filter, opacity; transform-origin: 50% 100%; }
+.sm-item:active { color: var(--sm-accent, #E7B996); }
+
+.sm-list[data-numbering] .sm-item::after {
+  counter-increment: smItem;
+  content: counter(smItem, decimal-leading-zero);
+  position: absolute;
+  top: .35em;
+  right: .2em;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--sm-accent, #E7B996);
+  opacity: var(--sm-num-opacity, 0);
+  pointer-events: none;
+}
+
+/* Warna tombol "MENU +"/"CLOSE ✕" TIDAK diatur di sini.
+   React sudah mengirim warna yang tepat lewat inline style (lihat StaggeredMenu.jsx):
+   - tertutup → btnColor = PAGE_FG[halaman sekarang]  (kontras thd PAGE_BG[halaman sekarang])
+   - terbuka  → panelFg  = PAGE_FG[halaman berikutnya] (kontras thd panelBg = PAGE_BG[halaman berikutnya])
+   CSS override !important di sini pernah dicoba 2x dan selalu berujung salah warna di
+   salah satu kombinasi halaman, karena menimpa inline style yang sebenarnya sudah benar. */
