@@ -120,7 +120,9 @@
       <button data-tab="socials">Sosial</button>
       <button data-tab="projects">Projects</button>
       <button data-tab="certs">Sertifikat</button>
-      <button data-tab="acts">Activity</button>
+      <button data-tab="acts">Journey (About Me)</button>
+      <button data-tab="skills">Skills (About Me)</button>
+      <button data-tab="services">Services (Project)</button>
       <button data-tab="eggs">Easter Egg</button>
     </nav>
 
@@ -216,11 +218,15 @@
         <div id="proj_editTitle" style="font-weight:600;font-size:14px;margin-bottom:12px">Tambah project baru</div>
         <div class="grid2">
           <div class="field"><label>Judul</label><input id="pr_title" type="text"></div>
-          <div class="field"><label>Kategori</label><select id="pr_cat"><option value="tech">tech</option><option value="art">art</option></select></div>
+          <div class="field"><label>Kategori</label><select id="pr_cat"><option value="web">web</option><option value="iot">iot</option><option value="art">art</option></select></div>
         </div>
         <div class="grid2">
+          <div class="field"><label>Organisasi / klien (tampil di tab Work Experience)</label><input id="pr_org" type="text" placeholder="mis. PT Telkom Indonesia"></div>
           <div class="field"><label>Aspect ratio (tinggi ÷ lebar, mis. 1.2)</label><input id="pr_ar" type="number" step="0.01" value="1"></div>
+        </div>
+        <div class="grid2">
           <div class="field"><label>Urutan (sort)</label><input id="pr_sort" type="number" value="0"></div>
+          <div></div>
         </div>
         <div class="field row-check"><input id="pr_feature" type="checkbox"><label style="margin:0">Jadikan feature project</label></div>
         <div class="field"><label>Tags (pisahkan koma)</label><input id="pr_tags" type="text" placeholder="IoT, ESP32, MQTT"></div>
@@ -272,13 +278,17 @@
 
     <!-- ---------- ACTIVITY ---------- -->
     <section class="panel" data-panel="acts">
-      <h2 class="sec">Activity</h2>
-      <p class="hint">Kartu Stack di halaman Activity. Foto utama tampil default; galeri dilihat saat kartu di-tap.</p>
+      <h2 class="sec">Journey &amp; Achievements (About Me)</h2>
+      <p class="hint">Kartu Stack (foto drag) di hero, sekaligus kartu di papan pin "Journey &amp; Achievements". Foto utama tampil default; galeri dilihat saat kartu di-tap.</p>
       <div class="card">
         <div id="act_editTitle" style="font-weight:600;font-size:14px;margin-bottom:12px">Tambah activity baru</div>
         <div class="grid2">
           <div class="field"><label>Judul</label><input id="ac_title" type="text"></div>
           <div class="field"><label>Meta (mis. tanggal/tempat)</label><input id="ac_meta" type="text"></div>
+        </div>
+        <div class="grid2">
+          <div class="field"><label>Kategori pin (mis. Competition, Workshop)</label><input id="ac_cat" type="text" placeholder="Competition"></div>
+          <div class="field"><label>Tahun (badge di papan pin)</label><input id="ac_year" type="text" placeholder="2025"></div>
         </div>
         <div class="field"><label>Teks singkat</label><textarea id="ac_text"></textarea></div>
         <div class="grid2">
@@ -303,11 +313,47 @@
       </div>
       <div class="card list" id="act_list"><div class="empty">Memuat…</div></div>
     </section>
-  </div>
-</div>
 
-<div class="status" id="status"></div>
+    <section class="panel" data-panel="skills">
+      <h2 class="sec">What I Do (About Me)</h2>
+      <p class="hint">Kartu skill di halaman About Me. Foto jadi latar kartu (efek glassmorphism di atasnya).</p>
+      <div class="card">
+        <div id="sk_editTitle" style="font-weight:600;font-size:14px;margin-bottom:12px">Tambah skill baru</div>
+        <div class="grid2">
+          <div class="field"><label>Judul</label><input id="sk_title" type="text" placeholder="Embedded &amp; IoT"></div>
+          <div class="field"><label>Urutan (sort)</label><input id="sk_sort" type="number" value="0"></div>
+        </div>
+        <div class="field"><label>Tags (pisah koma)</label><input id="sk_tags" type="text" placeholder="Raspberry Pi, ESP32, MQTT"></div>
+        <div class="field"><label>Foto latar</label>
+          <div class="filerow"><img class="thumb" id="sk_photo_prev" alt="">
+            <input type="file" accept="image/*" id="sk_photo_file" data-folder="skills"></div>
+        </div>
+        <div class="actions">
+          <button class="btn" id="sk_save">Simpan</button>
+          <button class="btn outline" id="sk_reset">Batal / Baru</button>
+        </div>
+      </div>
+      <div class="card list" id="skill_list"><div class="empty">Memuat…</div></div>
+    </section>
 
+    <section class="panel" data-panel="services">
+      <h2 class="sec">What I Can Do (Project)</h2>
+      <p class="hint">Ledger layanan di halaman Project — nama layanan, deskripsi singkat, dan daftar deliverable.</p>
+      <div class="card">
+        <div id="sv_editTitle" style="font-weight:600;font-size:14px;margin-bottom:12px">Tambah layanan baru</div>
+        <div class="grid2">
+          <div class="field"><label>Nama layanan</label><input id="sv_name" type="text" placeholder="Web App Development"></div>
+          <div class="field"><label>Urutan (sort)</label><input id="sv_sort" type="number" value="0"></div>
+        </div>
+        <div class="field"><label>Deskripsi singkat</label><textarea id="sv_desc"></textarea></div>
+        <div class="field"><label>Deliverables (pisah koma)</label><input id="sv_deliv" type="text" placeholder="Landing page, Dashboard admin, Integrasi API"></div>
+        <div class="actions">
+          <button class="btn" id="sv_save">Simpan</button>
+          <button class="btn outline" id="sv_reset">Batal / Baru</button>
+        </div>
+      </div>
+      <div class="card list" id="service_list"><div class="empty">Memuat…</div></div>
+    </section>
 
     <!-- ---------- EASTER EGG ---------- -->
     <section class="panel" data-panel="eggs">
@@ -341,6 +387,10 @@
       </div>
       <div class="card"><h3>Daftar easter egg</h3><div id="eg_list"></div></div>
     </section>
+  </div>
+</div>
+
+<div class="status" id="status"></div>
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
@@ -526,8 +576,8 @@ $('pr_gallery_file').addEventListener('change', async e=>{
 function prReset(){
   prEditId=null; prCover.url=''; prGallery.set([]);
   $('proj_editTitle').textContent='Tambah project baru';
-  ['pr_title','pr_desc','pr_tags','pr_url'].forEach(id=>$(id).value='');
-  $('pr_cat').value='tech'; $('pr_ar').value='1'; $('pr_sort').value='0'; $('pr_feature').checked=false;
+  ['pr_title','pr_desc','pr_tags','pr_url','pr_org'].forEach(id=>$(id).value='');
+  $('pr_cat').value='web'; $('pr_ar').value='1'; $('pr_sort').value='0'; $('pr_feature').checked=false;
   $('pr_cover_prev').removeAttribute('src');
 }
 $('pr_reset').addEventListener('click', prReset);
@@ -536,7 +586,7 @@ $('pr_save').addEventListener('click', async ()=>{
     title:$('pr_title').value, cat:$('pr_cat').value, feature:$('pr_feature').checked,
     ar:parseFloat($('pr_ar').value)||1, tags:splitList($('pr_tags').value),
     description:$('pr_desc').value, cover_url:prCover.url, images:prGallery.get(), url:$('pr_url').value.trim(),
-    sort:parseInt($('pr_sort').value)||0
+    org:$('pr_org').value.trim(), sort:parseInt($('pr_sort').value)||0
   };
   const doSave = (pl)=> prEditId ? sb.from('projects').update(pl).eq('id',prEditId) : sb.from('projects').insert(pl);
   let res = await doSave(payload);
@@ -545,6 +595,12 @@ $('pr_save').addEventListener('click', async ()=>{
     const { url, ...rest } = payload;
     res = await doSave(rest);
     if(!res.error){ toast('Tersimpan (catatan: kolom "url" belum ada — link belum aktif)'); prReset(); loadProjects(); return; }
+  }
+  if(res.error && /org/i.test(res.error.message||'')){
+    // kolom 'org' belum ada di DB (migrasi belum dijalankan) → simpan tanpa org dulu
+    const { org, ...rest } = payload;
+    res = await doSave(rest);
+    if(!res.error){ toast('Tersimpan (catatan: kolom "org" belum ada — jalankan migration.sql dulu)'); prReset(); loadProjects(); return; }
   }
   if(res.error) return fail(res.error);
   toast('Project tersimpan'); prReset(); loadProjects();
@@ -558,13 +614,13 @@ async function loadProjects(){
     const el=document.createElement('div'); el.className='item';
     el.innerHTML=`<img class="thumb" src="${p.cover_url||''}">
       <div class="meta"><div class="t">${p.title||'(tanpa judul)'} ${p.feature?'★':''}</div>
-      <div class="s">${p.cat} · ${(p.tags||[]).join(', ')}</div></div>
+      <div class="s">${p.cat}${p.org?' · '+p.org:''} · ${(p.tags||[]).join(', ')}</div></div>
       <button class="btn outline sm">Edit</button><button class="btn danger sm">Hapus</button>`;
     el.querySelectorAll('button')[0].onclick=()=>{
       prEditId=p.id; $('proj_editTitle').textContent='Edit: '+(p.title||'');
-      $('pr_title').value=p.title||''; $('pr_cat').value=p.cat||'tech'; $('pr_ar').value=p.ar||1;
+      $('pr_title').value=p.title||''; $('pr_cat').value=p.cat||'web'; $('pr_ar').value=p.ar||1;
       $('pr_sort').value=p.sort||0; $('pr_feature').checked=!!p.feature; $('pr_tags').value=joinList(p.tags);
-      $('pr_desc').value=p.description||''; $('pr_url').value=p.url||''; prCover.url=p.cover_url||'';
+      $('pr_desc').value=p.description||''; $('pr_url').value=p.url||''; $('pr_org').value=p.org||''; prCover.url=p.cover_url||'';
       if(p.cover_url) $('pr_cover_prev').src=p.cover_url; else $('pr_cover_prev').removeAttribute('src');
       prGallery.set(p.images||[]);
       window.scrollTo({top:0,behavior:'smooth'});
@@ -633,17 +689,23 @@ $('ac_gallery_file').addEventListener('change', async e=>{
 });
 function acReset(){ acEditId=null; acPhoto.url=''; acGallery.set([]);
   $('act_editTitle').textContent='Tambah activity baru';
-  ['ac_title','ac_meta','ac_text','ac_mtitle','ac_mdesc'].forEach(id=>$(id).value=''); $('ac_sort').value='0';
+  ['ac_title','ac_meta','ac_text','ac_mtitle','ac_mdesc','ac_cat','ac_year'].forEach(id=>$(id).value=''); $('ac_sort').value='0';
   $('ac_photo_prev').removeAttribute('src'); }
 $('ac_reset').addEventListener('click', acReset);
 $('ac_save').addEventListener('click', async ()=>{
   const payload={ title:$('ac_title').value, meta:$('ac_meta').value, text:$('ac_text').value,
     modal_title:$('ac_mtitle').value, modal_desc:$('ac_mdesc').value,
+    cat:$('ac_cat').value, year_label:$('ac_year').value,
     photo_url:acPhoto.url, gallery:acGallery.get(), sort:parseInt($('ac_sort').value)||0 };
-  let error;
-  if(acEditId) ({error}=await sb.from('activities').update(payload).eq('id',acEditId));
-  else         ({error}=await sb.from('activities').insert(payload));
-  if(error) return fail(error); toast('Activity tersimpan'); acReset(); loadActs();
+  const doSave = (pl)=> acEditId ? sb.from('activities').update(pl).eq('id',acEditId) : sb.from('activities').insert(pl);
+  let res = await doSave(payload);
+  if(res.error && /cat|year_label/i.test(res.error.message||'')){
+    // kolom cat/year_label belum ada di DB (migrasi belum dijalankan) → simpan tanpa itu dulu
+    const { cat, year_label, ...rest } = payload;
+    res = await doSave(rest);
+    if(!res.error){ toast('Tersimpan (catatan: jalankan migration.sql agar kategori/tahun aktif)'); acReset(); loadActs(); return; }
+  }
+  if(res.error) return fail(res.error); toast('Activity tersimpan'); acReset(); loadActs();
 });
 async function loadActs(){
   const { data, error } = await sb.from('activities').select('*').order('sort').order('created_at');
@@ -653,12 +715,13 @@ async function loadActs(){
   data.forEach(a=>{
     const el=document.createElement('div'); el.className='item';
     el.innerHTML=`<img class="thumb" src="${a.photo_url||''}">
-      <div class="meta"><div class="t">${a.title||'(tanpa judul)'}</div><div class="s">${a.meta||''}</div></div>
+      <div class="meta"><div class="t">${a.title||'(tanpa judul)'}</div><div class="s">${[a.cat,a.year_label,a.meta].filter(Boolean).join(' · ')}</div></div>
       <button class="btn outline sm">Edit</button><button class="btn danger sm">Hapus</button>`;
     el.querySelectorAll('button')[0].onclick=()=>{
       acEditId=a.id; $('act_editTitle').textContent='Edit: '+(a.title||'');
       $('ac_title').value=a.title||''; $('ac_meta').value=a.meta||''; $('ac_text').value=a.text||'';
       $('ac_mtitle').value=a.modal_title||''; $('ac_mdesc').value=a.modal_desc||''; $('ac_sort').value=a.sort||0;
+      $('ac_cat').value=a.cat||''; $('ac_year').value=a.year_label||'';
       acPhoto.url=a.photo_url||''; if(a.photo_url) $('ac_photo_prev').src=a.photo_url; else $('ac_photo_prev').removeAttribute('src');
       acGallery.set(a.gallery||[]);
       window.scrollTo({top:0,behavior:'smooth'});
@@ -667,6 +730,87 @@ async function loadActs(){
       if(!confirm('Hapus activity ini?')) return;
       const { error } = await sb.from('activities').delete().eq('id',a.id);
       if(error) return fail(error); toast('Terhapus'); loadActs();
+    };
+    box.appendChild(el);
+  });
+}
+
+/* ================= SKILLS (About Me — "What I Do") ================= */
+const skPhoto={url:''}; let skEditId=null;
+$('sk_photo_file').addEventListener('change', async e=>{
+  const f=e.target.files[0]; if(!f) return;
+  try{ toast('Mengunggah…'); skPhoto.url=await upload(f,'skills'); $('sk_photo_prev').src=skPhoto.url; toast('Foto terunggah'); }catch(x){ fail(x); }
+});
+function skReset(){ skEditId=null; skPhoto.url='';
+  $('sk_editTitle').textContent='Tambah skill baru';
+  ['sk_title','sk_tags'].forEach(id=>$(id).value=''); $('sk_sort').value='0';
+  $('sk_photo_prev').removeAttribute('src'); }
+$('sk_reset').addEventListener('click', skReset);
+$('sk_save').addEventListener('click', async ()=>{
+  const payload={ title:$('sk_title').value, tags:splitList($('sk_tags').value),
+    photo_url:skPhoto.url, sort:parseInt($('sk_sort').value)||0 };
+  let error;
+  if(skEditId) ({error}=await sb.from('skills').update(payload).eq('id',skEditId));
+  else         ({error}=await sb.from('skills').insert(payload));
+  if(error) return fail(error); toast('Skill tersimpan'); skReset(); loadSkills();
+});
+async function loadSkills(){
+  const { data, error } = await sb.from('skills').select('*').order('sort').order('created_at');
+  const box=$('skill_list'); if(error){ box.innerHTML='<div class="empty">Gagal memuat (jalankan migration.sql dulu jika tabel belum ada)</div>'; return; }
+  if(!data.length){ box.innerHTML='<div class="empty">Belum ada skill.</div>'; return; }
+  box.innerHTML='';
+  data.forEach(s=>{
+    const el=document.createElement('div'); el.className='item';
+    el.innerHTML=`<img class="thumb" src="${s.photo_url||''}">
+      <div class="meta"><div class="t">${s.title||'(tanpa judul)'}</div><div class="s">${(s.tags||[]).join(', ')}</div></div>
+      <button class="btn outline sm">Edit</button><button class="btn danger sm">Hapus</button>`;
+    el.querySelectorAll('button')[0].onclick=()=>{
+      skEditId=s.id; $('sk_editTitle').textContent='Edit: '+(s.title||'');
+      $('sk_title').value=s.title||''; $('sk_tags').value=joinList(s.tags); $('sk_sort').value=s.sort||0;
+      skPhoto.url=s.photo_url||''; if(s.photo_url) $('sk_photo_prev').src=s.photo_url; else $('sk_photo_prev').removeAttribute('src');
+      window.scrollTo({top:0,behavior:'smooth'});
+    };
+    el.querySelectorAll('button')[1].onclick=async ()=>{
+      if(!confirm('Hapus skill ini?')) return;
+      const { error } = await sb.from('skills').delete().eq('id',s.id);
+      if(error) return fail(error); toast('Terhapus'); loadSkills();
+    };
+    box.appendChild(el);
+  });
+}
+
+/* ================= SERVICES (Project — "What I Can Do") ================= */
+let svEditId=null;
+function svReset(){ svEditId=null;
+  $('sv_editTitle').textContent='Tambah layanan baru';
+  ['sv_name','sv_desc','sv_deliv'].forEach(id=>$(id).value=''); $('sv_sort').value='0'; }
+$('sv_reset').addEventListener('click', svReset);
+$('sv_save').addEventListener('click', async ()=>{
+  const payload={ name:$('sv_name').value, description:$('sv_desc').value,
+    deliverables:splitList($('sv_deliv').value), sort:parseInt($('sv_sort').value)||0 };
+  let error;
+  if(svEditId) ({error}=await sb.from('services').update(payload).eq('id',svEditId));
+  else         ({error}=await sb.from('services').insert(payload));
+  if(error) return fail(error); toast('Layanan tersimpan'); svReset(); loadServices();
+});
+async function loadServices(){
+  const { data, error } = await sb.from('services').select('*').order('sort').order('created_at');
+  const box=$('service_list'); if(error){ box.innerHTML='<div class="empty">Gagal memuat (jalankan migration.sql dulu jika tabel belum ada)</div>'; return; }
+  if(!data.length){ box.innerHTML='<div class="empty">Belum ada layanan.</div>'; return; }
+  box.innerHTML='';
+  data.forEach(s=>{
+    const el=document.createElement('div'); el.className='item';
+    el.innerHTML=`<div class="meta"><div class="t">${s.name||'(tanpa nama)'}</div><div class="s">${(s.deliverables||[]).join(', ')}</div></div>
+      <button class="btn outline sm">Edit</button><button class="btn danger sm">Hapus</button>`;
+    el.querySelectorAll('button')[0].onclick=()=>{
+      svEditId=s.id; $('sv_editTitle').textContent='Edit: '+(s.name||'');
+      $('sv_name').value=s.name||''; $('sv_desc').value=s.description||''; $('sv_deliv').value=joinList(s.deliverables); $('sv_sort').value=s.sort||0;
+      window.scrollTo({top:0,behavior:'smooth'});
+    };
+    el.querySelectorAll('button')[1].onclick=async ()=>{
+      if(!confirm('Hapus layanan ini?')) return;
+      const { error } = await sb.from('services').delete().eq('id',s.id);
+      if(error) return fail(error); toast('Terhapus'); loadServices();
     };
     box.appendChild(el);
   });
@@ -749,7 +893,7 @@ async function loadEggs(){
 }
 
 /* ---------------- load semua ---------------- */
-function loadAll(){ loadProfile(); loadProjects(); loadCerts(); loadActs(); loadEggs(); }
+function loadAll(){ loadProfile(); loadProjects(); loadCerts(); loadActs(); loadSkills(); loadServices(); loadEggs(); }
 
 refreshAuth();
 </script>
