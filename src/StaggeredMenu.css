@@ -103,23 +103,9 @@
   pointer-events: none;
 }
 
-/* Warna tombol "MENU +" saat panel TERTUTUP — mengikuti warna halaman aktif supaya kontras. */
-body[data-page="home"] .sm-toggle { color: #ffffff !important; }
-body[data-page="home"] .sm-toggle .sm-icon-line { background: #ffffff !important; }
-
-body[data-page="projects"] .sm-toggle { color: #14141a !important; }
-body[data-page="projects"] .sm-toggle .sm-icon-line { background: #14141a !important; }
-
-body[data-page="activity"] .sm-toggle { color: #F5E7D8 !important; }
-body[data-page="activity"] .sm-toggle .sm-icon-line { background: #F5E7D8 !important; }
-
-body[data-page="contact"] .sm-toggle { color: #0e2a10 !important; }
-body[data-page="contact"] .sm-toggle .sm-icon-line { background: #0e2a10 !important; }
-
-/* Tombol "CLOSE ✕" saat panel TERBUKA: ikut warna teks panel (panelFg) — nilai ini
-   sudah dipasangkan dengan panelBg dari halaman yang sama (lihat PAGE_BG/PAGE_FG di
-   main.jsx), jadi otomatis kontras. Memaksa satu warna tetap (mis. putih) di sini
-   akan tenggelam kalau kebetulan panelBg-nya juga terang (mis. dari Home → Projects).
-   .sm-icon-line dasarnya sudah background:currentColor (lihat definisi dasar di atas),
-   jadi otomatis ikut tanpa perlu override tambahan di sini. */
-.sm-wrap[data-open] .sm-toggle { color: inherit !important; }
+/* Warna tombol "MENU +"/"CLOSE ✕" TIDAK diatur di sini.
+   React sudah mengirim warna yang tepat lewat inline style (lihat StaggeredMenu.jsx):
+   - tertutup → btnColor = PAGE_FG[halaman sekarang]  (kontras thd PAGE_BG[halaman sekarang])
+   - terbuka  → panelFg  = PAGE_FG[halaman berikutnya] (kontras thd panelBg = PAGE_BG[halaman berikutnya])
+   CSS override !important di sini pernah dicoba 2x dan selalu berujung salah warna di
+   salah satu kombinasi halaman, karena menimpa inline style yang sebenarnya sudah benar. */
