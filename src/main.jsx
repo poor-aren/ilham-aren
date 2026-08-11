@@ -269,7 +269,7 @@ const PAGE_FG = { home: '#ffffff', projects: '#14141a', activity: '#F5E7D8', con
 const MENU_ITEMS = [
   { key: 'home', label: 'Home' },
   { key: 'projects', label: 'Projects' },
-  { key: 'activity', label: 'Activity' },
+  { key: 'activity', label: 'About Me' },
   { key: 'contact', label: 'Contact' }
 ];
 
