@@ -7,7 +7,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..700&family=JetBrains+Mono:wght@400;500;700&family=Bebas+Neue&family=Inter:wght@100..900&family=Anton&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..700&family=JetBrains+Mono:wght@400;500;700&family=Bebas+Neue&family=Inter:wght@100..900&family=Anton&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
 
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -150,187 +150,163 @@ body.dragging #swipeBtn .pulse { display: none; }
 .photo img { width:100%; height:100%; object-fit: cover; }
 .photo .ph-label { font-family:"JetBrains Mono",monospace; font-size:.78rem; color:#8a8177; text-align:center; padding:20px; line-height:1.6; }
 
-/* ============ PAGE 2 — PROJECTS ============ */
-.page.projects { background: #ffffff; }   /* PUTIH */
-.proj-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
-.feature-empty { align-items: center; justify-content: flex-start; min-height: 150px; cursor: default; }
-.feature-empty:hover { transform: none; border-color: rgba(20,20,26,.12); }
+/* ============ PAGE 2 — PROJECTS (Work Experience & Services) ============ */
+.page.projects { background: #ffffff; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.proj-scroll { position: relative; }
+.wx-scroll-inner { position: relative; }
 .feat-empty {
-  color: rgba(255,255,255,.6); font-family: "Inter", sans-serif; font-size: .95rem;
-  padding: 28px 8px; padding-right: clamp(8px,7vw,130px);
+  color: rgba(20,20,26,.5); font-family: "Inter", sans-serif; font-size: .95rem;
+  padding: 28px 0;
 }
-.proj-scroll {
-  position: absolute; inset: 0; z-index: 1; overflow-y: auto;
-  padding: clamp(26px,3.4vh,40px) clamp(24px,5vw,72px) 64px;   /* naik: kaca judul sudah dihapus */
-  scrollbar-width: none; -ms-overflow-style: none;
+.wx-wrap{max-width:1180px;margin:0 auto;padding:0 clamp(22px,5vw,64px)}
+.wx-eyebrow{
+  font-family:"JetBrains Mono",monospace;font-size:.7rem;letter-spacing:3px;text-transform:uppercase;
+  color:rgba(20,20,26,.6);display:flex;align-items:center;gap:12px;
 }
-.proj-scroll::-webkit-scrollbar { width: 0; height: 0; display: none; }
-.proj-wrap { max-width: 1180px; margin: 0 auto; position: relative; z-index: 1; }
-.proj-title-spacer { display: none; }   /* penyangga kaca judul — tak dipakai lagi */
+.wx-eyebrow::after{content:"";flex:0 0 auto;width:38px;height:1px;background:rgba(20,20,26,.3)}
 
-/* Judul "Projects" — layer terpisah di atas GlassSurface (tak ikut scroll) */
-.proj-titlebar { display: none !important;
-  position: absolute; z-index: 40;
-  top: clamp(22px,5vh,48px); left: clamp(24px,5vw,72px);
-  width: clamp(170px,20vw,230px); height: clamp(58px,8vh,74px);
+/* ---- hero ---- */
+.wx-hero{padding:clamp(48px,8vh,84px) 0 clamp(70px,10vw,110px);background-color:#0b0b0d}
+.wx-hero h1{
+  margin-top:18px;font-family:"Playfair Display",serif;font-weight:800;color:#F5E7D8;
+  font-size:clamp(2.1rem,5.2vw,3.7rem);line-height:1.08;max-width:16ch;letter-spacing:-.5px;
 }
-.proj-title-glass .glass-surface__content { justify-content: flex-start; padding-left: 18px; }
-.proj-title-text {
-  font-family: "Playfair Display", serif; font-weight: 800; color: #12121a;
-  font-size: clamp(1.1rem,1.9vw,1.55rem); letter-spacing: .4px;
+.wx-hero h1 em{font-style:italic;color:#C9A24A}
+.wx-hero .wx-eyebrow{color:rgba(245,231,216,.55)}
+.wx-hero .wx-eyebrow::after{background:rgba(245,231,216,.3)}
+.wx-hero-sub{margin-top:20px;max-width:56ch;color:rgba(245,231,216,.72);font-size:clamp(1rem,1.3vw,1.15rem);line-height:1.7}
+.wx-hero-meta{
+  display:flex;flex-wrap:wrap;gap:30px 48px;margin-top:34px;padding-top:28px;border-top:1px solid rgba(245,231,216,.14);
 }
+.wx-hm-cell{flex:0 1 auto}
+.wx-hm-cell .n{font-family:"Playfair Display",serif;font-weight:800;font-size:1.7rem;color:#F5E7D8;line-height:1}
+.wx-hm-cell .l{
+  position:relative;margin-top:10px;padding-top:9px;
+  font-family:"JetBrains Mono",monospace;font-size:.66rem;letter-spacing:1.5px;text-transform:uppercase;color:rgba(245,231,216,.55);
+  max-width:16ch;
+}
+.wx-hm-cell .l::before{content:"";position:absolute;top:0;left:0;width:20px;height:2px;background:#C9A24A}
 
-/* ---- Sertifikat: melayang (tanpa card), ujung memudar (opacity turun) ---- */
-.cert-strip { margin-bottom: clamp(6px,1vw,12px); }
-.cert-eyebrow {
-  font-family: "JetBrains Mono", monospace; font-size: .7rem; letter-spacing: 3px;
-  text-transform: uppercase; color: rgba(20,20,26,.6); margin-bottom: 16px;
-}
-.cert-track {
-  display: flex; gap: clamp(20px,2.6vw,38px); overflow-x: auto; padding: 4px 2px 8px; cursor: grab;
-  scrollbar-width: none; -ms-overflow-style: none;
-}
-.cert-track.dragging { cursor: grabbing; }
-.cert-track::-webkit-scrollbar { height: 0; display: none; }
-.cert-item {
-  flex: 0 0 auto; width: clamp(150px,16vw,188px); cursor: pointer; text-align: left;
-  transition: transform .3s cubic-bezier(.2,.8,.2,1);
-}
-.cert-item:hover { transform: translateY(-3px); }
-.cert-item img { -webkit-user-drag: none; user-select: none; }
-.cert-thumb { width: 100%; aspect-ratio: 4/3; border-radius: 0; overflow: hidden; border: 1px solid rgba(20,20,26,.12); }
-.cert-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.cert-title  { margin-top: 11px; font-family: "Inter", sans-serif; font-weight: 600; font-size: .82rem; color: #14141a; line-height: 1.3; }
-.cert-issuer { margin-top: 3px;  font-family: "Inter", sans-serif; font-weight: 400; font-size: .72rem; color: rgba(20,20,26,.55); letter-spacing: .2px; }
+/* ---- section shell ---- */
+.wx-sec{padding:clamp(46px,7vh,74px) 0}
+.wx-sec+.wx-sec{border-top:1px solid rgba(20,20,26,.12)}
+.wx-sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:clamp(22px,3.4vw,34px);flex-wrap:wrap}
+.wx-sec-title{font-family:"Playfair Display",serif;font-weight:800;font-size:clamp(1.5rem,2.6vw,2.1rem);margin-top:8px}
 
-.proj-divider { height: 1px; background: rgba(20,20,26,.12); margin: 0 0 clamp(8px,1.2vw,14px); }
+/* ---- tabs (web / iot / art) ---- */
+.wx-seg{display:inline-flex;gap:clamp(20px,3vw,34px);border:none;background:none;padding:0}
+.wx-ptab{
+  position:relative;font-family:"Inter",sans-serif;font-size:.78rem;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;
+  color:rgba(20,20,26,.6);cursor:pointer;padding:4px 0 12px;background:transparent;border:none;transition:color .25s;
+}
+.wx-ptab::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+  background:#C9A24A;transform:scaleX(0);transform-origin:left;transition:transform .3s cubic-bezier(.4,0,.2,1);
+}
+.wx-ptab:hover{color:#14141a}
+.wx-ptab.active{color:#14141a}
+.wx-ptab.active::after{transform:scaleX(1)}
+.wx-pane{display:none}
+.wx-pane.active{display:block}
 
-/* ---- Body head: label kiri + segmented control tech/art kanan ---- */
-.body-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: clamp(16px,2.4vw,24px); }
-.body-eyebrow {
-  font-family: "JetBrains Mono", monospace; font-size: .7rem; letter-spacing: 3px;
-  text-transform: uppercase; color: rgba(20,20,26,.6);
-}
-.seg {
-  position: relative;
-  display: inline-flex; padding: 4px; gap: 4px; border-radius: 13px;
-  border: 1px solid rgba(20,20,26,.14);
-}
-.seg-glass {
-  position: absolute; inset: 0; z-index: 0; border-radius: 13px; overflow: hidden;
-  background: linear-gradient(135deg, rgba(20,20,26,.06), rgba(20,20,26,.02));
-  backdrop-filter: blur(14px) saturate(1.2);
-  -webkit-backdrop-filter: blur(14px) saturate(1.2);
-  box-shadow: none;
-}
-.ptab {
-  position: relative; z-index: 1;
-  font-family: "JetBrains Mono", monospace; font-size: .73rem; letter-spacing: 2px; text-transform: uppercase;
-  color: #14141a; cursor: pointer; padding: 8px 20px; border-radius: 9px;
-  background: transparent; border: none; transition: background .2s, color .2s;
-}
-.ptab:hover { background: rgba(20,20,26,.08); }
-.ptab.active { background: #14141a; color: #ffffff; }
+/* ---- Work Experience (dark) ---- */
+.wx-experience{background:#0b0b0d;color:#F2F0EC;border-bottom:1px solid rgba(245,231,216,.14)}
+.wx-experience .wx-eyebrow{color:rgba(245,231,216,.5)}
+.wx-experience .wx-sec-title{color:#F5E7D8}
+.wx-experience .wx-ptab{color:rgba(245,231,216,.5)}
+.wx-experience .wx-ptab:hover{color:#F5E7D8}
+.wx-experience .wx-ptab.active{color:#F5E7D8}
+.wx-experience .wx-ptab::after{background:#E7B996}
 
-/* ---- Feature project (lebih kecil): foto kiri, teks kanan RATA ATAS-KIRI ---- */
-.feature {
-  position: relative;
-  display: flex; gap: clamp(14px,2vw,22px); align-items: stretch;
-  border-radius: 16px; overflow: hidden; cursor: pointer;
-  margin: 0 0 18px; padding: 0; border: 1px solid rgba(20,20,26,.12);
-  background: linear-gradient(135deg, rgba(20,20,26,.04), rgba(20,20,26,.015));
-  backdrop-filter: blur(12px) saturate(1.2); -webkit-backdrop-filter: blur(12px) saturate(1.2);
-  box-shadow: none;
-  transition: border-color .3s, transform .35s cubic-bezier(.2,.8,.2,1);
+.wx-xp-list{display:flex;flex-direction:column;gap:clamp(48px,7vw,84px)}
+.wx-xp{position:relative;display:flex;align-items:center;gap:clamp(28px,4vw,56px);cursor:pointer}
+.wx-xp:nth-child(even){flex-direction:row-reverse}
+.wx-xp-media{flex:0 0 50%;position:relative;border-radius:18px;overflow:hidden;aspect-ratio:16/10}
+.wx-xp-media img{width:100%;height:100%;object-fit:cover;display:block}
+.wx-xp-body{flex:1 1 auto;display:flex;flex-direction:column;justify-content:center}
+.wx-xp-cat{font-family:"JetBrains Mono",monospace;font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:rgba(245,231,216,.5)}
+.wx-xp-title{
+  font-family:"Inter",sans-serif;font-weight:700;font-size:clamp(1.5rem,2.6vw,2.1rem);line-height:1.15;
+  margin-top:10px;color:#F5E7D8;letter-spacing:-.3px;
 }
-.feature:hover { border-color: rgba(20,20,26,.3); transform: translateY(-3px); }
-.feature .seg { position: absolute; top: 16px; right: 16px; z-index: 3; }
-.feat-media {
-  position: absolute; top: 0; left: 0; bottom: 0;   /* setinggi PENUH kartu, rata kiri */
-  width: 30%; border-radius: 0; overflow: hidden;
+.wx-xp-desc{color:rgba(245,231,216,.62);font-size:.88rem;line-height:1.6;margin-top:12px;max-width:38ch}
+.wx-xp-link{
+  display:inline-block;margin-top:18px;font-size:.85rem;font-weight:500;color:#F5E7D8;
+  text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(245,231,216,.5);
+  transition:text-decoration-color .2s,color .2s;
 }
-.feat-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.feat-body { flex: 1 1 auto; margin-left: calc(30% + clamp(14px,2vw,22px)); display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 2px clamp(8px,7vw,120px) 2px 0; min-height: clamp(200px,26vh,300px); }
-.feat-badge {
-  align-self: flex-start;
-  font-family: "JetBrains Mono", monospace; font-size: .6rem; letter-spacing: 1.5px; text-transform: uppercase;
-  color: #ffffff; background: #14141a; padding: 4px 9px; border-radius: 6px; margin-bottom: 10px;
-}
-.feat-title { font-family: "Playfair Display", serif; font-weight: 800; color: #14141a; font-size: clamp(1.2rem, 1.9vw, 1.55rem); line-height: 1.12; text-align: left; }
-.feat-desc { color: rgba(20,20,26,.72); font-family: "Inter", sans-serif; font-size: .87rem; line-height: 1.5; margin-top: 8px; max-width: 54ch; text-align: left; }
-.feat-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
-.feat-tags span {
-  font-family: "JetBrains Mono", monospace; font-size: .64rem; letter-spacing: 1px; text-transform: uppercase;
-  color: #14141a; border: 1px solid rgba(20,20,26,.28); border-radius: 7px; padding: 3px 9px;
-  background: rgba(20,20,26,.04);
-}
+.wx-xp-link:hover{text-decoration-color:#F5E7D8;color:#E7B996}
+@media (max-width:760px){ .wx-xp,.wx-xp:nth-child(even){flex-direction:column;align-items:stretch} .wx-xp-media{flex:none;aspect-ratio:16/11} }
 
-/* ---- Judul bagian (spt certificates) ---- */
-.proj-sechead-row{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin:4px 0 18px; }
-.proj-sechead{
-  font-family: "JetBrains Mono", monospace; font-weight: 400;
-  font-size: .7rem; letter-spacing: 3px; text-transform: uppercase;
-  color: rgba(20,20,26,.6);
+.wx-xp-seeall{display:flex;justify-content:center;margin-top:clamp(40px,6vw,64px)}
+.wx-see-all-btn{
+  display:inline-flex;align-items:center;gap:10px;background:none;cursor:pointer;
+  font-family:"Inter",sans-serif;font-size:.8rem;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;
+  color:rgba(245,231,216,.7);border:1px solid rgba(245,231,216,.25);border-radius:999px;
+  padding:12px 22px;transition:color .25s,border-color .25s,background .25s;
 }
+.wx-see-all-btn svg{width:14px;height:14px;transition:transform .25s}
+.wx-see-all-btn:hover{color:#F5E7D8;border-color:rgba(245,231,216,.55);background:rgba(245,231,216,.06)}
+.wx-see-all-btn.active svg{transform:rotate(180deg)}
 
-/* ---- Daftar project: kartu memanjang, 1 kolom ---- */
-.prow-list{ display: flex; flex-direction: column; }
-.prow{
-  position: relative;
-  display: flex; align-items: stretch; gap: clamp(14px,2vw,22px);
-  border-radius: 16px; overflow: hidden; cursor: pointer;
-  margin: 0 0 18px; padding: 0; border: 1px solid rgba(20,20,26,.12);
-  background: linear-gradient(135deg, rgba(20,20,26,.04), rgba(20,20,26,.015));
-  min-height: clamp(220px,28vh,320px);
-  transition: border-color .3s, transform .35s cubic-bezier(.2,.8,.2,1);
+/* ---- Services ledger ---- */
+.wx-ledger{border-top:1px solid rgba(20,20,26,.12)}
+.wx-led-row{
+  display:flex;gap:clamp(14px,2.4vw,28px);align-items:center;
+  padding:clamp(12px,1.8vw,18px) 0;border-bottom:1px solid rgba(20,20,26,.12);transition:background .25s;
 }
-.prow:hover{ border-color: rgba(20,20,26,.3); transform: translateY(-3px); }
-.prow-media{ position: absolute; top:0; left:0; bottom:0; width:34%; overflow:hidden; }
-.prow-media img{ width:100%; height:100%; object-fit: cover; display:block; }   /* foto isi penuh, dipotong bila perlu */
-.prow-body{
-  flex:1 1 auto; margin-left: calc(34% + clamp(14px,2vw,22px));
-  display:flex; flex-direction:column; align-items:flex-start; justify-content:center;
-  padding: 2px clamp(8px,7vw,120px) 2px 0;
+.wx-led-row:hover{background:rgba(20,20,26,.025)}
+.wx-led-idx{flex:0 0 auto;width:38px;font-family:"JetBrains Mono",monospace;font-size:.76rem;color:#C9A24A;font-weight:700}
+.wx-led-main{flex:1 1 auto;display:flex;gap:clamp(14px,2.4vw,32px);align-items:center;flex-wrap:wrap}
+.wx-led-name{flex:1 1 220px}
+.wx-led-name h3{font-family:"Playfair Display",serif;font-weight:800;font-size:clamp(1.02rem,1.5vw,1.22rem);line-height:1.2}
+.wx-led-name p{margin-top:4px;color:rgba(20,20,26,.72);font-size:.82rem;line-height:1.45;max-width:50ch}
+.wx-led-deliv{flex:0 1 300px}
+.wx-led-deliv ul{list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.wx-led-deliv li{
+  font-family:"JetBrains Mono",monospace;font-size:.66rem;letter-spacing:.3px;color:rgba(20,20,26,.72);
+  border:1px solid rgba(20,20,26,.12);border-radius:6px;padding:3px 8px;white-space:nowrap;
 }
-.prow-cat{ font-family:"JetBrains Mono",monospace; font-size:.66rem; letter-spacing:2px; color:#ffffff; background:#14141a; display:inline-block; padding:4px 9px; border-radius:6px; margin-bottom:11px; }
-.prow-title{ font-family: "Playfair Display", serif; font-weight: 800; color:#12121a; font-size: clamp(1.3rem,2.2vw,1.9rem); line-height:1.15; }
-.prow-desc{ color: rgba(20,20,26,.72); font-size:.95rem; line-height:1.6; margin-top:8px; }
-.prow-tags{ display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
-.prow-tags span{
-  font-family: "JetBrains Mono", monospace; font-size:.64rem; letter-spacing:1px; text-transform:uppercase;
-  color:#14141a; border:1px solid rgba(20,20,26,.28); border-radius:7px; padding:3px 9px; background: rgba(20,20,26,.04);
-}
-@media (max-width: 820px){
-  .prow{ flex-direction: column; min-height:0; }
-  .prow-media{ position: relative; width:100%; height:auto; }
-  .prow-media img{ height:auto; max-height:220px; }
-  .prow-body{ margin-left:0; padding:14px; }
+@media (max-width:640px){
+  .wx-led-row{flex-direction:column;align-items:flex-start;gap:8px;padding:12px 0}
+  .wx-led-main{flex-direction:column;align-items:flex-start;gap:8px;width:100%}
+  .wx-led-name{flex:0 0 auto;width:100%}
+  .wx-led-name p{display:none}
+  .wx-led-deliv{flex:0 0 auto;width:100%}
+  .wx-led-deliv ul{gap:5px}
+  .wx-led-deliv li{font-size:.62rem;padding:2px 7px}
 }
 
-/* ---- Grid Projects (Masonry React di-mount ke sini) ---- */
-.pgrid { position: relative; width: 100%; }
+/* ---- CTA band ---- */
+.wx-cta-band{background:#57A45B;padding:clamp(60px,9vh,100px) 0;text-align:center}
+.wx-cta-band .wx-eyebrow{color:rgba(14,42,16,.6);justify-content:center}
+.wx-cta-band .wx-eyebrow::after{display:none}
+.wx-cta-band h2{
+  font-family:"Anton",sans-serif;font-weight:400;text-transform:uppercase;
+  font-size:clamp(2.2rem,6vw,4.2rem);line-height:.95;margin-top:16px;color:#0e2a10;
+}
+.wx-cta-band p{margin:18px auto 0;max-width:48ch;color:rgba(14,42,16,.78);font-size:1.02rem;line-height:1.6}
+.wx-cta-btn{
+  display:inline-flex;align-items:center;gap:10px;margin-top:30px;
+  background:#0e2a10;color:#F5E7D8;font-family:"JetBrains Mono",monospace;font-weight:700;
+  font-size:.82rem;letter-spacing:1.6px;text-transform:uppercase;padding:15px 30px;border-radius:10px;
+  transition:transform .25s,background .25s;
+}
+.wx-cta-btn:hover{transform:translateY(-3px);background:#173e1a}
+.wx-cta-btn svg{width:16px;height:16px}
+@media (max-width:640px){
+  .wx-hero-meta{display:grid;grid-template-columns:1fr 1fr;gap:22px 20px;padding-top:22px}
+  .wx-hm-cell .n{font-size:1.5rem}
+  .wx-sec{padding:32px 0}
+}
 
-/* Efek Chroma: monokrom seluruh halaman Projects, warna asli muncul di sekitar kursor.
-   Overlay ADA DI DALAM halaman → ikut terpotong saat swipe (halaman sebelah tidak jadi abu). */
-.proj-gray { position: absolute; inset: 0; pointer-events: none; z-index: 30; --x: 50%; --y: 50%; --r: 480px; }
-.proj-gray .chroma-overlay, .proj-gray .chroma-fade {
-  position: absolute; inset: 0; pointer-events: none;
-  backdrop-filter: grayscale(1) brightness(.82); -webkit-backdrop-filter: grayscale(1) brightness(.82);
-  background: rgba(0,0,0,.001);
-}
-.proj-gray .chroma-overlay {
-  -webkit-mask-image: radial-gradient(circle var(--r) at var(--x) var(--y), transparent 0%, transparent 34%, rgba(0,0,0,.22) 55%, rgba(0,0,0,.5) 76%, rgba(0,0,0,.7) 90%, #000 100%);
-  mask-image: radial-gradient(circle var(--r) at var(--x) var(--y), transparent 0%, transparent 34%, rgba(0,0,0,.22) 55%, rgba(0,0,0,.5) 76%, rgba(0,0,0,.7) 90%, #000 100%);
-}
-.proj-gray .chroma-fade {
-  opacity: 1; transition: opacity .25s ease;
-  -webkit-mask-image: radial-gradient(circle var(--r) at var(--x) var(--y), #fff 0%, #fff 34%, rgba(255,255,255,.6) 65%, rgba(255,255,255,.3) 90%, transparent 100%);
-  mask-image: radial-gradient(circle var(--r) at var(--x) var(--y), #fff 0%, #fff 34%, rgba(255,255,255,.6) 65%, rgba(255,255,255,.3) 90%, transparent 100%);
-}
-
-/* ============ PAGE 3 — ACTIVITY ============ */
-.page.activity { background: #871003; }
-.activity .page-inner { gap: clamp(30px,5vw,80px); }
+/* ============ PAGE 3 — ABOUT ME (dulu "Activity") ============
+   Struktur baru: hero (kartu Stack React tetap dipakai via #actStackRoot)
+   lalu section tambahan (marquee/skills/pin-board/certs) yang bisa discroll.
+   Semua class section baru diberi prefix "am-" (About Me) supaya terisolasi
+   dari style lain di file ini (mis. .cert-* punya arti lain di halaman Projects). */
+.page.activity { background: #871003; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.activity .page-inner { gap: clamp(30px,5vw,80px); height: auto; min-height: 100%; padding-bottom: 0; }
 .act-left { flex: 1 1 52%; min-width: 0; }
 .act-hint{
   width:100%; text-align:center; font-style: normal !important;
@@ -350,6 +326,270 @@ body.dragging #swipeBtn .pulse { display: none; }
   width: min(38vw, 440px); aspect-ratio: 5/4.2; position: relative;
 }
 .act-stack-static { width:100%; height:100%; object-fit:cover; border-radius:22px; }
+
+/* ---- About Me: section tambahan di bawah hero (scroll) ---- */
+.am-wrap{max-width:1400px;margin:0 auto;padding:0 clamp(28px,6vw,110px)}
+.am-sec{padding:clamp(46px,8vh,90px) 0}
+.am-sec--certs{padding-top:20px}
+.am-sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:clamp(26px,4vh,44px)}
+.am-sec-head h3{
+  font-family:"Anton",sans-serif;font-weight:400;color:#62A461;
+  font-size:clamp(1.9rem,4.2vw,3.2rem);line-height:.95;letter-spacing:1px;text-transform:uppercase;
+}
+.am-count{font-family:"JetBrains Mono",monospace;font-size:.72rem;letter-spacing:2px;color:#4f8a4e;text-transform:uppercase;white-space:nowrap}
+
+/* teks vertikal "scroll down to see more" — mepet tepi kanan layar */
+.am-scroll-hint{
+  position:absolute;top:50%;right:14px;transform:translateY(-50%);
+  writing-mode:vertical-rl;text-orientation:mixed;
+  font-family:"JetBrains Mono",monospace;font-size:clamp(.78rem,1.6vh,1rem);letter-spacing:clamp(2px,.3vw,4px);
+  text-transform:uppercase;color:#62A461;opacity:.85;
+  display:flex;align-items:center;gap:10px;white-space:nowrap;pointer-events:none;
+}
+.am-scroll-hint .arrow{display:inline-block;transform:rotate(-90deg);font-size:1.1em;animation:amHintBob 1.8s ease-in-out infinite}
+@keyframes amHintBob{0%,100%{transform:rotate(-90deg) translateY(0)}50%{transform:rotate(-90deg) translateY(6px)}}
+@media (prefers-reduced-motion:reduce){.am-scroll-hint .arrow{animation:none}}
+@media(max-width:820px){.am-scroll-hint{display:none}}
+
+/* ---- Marquee (pita geser) ---- */
+.am-marq{margin:clamp(10px,1.6vh,18px) 0;overflow:hidden;padding:18px 0}
+.am-marq-track{display:flex;gap:44px;white-space:nowrap;animation:amSlide 28s linear infinite;width:max-content}
+.am-marq-track span{
+  font-family:"Anton",sans-serif;font-size:clamp(1.1rem,2vw,1.6rem);letter-spacing:1px;
+  text-transform:uppercase;display:flex;align-items:center;gap:44px
+}
+.am-marq-track span::after{content:"◆";font-size:.6em;opacity:.55}
+.am-marq.white{background:#fff}
+.am-marq.white .am-marq-track span{color:#871003}
+.am-marq.green{background:#fff}
+.am-marq.green .am-marq-track span{color:#871003}
+@keyframes amSlide{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.am-marq-track{animation:none}}
+
+/* ---- Skills ("What I Do") — kartu foto + glassmorphism ---- */
+.am-sec--white .am-sec-head h3{color:#871003}
+.am-sec--white .am-count{color:rgba(135,16,3,.65)}
+.am-skills{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.am-skill{position:relative;overflow:hidden;border-radius:14px;min-height:190px;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.am-skill:hover{transform:translateY(-3px)}
+.am-skill-photo{position:absolute;inset:0;background-size:cover;background-position:center;filter:blur(1.5px) saturate(110%) brightness(.55);transform:scale(1.03)}
+.am-skill-glass{
+  position:relative;z-index:2;height:100%;background:rgba(255,255,255,.14);
+  backdrop-filter:blur(1.5px) saturate(140%);-webkit-backdrop-filter:blur(1.5px) saturate(140%);
+  border:1px solid rgba(255,255,255,.28);border-radius:14px;padding:14px 15px 16px;display:flex;flex-direction:column;
+}
+.am-skill-n{font-family:"JetBrains Mono",monospace;font-size:.58rem;letter-spacing:2px;color:rgba(255,255,255,.8)}
+.am-skill h4{
+  font-family:"Anton",sans-serif;font-weight:400;color:#fff;text-transform:uppercase;
+  font-size:.92rem;line-height:1.25;letter-spacing:.4px;margin-top:6px;min-height:2.5em;text-shadow:0 1px 4px rgba(0,0,0,.4);
+}
+.am-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.am-tags span{
+  font-family:"JetBrains Mono",monospace;font-size:.58rem;letter-spacing:.4px;color:#fff;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 8px;
+}
+
+/* ---- Pembatas broadcast-alert (antara hero-section dan Journey) ---- */
+.am-stat-divider{padding:clamp(18px,3.5vh,34px) 0}
+.am-stat-divider .am-wrap{display:flex;align-items:center;gap:0}
+.am-bar{flex:1;height:9px;background-image:repeating-linear-gradient(135deg,#fff 0 9px,#ff3b30 9px 18px);box-shadow:0 0 12px rgba(255,59,48,.4);animation:amBarMove 1.3s linear infinite}
+.am-bar.rev{animation-direction:reverse}
+@keyframes amBarMove{from{background-position:0 0}to{background-position:-36px 0}}
+.am-stat-badge{
+  position:relative;flex-shrink:0;margin:0 16px;min-width:66px;height:46px;padding:0 12px;
+  display:flex;align-items:center;justify-content:center;background:#ff3b30;border:2px solid #fff;border-radius:4px;
+  animation:amBadgePulse 2.2s ease-in-out infinite;
+}
+.am-stat-badge::after{
+  content:"";position:absolute;top:-5px;right:-5px;width:11px;height:11px;border-radius:50%;
+  background:#fff;box-shadow:0 0 0 2px #ff3b30,0 0 8px 1px #fff;animation:amRecBlink 1.1s steps(1,end) infinite;
+}
+@keyframes amRecBlink{0%,49%{opacity:1}50%,100%{opacity:.15}}
+@keyframes amBadgePulse{0%,100%{box-shadow:0 0 0 3px rgba(255,59,48,.35)}50%{box-shadow:0 0 0 9px rgba(255,59,48,.08)}}
+.am-stat-num{font-family:"Anton",sans-serif;font-weight:400;color:#fff;font-size:clamp(1.5rem,3.4vw,2.1rem);letter-spacing:1px;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+@media (prefers-reduced-motion:reduce){.am-bar,.am-stat-badge,.am-stat-badge::after{animation:none}}
+
+/* ---- Journey & Achievements — papan pin foto ---- */
+.am-sec--board{position:relative;background-color:#871003;padding-top:clamp(40px,6vh,64px);padding-bottom:clamp(50px,7vh,80px)}
+.am-sec--board .am-sec-head h3{
+  position:relative;display:inline-block;transform:rotate(-1.3deg);background:#F5E7D8;padding:12px 24px 14px;border-radius:2px;
+  box-shadow:0 12px 24px rgba(0,0,0,.4),0 3px 6px rgba(0,0,0,.22);
+  font-family:"Caveat",cursive;font-weight:700;letter-spacing:normal;text-transform:none;font-size:clamp(1.8rem,3.8vw,2.6rem);
+}
+.am-sec--board .am-sec-head h3::before{
+  content:"";position:absolute;top:-15px;left:50%;width:130px;height:32px;
+  background:linear-gradient(rgba(222,220,214,.82),rgba(196,193,186,.62));border:1px solid rgba(255,255,255,.25);
+  box-shadow:0 3px 6px rgba(0,0,0,.3);transform:translateX(-50%) rotate(-2deg);z-index:1;
+}
+.am-sec--board .am-sec-head h3::after{
+  content:"";position:absolute;bottom:-11px;right:6%;width:76px;height:24px;
+  background:linear-gradient(rgba(222,220,214,.78),rgba(196,193,186,.58));border:1px solid rgba(255,255,255,.22);
+  box-shadow:0 2px 5px rgba(0,0,0,.28);transform:rotate(4deg);z-index:1;
+}
+.am-pins{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(46px,7vh,70px) clamp(30px,4vw,46px);padding-top:6px}
+.am-pin{
+  position:relative;background:#fff;padding:2px 2px 0;border-radius:2px;
+  box-shadow:0 10px 20px rgba(0,0,0,.4),0 2px 5px rgba(0,0,0,.22);cursor:pointer;transform-origin:top center;
+  transform:rotate(var(--rot,0deg));transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s;
+}
+.am-pin:hover{transform:rotate(var(--rot,0deg)) translateY(-6px) scale(1.015);box-shadow:0 16px 30px rgba(0,0,0,.45),0 3px 6px rgba(0,0,0,.25)}
+.am-pin:nth-child(6n+1){--rot:-2.4deg}
+.am-pin:nth-child(6n+2){--rot:1.8deg}
+.am-pin:nth-child(6n+3){--rot:-1.1deg}
+.am-pin:nth-child(6n+4){--rot:2.6deg}
+.am-pin:nth-child(6n+5){--rot:-3.2deg}
+.am-pin:nth-child(6n+6){--rot:1.3deg}
+.am-pin::before{
+  content:"";position:absolute;top:-11px;left:50%;transform:translateX(-50%);width:17px;height:17px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#ff8a7a,#c81e1e 55%,#6b0f0f 100%);
+  box-shadow:0 3px 6px rgba(0,0,0,.5),inset 0 1px 1px rgba(255,255,255,.4);z-index:3;
+}
+.am-pin:nth-child(4n+2)::before{background:radial-gradient(circle at 35% 30%,#a8e6a1,#4f8a4e 55%,#254d25 100%)}
+.am-pin:nth-child(4n+4)::before{background:radial-gradient(circle at 35% 30%,#ffe9a8,#c9a227 55%,#8a6d16 100%)}
+.am-pin:nth-child(3n+2)::before{
+  width:60px;height:22px;border-radius:2px;top:-12px;left:50%;
+  background:linear-gradient(rgba(255,255,255,.78),rgba(255,255,255,.55));border:1px solid rgba(255,255,255,.3);
+  box-shadow:0 2px 5px rgba(0,0,0,.22);transform:translateX(-50%) rotate(-4deg);
+}
+.am-pin:nth-child(6n+2)::before{transform:translateX(-50%) rotate(4deg)}
+.am-pin-img{
+  width:100%;aspect-ratio:4/3;height:auto;display:flex;align-items:center;justify-content:center;
+  color:rgba(245,231,216,.32);font-family:"JetBrains Mono",monospace;font-size:.7rem;border-radius:1px;
+  object-fit:cover;
+}
+.am-pin:nth-child(4n+1) .am-pin-img{background:linear-gradient(135deg,#2a3a24,#131a10)}
+.am-pin:nth-child(4n+2) .am-pin-img{background:linear-gradient(135deg,#3a2a1e,#1a120c)}
+.am-pin:nth-child(4n+3) .am-pin-img{background:linear-gradient(135deg,#1e2d3a,#0c1218)}
+.am-pin:nth-child(4n+4) .am-pin-img{background:linear-gradient(135deg,#332338,#160f18)}
+.am-pin-body{padding:5px 6px 6px;text-align:center}
+.am-pin-cat{font-family:"Caveat",cursive;font-weight:600;font-size:.9rem;letter-spacing:.6px;text-transform:uppercase;color:#62A461}
+.am-pin-title{font-family:"Caveat",cursive;font-weight:700;color:#1c1c1c;font-size:1.3rem;line-height:1.15;margin-top:2px}
+.am-pin-desc{
+  font-family:"Caveat",cursive;font-weight:500;color:#5c5c5c;font-size:1.08rem;line-height:1.35;text-align:left;
+  max-height:0;opacity:0;overflow:hidden;margin-top:0;transition:max-height .35s ease,opacity .3s ease,margin-top .35s ease;
+}
+.am-pin.active .am-pin-desc{max-height:160px;opacity:1;margin-top:4px}
+.am-pin-year{
+  display:inline-block;margin-top:3px;font-family:"Caveat",cursive;font-weight:600;font-size:.9rem;letter-spacing:.4px;
+  color:#62A461;border:1px solid rgba(98,164,97,.4);border-radius:999px;padding:2px 9px;
+}
+.am-pins .am-pin:nth-child(n+7){display:none}
+.am-pins.expanded .am-pin{display:block}
+.am-see-more-row{display:flex;justify-content:flex-end;margin-top:clamp(28px,4vh,44px)}
+.am-see-more{
+  font-family:"JetBrains Mono",monospace;font-size:.66rem;letter-spacing:1.4px;text-transform:uppercase;
+  color:#62A461;border:1px solid rgba(98,164,97,.5);border-radius:999px;padding:8px 18px;transition:background .25s,color .25s;
+}
+.am-see-more:hover{background:#62A461;color:#14240f}
+
+/* ---- pembatas kedua (garis strip hijau, lebih pendek) ---- */
+.am-stripe-divider{
+  height:6px;margin:clamp(30px,6vh,64px) 0;
+  background-image:repeating-linear-gradient(135deg,#62A461 0 8px,transparent 8px 16px);
+  opacity:.55;animation:amBarMove 2s linear infinite;
+}
+@media (prefers-reduced-motion:reduce){.am-stripe-divider{animation:none}}
+
+/* ---- Certificates — carousel geser ke samping, loop ---- */
+.am-sec-head-right{display:flex;align-items:center;gap:14px}
+.am-certs-foot{justify-content:flex-end;margin-top:14px}
+.am-see-all-btn{
+  font-family:"JetBrains Mono",monospace;font-size:.64rem;letter-spacing:1.2px;text-transform:uppercase;
+  color:#62A461;background:transparent;border:1px solid rgba(98,164,97,.5);border-radius:999px;
+  padding:7px 16px;cursor:pointer;transition:background .25s,color .25s;white-space:nowrap;
+}
+.am-see-all-btn:hover{background:#62A461;color:#14240f}
+.am-certs-viewport{position:relative;margin-top:8px}
+.am-certs-viewport::before,.am-certs-viewport::after{content:"";position:absolute;top:0;bottom:0;width:clamp(20px,6vw,80px);z-index:2;pointer-events:none}
+.am-certs-viewport::before{left:0;background:linear-gradient(90deg,#871003,transparent)}
+.am-certs-viewport::after{right:0;background:linear-gradient(270deg,#871003,transparent)}
+.am-certs-viewport.expanded::before,.am-certs-viewport.expanded::after{display:none}
+.am-certs{
+  display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px calc(50% - 70px) 18px;
+  scrollbar-width:none;-ms-overflow-style:none;cursor:grab;
+}
+.am-certs::-webkit-scrollbar{display:none}
+.am-certs.dragging{cursor:grabbing;user-select:none;scroll-snap-type:none}
+.am-certs.dragging .am-cert{pointer-events:none}
+.am-certs.expanded{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;overflow:visible;padding:6px 0 4px;scroll-snap-type:none;cursor:default}
+@media(max-width:1000px){.am-certs.expanded{grid-template-columns:repeat(3,1fr)}}
+.am-certs.expanded .am-cert{opacity:1 !important;flex:none;scroll-snap-align:none}
+.am-cert{
+  flex:0 0 140px;scroll-snap-align:center;border-radius:14px;overflow:hidden;
+  background:#fff;border:1px solid rgba(0,0,0,.06);box-shadow:0 4px 14px rgba(0,0,0,.18);
+  opacity:.4;transition:opacity .2s linear;cursor:pointer;
+}
+.am-cert-img{
+  width:100%;height:100px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#2a3a24,#131a10);color:rgba(245,231,216,.32);
+  font-family:"JetBrains Mono",monospace;font-size:.6rem;object-fit:cover;
+}
+.am-cert-body{padding:10px 12px 12px}
+.am-cert-title{
+  font-family:"Inter",sans-serif;font-weight:700;color:#1c1c1c;font-size:.78rem;line-height:1.3;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.am-cert-issuer{font-family:"JetBrains Mono",monospace;font-size:.56rem;letter-spacing:.6px;text-transform:uppercase;color:#7a7a7a;margin-top:6px}
+
+/* ---- Footer CTA (hijau) ---- */
+.am-foot{padding:clamp(50px,8vh,90px) 0 clamp(70px,10vh,120px);text-align:center;background:#62A461}
+.am-foot h3{font-family:"Anton",sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(1.8rem,4vw,3rem);line-height:.95;letter-spacing:1px;color:#fdfaf6}
+.am-foot p{font-family:"Inter",sans-serif;margin:14px auto 0;max-width:46ch;line-height:1.55;color:rgba(253,250,246,.85)}
+.am-foot .am-btn{
+  display:inline-flex;align-items:center;gap:10px;margin-top:26px;
+  font-family:"JetBrains Mono",monospace;font-size:.74rem;letter-spacing:1.6px;text-transform:uppercase;
+  border-radius:999px;padding:13px 26px;transition:background .25s,color .25s;color:#fdfaf6;border:1px solid rgba(253,250,246,.6);
+}
+.am-foot .am-btn:hover{background:#fdfaf6;color:#62A461}
+
+@media(max-width:820px){
+  .am-sec{padding:32px 0}
+  .am-sec--white{padding-top:22px;padding-bottom:60px}
+  .am-sec-head{flex-direction:column;align-items:flex-start;gap:8px;margin-bottom:22px}
+  .am-sec-head h3{font-size:1.5rem}
+  .am-sec--board .am-sec-head h3{font-size:clamp(1.3rem,5.2vw,1.7rem);padding:8px 16px 9px}
+  .am-sec--board .am-sec-head h3::before{width:70px;height:16px;top:-9px}
+  .am-sec--board .am-sec-head h3::after{width:42px;height:13px;bottom:-6px}
+  .am-sec-head .am-count{font-size:.62rem}
+  .am-marq{margin:12px 0}
+  .am-stat-divider{margin:6px 0}
+  .am-stat-badge{min-width:48px;height:34px;margin:0 10px}
+  .am-bar{height:6px}
+  .am-stat-num{font-size:1.15rem}
+  .am-stripe-divider{margin:22px 0;height:5px}
+  .am-pins{display:grid;grid-template-columns:repeat(2,1fr);gap:22px 14px}
+  .am-pin{margin:0;display:flex;flex-direction:column;padding:2px 2px 0}
+  .am-pin::before{width:13px;height:13px;top:-8px}
+  .am-pin:nth-child(3n+2)::before{width:40px;height:16px;top:-9px}
+  .am-pin-img{aspect-ratio:4/3;height:auto !important;flex:none;min-height:0;font-size:.6rem}
+  .am-pin-desc{display:block;font-size:.72rem;line-height:1.4}
+  .am-pin.active .am-pin-desc{max-height:200px}
+  .am-pin-body{padding:4px 5px 5px;flex-shrink:0}
+  .am-pin-cat{font-size:.5rem}
+  .am-pin-title{font-size:.68rem;margin-top:4px;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .am-pin-year{font-size:.5rem;padding:2px 6px;margin-top:5px}
+  .am-pins .am-pin:nth-child(n+5){display:none}
+  .am-pins.expanded .am-pin:nth-child(n+5){display:flex}
+  .am-skills{grid-template-columns:1fr;gap:10px}
+  .am-skill{aspect-ratio:auto;border-radius:14px;min-height:0}
+  .am-skill-glass{flex-direction:row;align-items:center;gap:14px;padding:13px 16px;border-radius:14px}
+  .am-skill-n{font-size:1.05rem;color:rgba(255,255,255,.55);flex-shrink:0;min-width:22px}
+  .am-skill-body{flex:1;min-width:0}
+  .am-skill h4{font-size:.86rem;margin:0 0 5px;line-height:1.2;min-height:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;-webkit-line-clamp:unset}
+  .am-skill p{display:none}
+  .am-tags{margin-top:0;gap:5px;flex-wrap:wrap}
+  .am-tags span{font-size:.56rem;padding:3px 7px}
+  .am-sec-head-right{width:100%;justify-content:space-between}
+  .am-certs{gap:8px;padding:6px calc(50% - 52px) 14px}
+  .am-cert{flex-basis:104px;border-radius:11px}
+  .am-cert-img{height:66px;font-size:.5rem}
+  .am-cert-body{padding:7px 8px 8px}
+  .am-cert-title{font-size:.6rem;line-height:1.22}
+  .am-cert-issuer{font-size:.46rem;margin-top:3px}
+  .am-certs.expanded{grid-template-columns:repeat(2,1fr);gap:9px}
+  .am-foot{padding:40px 0 60px}
+  .am-foot p{font-size:.82rem;font-weight:300;line-height:1.6}
+}
 
 /* ============ PAGE 4 — CONTACT ============ */
 .page.contact { background: #57A45B; }
@@ -946,7 +1186,7 @@ const CONFIG = {
 
   projects: {
     title: "Projects",
-    // Sertifikat (baris atas, scroll ke samping). Isi image (taruh di public/) & url opsional.
+    // Sertifikat (sekarang tampil di halaman About Me, bukan di sini)
     certificates: [
       { title: "IoT Fundamentals", issuer: "Cisco", image: "", url: "" },
       { title: "Embedded C", issuer: "Coursera", image: "", url: "" },
@@ -955,26 +1195,37 @@ const CONFIG = {
       { title: "PCB Design", issuer: "Altium", image: "", url: "" },
       { title: "Character Design", issuer: "CGMA", image: "", url: "" }
     ],
-    // Bento/pinterest: 'ar' = rasio tinggi tile (tinggi = lebar * ar). cover = foto.
+    // Work Experience: cat = 'web' | 'iot' | 'art'. org = organisasi/klien (tampil di kartu).
     items: [
-      { title: "Smart Hydroponics", cat:"tech", feature:true, ar:1.35, cover: "", tags:["ESP32","IoT","MQTT"],
+      { title: "Smart Hydroponics", cat:"iot", org:"", feature:true, ar:1.35, cover: "", tags:["ESP32","IoT","MQTT"],
         description: "An automated hydroponics controller monitoring pH, EC, water temperature, and light. Sensor data streams over MQTT to a live dashboard, and dosing pumps correct nutrient levels automatically. Built around an ESP32 with a custom PCB.",
         images: ["","",""] },
-      { title: "Gundam Repaint", cat:"art", feature:true, ar:0.8, cover: "", tags:["Illustration","Procreate"],
+      { title: "Gundam Repaint", cat:"art", org:"Personal project", feature:true, ar:0.8, cover: "", tags:["Illustration","Procreate"],
         description: "A personal series exploring lighting, panel-lining, and metallic rendering on mecha subjects — each piece rendered in layers to study reflection and material.",
         images: ["","",""] },
-      { title: "Home Energy Meter", cat:"tech", ar:1.0, cover: "", tags:["Embedded","C++","InfluxDB"],
+      { title: "Home Energy Meter", cat:"iot", org:"", ar:1.0, cover: "", tags:["Embedded","C++","InfluxDB"],
         description: "A clamp-based current sensor feeding an ESP32 that computes real power and logs to InfluxDB, with Grafana panels showing consumption trends and estimated cost.",
         images: ["",""] },
-      { title: "Character Sticker Pack", cat:"art", ar:1.25, cover: "", tags:["Character","Vector"],
+      { title: "Character Sticker Pack", cat:"art", org:"Personal project", ar:1.25, cover: "", tags:["Character","Vector"],
         description: "A set of expressive original characters designed as a cohesive sticker pack — consistent proportions, a limited palette, and readable silhouettes at small sizes.",
         images: ["","","",""] },
-      { title: "Weather Station", cat:"tech", ar:0.9, cover: "", tags:["LoRa","Sensors"],
-        description: "A solar-powered outdoor node sending temperature, humidity, and pressure over LoRa to a base station kilometers away.",
+      { title: "Portfolio Dashboard", cat:"web", org:"", ar:0.9, cover: "", tags:["React","Supabase"],
+        description: "A client-facing dashboard for managing content — projects, activity, and certificates — without touching code.",
         images: ["",""] },
-      { title: "3D Prop Studies", cat:"art", ar:1.15, cover: "", tags:["Blender","3D"],
+      { title: "3D Prop Studies", cat:"art", org:"Personal project", ar:1.15, cover: "", tags:["Blender","3D"],
         description: "Weekly 3D modelling studies — hard-surface props rendered with careful attention to materials, bevels, and lighting.",
         images: ["",""] }
+    ],
+    // "What I Can Do" (Project) — placeholder sampai tabel `services` diisi lewat admin
+    services: [
+      { name:"Web Development", desc:"Custom websites and web apps, from landing pages to dashboards with real-time data.",
+        deliverables:["Landing page & profile site","Web app / dashboard","API & database integration"] },
+      { name:"IoT & Embedded Systems", desc:"Internet-connected devices and sensors — from prototype to something ready for the field.",
+        deliverables:["ESP32 / microcontroller firmware","MQTT monitoring dashboard","Basic PCB design"] },
+      { name:"Mobile & Desktop Apps", desc:"Lightweight, pleasant-to-use cross-platform apps for business or research needs.",
+        deliverables:["Mobile app (Android/iOS)","Lightweight desktop app","Maintenance & updates"] },
+      { name:"UI/UX & Digital Illustration", desc:"Interfaces that are easy to use, paired with illustration or character work if your product needs a visual identity.",
+        deliverables:["Wireframes & prototypes","Final UI design","Custom illustration / characters"] }
     ]
   },
 
@@ -984,17 +1235,24 @@ const CONFIG = {
       { title: "Robotics Expo 2025",
         text: "Two days demoing an autonomous line-following rig at Robotics Expo 2025 and talking embedded design with visitors. Standing in front of the Unicorn Gundam statue in Odaiba the night before was the highlight.",
         meta: [ {k:"Penyelenggara", v:"Robotics Society"}, {k:"Role", v:"Team Lead"} ],
-        photo: "",
+        photo: "", cat: "Competition", year: "2025",
         modalTitle: "Robotics Expo 2025",
         modalDesc: "A closer look at the expo — the rig, the booth, and the crowd. Equal parts engineer and fan.",
         gallery: ["","",""] },
       { title: "Illustration Workshop",
         text: "Ran a weekend digital illustration workshop for students — from silhouette thumbnails to final rendering, teaching how to build a character that reads clearly at any size.",
         meta: [ {k:"Panitia", v:"Art Community"}, {k:"Role", v:"Instructor"}, {k:"Attendees", v:"30+"} ],
-        photo: "",
+        photo: "", cat: "Workshop", year: "2025",
         modalTitle: "Illustration Workshop",
         modalDesc: "Process shots and student work from the workshop.",
         gallery: ["",""] }
+    ],
+    // "What I Do" (About Me) — placeholder sampai tabel `skills` diisi lewat admin
+    skills: [
+      { title: "Embedded & IoT", tags: ["Raspberry Pi","ESP32","ATmega","MQTT","Sensors"], photo: "" },
+      { title: "Web Development", tags: ["React","Vite","Node.js","Laravel","Supabase"], photo: "" },
+      { title: "Data & Machine Learning", tags: ["Python","scikit-learn","TensorFlow","Pandas"], photo: "" },
+      { title: "Infrastructure", tags: ["Linux","Docker","Cloudflare","Vercel","Nginx"], photo: "" }
     ]
   },
 
@@ -1162,92 +1420,110 @@ function renderHome(){
 
 function renderProjects(){
   const c = CONFIG.projects;
-  const certOne = (ct,i) => `
-    <div class="cert-item" data-ci="${i}">
-      <div class="cert-thumb"><img src="${img(ct.image, ct.title, '#141414', '#7a7266', 420, 300)}" alt="" loading="lazy"></div>
-      <div class="cert-title">${esc(ct.title)}</div>
-      <div class="cert-issuer">${esc(ct.issuer||'')}</div>
-    </div>`;
-  const certList = (c.certificates||[]).map(certOne).join("");
-  // 3x salinan → ilusi loop tak berujung (drag momentum akan wrap di tengah)
-  const certs = certList + certList + certList;
+  const items = c.items || [];
+  const services = c.services || [];
+  const cats = ['web','iot','art'];
+  const catLabel = { web:'Web', iot:'IoT & Embedded', art:'Art' };
 
-  const segHtml = (cat) => `<div class="seg">
-        <div class="seg-glass"></div>
-        <button class="ptab${cat==='tech'?' active':''}" data-cat="tech">tech</button>
-        <button class="ptab${cat==='art'?' active':''}" data-cat="art">art</button>
-      </div>`;
+  const xpCard = (p,i) => {
+    const w = 1280, h = Math.round(w * 10/16);
+    return `<article class="wx-xp" data-i="${i}">
+      <div class="wx-xp-media"><img src="${img(p.cover, p.title, '#1c1c1c', '#5a5148', w, h)}" alt="" loading="lazy"></div>
+      <div class="wx-xp-body">
+        <div class="wx-xp-cat">${esc(p.org ? (p.org + ' · ') : '')}${esc(catLabel[p.cat] || p.cat || '')}</div>
+        <div class="wx-xp-title">${esc(p.title)}</div>
+        <p class="wx-xp-desc">${esc(p.description||'')}</p>
+        <span class="wx-xp-link">See project</span>
+      </div>
+    </article>`;
+  };
 
-  const featureHtml = (p,i,cat) => {
-    const w = 800, h = Math.round(w * (p.ar || 1));
-    return `<div class="feature" data-i="${i}">
-      ${segHtml(cat)}
-      <div class="feat-media"><img src="${img(p.cover, p.title, '#1c1c1c', '#5a5148', w, h)}" alt="" loading="lazy"></div>
-      <div class="feat-body">
-        <div class="feat-badge">★ featured</div>
-        <div class="feat-title">${esc(p.title)}</div>
-        <div class="feat-desc">${esc(p.description||'')}</div>
-        <div class="feat-tags">${(p.tags||[]).map(t=>`<span>${esc(t)}</span>`).join("")}</div>
+  const xpPane = (cat) => {
+    const list = items.filter(p => (p.cat||'') === cat);
+    if(!list.length) return `<div class="wx-pane" data-pane="${cat}"><div class="feat-empty">Belum ada karya di kategori ini.</div></div>`;
+    return `<div class="wx-pane" data-pane="${cat}"><div class="wx-xp-list">${list.map((p,i)=>xpCard(p,items.indexOf(p))).join('')}</div></div>`;
+  };
+  const xpPaneAll = () => `<div class="wx-pane" data-pane="all"><div class="wx-xp-list">${items.map((p,i)=>xpCard(p,i)).join('')}</div></div>`;
+
+  const ledgerRow = (s,i) => `
+    <div class="wx-led-row">
+      <div class="wx-led-idx">0${i+1}</div>
+      <div class="wx-led-main">
+        <div class="wx-led-name">
+          <h3>${esc(s.name)}</h3>
+          <p>${esc(s.desc)}</p>
+        </div>
+        <div class="wx-led-deliv"><ul>${(s.deliverables||[]).map(d=>`<li>${esc(d)}</li>`).join('')}</ul></div>
       </div>
     </div>`;
-  };
 
-  const pane = (cat) => {
-    const idxs = c.items.map((p,i)=>({p,i})).filter(o => (o.p.cat||'') === cat);
-    const hidden = cat==='art' ? ' style="display:none"' : '';
-    if(!idxs.length){
-      return `<div class="cat-pane" data-pane="${cat}"${hidden}>
-        <div class="feat-empty">Belum ada karya di kategori ini.</div>
-      </div>`;
-    }
-    const rowHtml = (o) => {
-      // rasio foto TETAP 16:9 (seperti foto produk yang dikirim); dipotong bila perlu
-      return `<div class="prow" data-i="${o.i}">
-        <div class="prow-media"><img src="${img(o.p.cover, o.p.title, '#1c1c1c', '#5a5148', 1280, 720)}" alt="" loading="lazy"></div>
-        <div class="prow-body">
-          <div class="prow-cat">${(o.p.cat||'').toUpperCase()}</div>
-          <div class="prow-title">${esc(o.p.title)}</div>
-          <div class="prow-desc">${esc(o.p.description||'')}</div>
-          <div class="prow-tags">${(o.p.tags||[]).map(t=>`<span>${esc(t)}</span>`).join("")}</div>
-        </div>
-      </div>`;
-    };
-    return `<div class="cat-pane" data-pane="${cat}"${hidden}>
-      <div class="prow-list" data-list="${cat}">${idxs.map(rowHtml).join("")}</div>
-    </div>`;
-  };
+  const orgCount = new Set(items.map(p=>p.org).filter(Boolean)).size;
 
   return `
     <div class="page projects">
-      <div class="proj-bg" id="projBg"></div>
+      <div class="proj-scroll"><div class="wx-scroll-inner">
 
-      <div class="proj-scroll"><div class="proj-wrap">
-        <section class="cert-strip">
-          <div class="cert-head">
-            <span class="cert-eyebrow">certificates</span>
+        <!-- ============ HERO ============ -->
+        <section class="wx-hero"><div class="wx-wrap">
+          <div class="wx-eyebrow">Work Experience &amp; Services</div>
+          <h1>Projects already built, and <em>already booked</em>.</h1>
+          <p class="wx-hero-sub">Experience in IoT, machine learning, and digital illustration — projects built and delivered, start to finish.</p>
+          <div class="wx-hero-meta">
+            <div class="wx-hm-cell"><div class="n">${items.length}+</div><div class="l">Projects completed</div></div>
+            <div class="wx-hm-cell"><div class="n">${new Set(items.map(p=>p.cat).filter(Boolean)).size}</div><div class="l">Disciplines — Web, IoT &amp; Art</div></div>
+            <div class="wx-hm-cell"><div class="n">${orgCount}</div><div class="l">Institutional partners</div></div>
+            <div class="wx-hm-cell"><div class="n">24h</div><div class="l">Average response time</div></div>
           </div>
-          <div class="cert-track">${certs}</div>
-          <button class="cert-seeall" id="certSeeAll" type="button">See all →</button>
-        </section>
+        </div></section>
 
-        <div class="proj-divider"></div>
-
-        <div class="proj-sechead-row">
-          <span class="proj-sechead">work experience</span>
-          <div class="seg" id="projSeg">
-            <div class="seg-glass"></div>
-            <button class="ptab active" data-cat="tech">tech</button>
-            <button class="ptab" data-cat="art">art</button>
+        <!-- ============ WORK EXPERIENCE ============ -->
+        <section class="wx-sec wx-experience" id="wxExperience"><div class="wx-wrap">
+          <div class="wx-sec-head">
+            <div>
+              <div class="wx-eyebrow">Work Experience</div>
+              <div class="wx-sec-title">Projects already underway</div>
+            </div>
+            <div class="wx-seg" id="wxSeg">
+              <button class="wx-ptab active" data-cat="web">Web</button>
+              <button class="wx-ptab" data-cat="iot">IoT &amp; Embedded</button>
+              <button class="wx-ptab" data-cat="art">Art</button>
+            </div>
           </div>
-        </div>
 
-        <div class="proj-body">
-          ${pane('tech')}
-          ${pane('art')}
-        </div>
+          ${cats.map(xpPane).join('')}
+          ${xpPaneAll()}
+
+          <div class="wx-xp-seeall">
+            <button class="wx-see-all-btn" id="wxSeeAllBtn">
+              <span>See all projects</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+            </button>
+          </div>
+        </div></section>
+
+        <!-- ============ SERVICES ============ -->
+        <section class="wx-sec" id="wxServices"><div class="wx-wrap">
+          <div class="wx-sec-head">
+            <div>
+              <div class="wx-eyebrow">Skills</div>
+              <div class="wx-sec-title">What I Can Do</div>
+            </div>
+          </div>
+          <div class="wx-ledger">${services.map(ledgerRow).join('')}</div>
+        </div></section>
+
+        <!-- ============ CTA ============ -->
+        <section class="wx-cta-band"><div class="wx-wrap">
+          <div class="wx-eyebrow">Ready To Start</div>
+          <h2>Got a project<br>in mind?</h2>
+          <p>Tell me what you need — an IoT system, a web app, or an illustration. I'll help take it from idea to something real.</p>
+          <a class="wx-cta-btn" href="#contact" id="wxCta">
+            Get In Touch
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+        </div></section>
+
       </div></div>
-
-      <div class="proj-titlebar" id="projTitlebar"></div>
     </div>`;
 }
 
@@ -1268,7 +1544,59 @@ function renderActivity(){
         <div class="act-stack" id="actStackRoot"></div>
         <div class="act-hint">hold &amp; drag to switch photo</div>
       </div>
-    </div></div>`;
+      <div class="am-scroll-hint"><span>scroll down to see more</span><span class="arrow" aria-hidden="true">↓</span></div>
+    </div>
+
+    <!-- ============ MARQUEE ============ -->
+    <div class="am-marq white"><div class="am-marq-track" id="amMarqTop"></div></div>
+
+    <!-- ============ SKILLS: What I Do ============ -->
+    <section class="am-sec am-sec--white"><div class="am-wrap">
+      <div class="am-sec-head">
+        <h3>What I Do</h3>
+        <div class="am-count" id="amSkillsCount"></div>
+      </div>
+      <div class="am-skills" id="amSkillsGrid"></div>
+    </div></section>
+
+    <!-- pembatas broadcast-alert -->
+    <div class="am-stat-divider"><div class="am-wrap">
+      <div class="am-bar"></div>
+      <div class="am-stat-badge"><div class="am-stat-num" id="amStatNum">04</div></div>
+      <div class="am-bar rev"></div>
+    </div></div>
+
+    <!-- ============ JOURNEY & ACHIEVEMENTS: papan pin ============ -->
+    <section class="am-sec am-sec--board"><div class="am-wrap">
+      <div class="am-sec-head">
+        <h3>Journey &amp; Achievements</h3>
+        <div class="am-count" id="amActivityCount"></div>
+      </div>
+      <div class="am-pins" id="amPinsGrid"></div>
+      <div class="am-see-more-row"><a class="am-see-more" id="amPinsSeeMore" href="#">See more →</a></div>
+    </div></section>
+
+    <!-- ============ MARQUEE — pembatas Journey/Certificates ============ -->
+    <div class="am-marq green"><div class="am-marq-track" id="amMarqBottom"></div></div>
+
+    <!-- ============ CERTIFICATES ============ -->
+    <section class="am-sec am-sec--certs"><div class="am-wrap">
+      <div class="am-certs-viewport" id="amCertsViewport">
+        <div class="am-certs" id="amCertsTrack"></div>
+      </div>
+      <div class="am-sec-head-right am-certs-foot">
+        <div class="am-count" id="amCertsCount"></div>
+        <button class="am-see-all-btn" id="amCertsSeeAll" type="button">See all</button>
+      </div>
+    </div></section>
+
+    <!-- ============ FOOTER CTA ============ -->
+    <section class="am-foot"><div class="am-wrap">
+      <h3>Let's Work Together</h3>
+      <p>Open to research collaborations, hardware projects, and application development.</p>
+      <a class="am-btn" href="#contact" id="amFootCta">Get in touch →</a>
+    </div></section>
+    </div>`;
 }
 
 function renderContact(){
@@ -1511,138 +1839,49 @@ function stopTyping(){ typingToken++; }
 
 function initProjects(root){
   const c = CONFIG.projects;
-  const items = c.items;
+  const items = c.items || [];
 
-  // Klik feature → modal (hanya feature yg berisi projek; abaikan feature kosong)
   const openItem = (i) => {
     const p = items[i];
-    openModal({ title:p.title, desc:p.description, images:p.images, tags:p.tags, link:p.link, palette:{ bg:'#141414', fg:'#E7B996' } });
+    if(!p) return;
+    openModal({ title:p.title, desc:p.description, images:(p.images&&p.images.length?p.images:[p.cover]), tags:p.tags, link:p.link, palette:{ bg:'#0b0b0d', fg:'#F5E7D8' } });
   };
-  root.querySelectorAll('.feature[data-i]').forEach(elm => {
+  root.querySelectorAll('.wx-xp[data-i]').forEach(elm => {
     elm.addEventListener('click', () => openItem(+elm.dataset.i));
   });
-  // Klik kartu daftar → modal (sama seperti featured)
-  root.querySelectorAll('.prow[data-i]').forEach(elm => {
-    elm.addEventListener('click', () => openItem(+elm.dataset.i));
-  });
-  // Klik pada segmented tab TIDAK boleh membuka modal feature
-  root.querySelectorAll('.seg').forEach(s => s.addEventListener('click', e => e.stopPropagation()));
 
-  // Background Projects: polos (animasi dibuang — penyebab lag)
-  const titlebar = root.querySelector('#projTitlebar');
-  // judul kaca "Projects" dihapus (tidak dipasang lagi → GlassSurface tak jalan = lebih ringan)
-
-  // Kaca betulan (GlassSurface) — di tab tech/art dalam card feature (+ judul). Ringan.
-  if(false){   // tab TECH/ART: glassmorph CSS saja (GlassSurface dimatikan — berat)
-    root.querySelectorAll('.seg-glass').forEach(sg => window.__mountGlassPanel(sg, 13));
-  }
-
-  // (Daftar project kini statis di markup — tak perlu Masonry)
-
-  // Tabs sub-halaman tech / art → tampilkan pane
-  const tabs = [...root.querySelectorAll('.ptab')];
-  const panes = [...root.querySelectorAll('.cat-pane')];
-  tabs.forEach(tab => tab.addEventListener('click', () => {
-    const cat = tab.dataset.cat;
+  // Tabs Work Experience: web / iot / art, + "See all"
+  const tabs = [...root.querySelectorAll('.wx-ptab')];
+  const panes = [...root.querySelectorAll('.wx-pane')];
+  const seeAllBtn = root.querySelector('#wxSeeAllBtn');
+  const showCat = (cat) => {
     tabs.forEach(t => t.classList.toggle('active', t.dataset.cat === cat));
-    panes.forEach(pn => { pn.style.display = (pn.dataset.pane === cat) ? '' : 'none'; });
-  }));
-
-  // Sertifikat: loop tak berujung + momentum (drag lalu berputar lama, licin)
-  const track = root.querySelector('.cert-track');
-  if(track){
-    let oneSet = 0;
-    const measure = () => { oneSet = track.scrollWidth / 3; if(oneSet > 0 && track.scrollLeft < 1) track.scrollLeft = oneSet; };
-    requestAnimationFrame(measure);
-    const wrap = () => {
-      if(!oneSet) return;
-      if(track.scrollLeft < oneSet * 0.5) track.scrollLeft += oneSet;
-      else if(track.scrollLeft > oneSet * 1.5) track.scrollLeft -= oneSet;
-    };
-    let down = false, moved = false, startX = 0, startLeft = 0, lastX = 0, vel = 0, momRaf = null;
-    const stopMom = () => { if(momRaf){ cancelAnimationFrame(momRaf); momRaf = null; } };
-    let pressedCert = null;
-    track.addEventListener('pointerdown', (e) => {
-      measure(); down = true; moved = false; startX = e.clientX; startLeft = track.scrollLeft; lastX = e.clientX; vel = 0;
-      pressedCert = e.target.closest ? e.target.closest('.cert-item') : null;
-      stopMom(); track.classList.add('dragging'); track.setPointerCapture(e.pointerId);
-    });
-    track.addEventListener('pointermove', (e) => {
-      if(!down) return;
-      const dx = e.clientX - startX;
-      if(Math.abs(dx) > 4) moved = true;
-      track.scrollLeft = startLeft - dx;
-      vel = -(e.clientX - lastX) * 0.5; lastX = e.clientX;   // separuh → tak meluncur jauh
-      wrap();
-    });
-    const release = (e) => {
-      if(!down) return;
-      down = false; track.classList.remove('dragging'); try{ track.releasePointerCapture(e.pointerId); }catch(_){}
-
-      // KLIK (bukan geser) → buka detail sertifikat.
-      // Catatan: setPointerCapture menelan event 'click', jadi ditangani di sini.
-      if(!moved && pressedCert){
-        const ct = (c.certificates||[])[+pressedCert.dataset.ci];
-        pressedCert = null;
-        if(ct){
-          openModal({ title:ct.title, desc:(ct.issuer? ('Issued by ' + ct.issuer) : ''), images:[ct.image], link:ct.url, palette:{ bg:'#141414', fg:'#E7B996' } });
-          return;
-        }
+    panes.forEach(p => p.classList.toggle('active', p.dataset.pane === cat));
+    if(seeAllBtn){ seeAllBtn.classList.remove('active'); const lbl=seeAllBtn.querySelector('span'); if(lbl) lbl.textContent='See all projects'; }
+  };
+  tabs.forEach(tab => tab.addEventListener('click', () => showCat(tab.dataset.cat)));
+  if(seeAllBtn){
+    seeAllBtn.addEventListener('click', () => {
+      const isAll = seeAllBtn.classList.toggle('active');
+      const lbl = seeAllBtn.querySelector('span');
+      if(isAll){
+        tabs.forEach(t => t.classList.remove('active'));
+        panes.forEach(p => p.classList.toggle('active', p.dataset.pane === 'all'));
+        if(lbl) lbl.textContent = 'Show less';
+      } else {
+        const first = tabs[0];
+        if(first) showCat(first.dataset.cat);
       }
-      pressedCert = null;
-
-      (function mom(){
-        if(!track.isConnected || Math.abs(vel) < 0.12){ momRaf = null; return; }
-        track.scrollLeft += vel; wrap();
-        vel *= 0.90;                  // gesekan lebih besar → berhenti wajar
-        momRaf = requestAnimationFrame(mom);
-      })();
-    };
-    track.addEventListener('pointerup', release);
-    track.addEventListener('pointercancel', release);
-    // fallback: sebagian HP tak mengirim pointerup setelah setPointerCapture
-    track.addEventListener('click', (e) => {
-      if(moved) { e.preventDefault(); return; }
-      const it = e.target.closest && e.target.closest('.cert-item');
-      if(!it) return;
-      const ct = (c.certificates||[])[+it.dataset.ci];
-      if(ct) openModal({ title:ct.title, desc:(ct.issuer? ('Issued by ' + ct.issuer) : ''), images:[ct.image], link:ct.url, palette:{ bg:'#141414', fg:'#E7B996' } });
     });
-    track.addEventListener('wheel', (e) => {
-      if(Math.abs(e.deltaY) > Math.abs(e.deltaX)){ stopMom(); track.scrollLeft += e.deltaY; wrap(); e.preventDefault(); }
-    }, { passive: false });
-
-    // tombol "See all" → grid semua sertifikat
-    const seeAll = root.querySelector('#certSeeAll');
-    if(seeAll){
-      seeAll.addEventListener('click', () => openCertGrid(c.certificates || []));
-    }
   }
 
-  // Efek Chroma (grayscale → warna asli di sekitar kursor) — di semua layer
-  {
-    const gray = root.querySelector('.proj-gray');
-    const fade = root.querySelector('.proj-gray .chroma-fade');
-    const page = root.querySelector('.page.projects');
-    if(gray && page){
-      let tx = W/2, ty = H/2, cx = tx, cy = ty, seen = false;
-      const onMove = (e) => {
-        const r = page.getBoundingClientRect();
-        tx = e.clientX - r.left; ty = e.clientY - r.top;
-        if(!seen){ cx = tx; cy = ty; seen = true; }
-        if(fade) fade.style.opacity = '0';
-      };
-      page.addEventListener('pointermove', onMove);
-      page.addEventListener('pointerleave', () => { if(fade) fade.style.opacity = '1'; });
-      (function loop(){
-        if(!gray.isConnected) return;
-        if(!window.__layerLive(gray)){ requestAnimationFrame(loop); return; }   // hemat CPU
-        cx += (tx - cx) * 0.16; cy += (ty - cy) * 0.16;
-        gray.style.setProperty('--x', cx + 'px');
-        gray.style.setProperty('--y', cy + 'px');
-        requestAnimationFrame(loop);
-      })();
-    }
+  // Tombol CTA bawah → halaman Contact
+  const cta = root.querySelector('#wxCta');
+  if(cta){
+    cta.addEventListener('click', (e) => {
+      e.preventDefault();
+      if(window.__goPage) window.__goPage('contact');
+    });
   }
 }
 
@@ -1874,6 +2113,194 @@ function initActivity(root){
     im.className = 'act-stack-static'; im.src = imagesPerItem[startIdx][0]; im.alt = '';
     stackEl.appendChild(im);
     // Home tidak memakai bold hover lagi (desain baru + jauh lebih ringan)
+  }
+
+  initAboutMeSections(root);
+}
+
+/* =====================================================================
+   ABOUT ME — section tambahan di bawah hero (marquee, skills, pin board,
+   certificates carousel, footer CTA). Data dari CONFIG.activity.items,
+   CONFIG.activity.skills, dan CONFIG.projects.certificates (sudah ada).
+   ===================================================================== */
+function initAboutMeSections(root){
+  const items = CONFIG.activity.items || [];
+  const skills = CONFIG.activity.skills || [];
+  const certs = CONFIG.projects.certificates || [];
+
+  /* ---- Marquee (dua pita, isi statis) ---- */
+  const marqWords = ["Embedded Systems","Internet of Things","Web Development","Machine Learning","Research"];
+  const marqSpans = marqWords.concat(marqWords).map(w => `<span>${esc(w)}</span>`).join('');
+  const topMarq = root.querySelector('#amMarqTop');
+  if(topMarq) topMarq.innerHTML = marqSpans;
+  const botMarq = root.querySelector('#amMarqBottom');
+  if(botMarq) botMarq.innerHTML = Array(10).fill('<span>My Certificates</span>').join('');
+
+  /* ---- Skills: What I Do ---- */
+  const skillsGrid = root.querySelector('#amSkillsGrid');
+  if(skillsGrid){
+    skillsGrid.innerHTML = skills.map((s,i) => `
+      <div class="am-skill">
+        <div class="am-skill-photo" style="${s.photo ? `background-image:url('${img(s.photo,s.title,'#2a3a24','#F5E7D8',420,300)}')` : ''}"></div>
+        <div class="am-skill-glass">
+          <div class="am-skill-n">0${i+1}</div>
+          <div class="am-skill-body">
+            <h4>${esc(s.title)}</h4>
+            <div class="am-tags">${(s.tags||[]).map(t => `<span>${esc(t)}</span>`).join('')}</div>
+          </div>
+        </div>
+      </div>`).join('');
+  }
+  const skillsCount = root.querySelector('#amSkillsCount');
+  if(skillsCount) skillsCount.textContent = `${skills.length} area${skills.length===1?'':'s'}`;
+  const statNum = root.querySelector('#amStatNum');
+  if(statNum) statNum.textContent = String(skills.length).padStart(2,'0');
+
+  /* ---- Journey & Achievements: papan pin ---- */
+  const pinsGrid = root.querySelector('#amPinsGrid');
+  if(pinsGrid){
+    pinsGrid.innerHTML = items.map((it,i) => `
+      <article class="am-pin" data-i="${i}">
+        <img class="am-pin-img" src="${img(it.photo,it.title,'#2a3a24','#F5E7D8',420,300)}" alt="" loading="lazy">
+        <div class="am-pin-body">
+          <div class="am-pin-cat">${esc(it.cat || 'Activity')}</div>
+          <div class="am-pin-title">${esc(it.title)}</div>
+          <div class="am-pin-desc">${esc(it.text)}</div>
+          ${it.year ? `<span class="am-pin-year">${esc(it.year)}</span>` : ''}
+        </div>
+      </article>`).join('');
+    // klik satu pin → seluruh baris yang sama ikut expand (deskripsi tampil)
+    pinsGrid.querySelectorAll('.am-pin').forEach(pin => {
+      pin.addEventListener('click', () => {
+        const visible = Array.from(pinsGrid.querySelectorAll('.am-pin')).filter(p => p.offsetParent !== null);
+        const colCount = getComputedStyle(pinsGrid).gridTemplateColumns.split(' ').filter(Boolean).length || 3;
+        const idx = visible.indexOf(pin);
+        const rowStart = idx - (idx % colCount);
+        const row = visible.slice(rowStart, rowStart + colCount);
+        const willActivate = !pin.classList.contains('active');
+        row.forEach(p => p.classList.toggle('active', willActivate));
+      });
+    });
+  }
+  const activityCount = root.querySelector('#amActivityCount');
+  if(activityCount){
+    const years = items.map(it => parseInt(it.year,10)).filter(n => !isNaN(n));
+    const minYear = years.length ? Math.min(...years) : new Date().getFullYear();
+    activityCount.textContent = `${items.length} activit${items.length===1?'y':'ies'} · ${minYear} — ${new Date().getFullYear()}`;
+  }
+  const pinsSeeMore = root.querySelector('#amPinsSeeMore');
+  if(pinsSeeMore){
+    pinsSeeMore.addEventListener('click', (e) => {
+      e.preventDefault();
+      pinsGrid.classList.toggle('expanded');
+      pinsSeeMore.textContent = pinsGrid.classList.contains('expanded') ? 'See less ←' : 'See more →';
+    });
+  }
+
+  /* ---- Certificates: carousel loop ---- */
+  const certsTrack = root.querySelector('#amCertsTrack');
+  const certsViewport = root.querySelector('#amCertsViewport');
+  const certsSeeAll = root.querySelector('#amCertsSeeAll');
+  const certsCount = root.querySelector('#amCertsCount');
+  if(certsCount) certsCount.textContent = `${certs.length} certificate${certs.length===1?'':'s'}`;
+  if(certsTrack && certs.length){
+    const certCard = (ct,i) => `
+      <div class="am-cert" data-i="${i}">
+        <img class="am-cert-img" src="${img(ct.image,ct.title,'#2a3a24','#F5E7D8',300,220)}" alt="" loading="lazy">
+        <div class="am-cert-body">
+          <div class="am-cert-title">${esc(ct.title)}</div>
+          <div class="am-cert-issuer">${esc(ct.issuer||'')}</div>
+        </div>
+      </div>`;
+    const single = certs.map(certCard).join('');
+    certsTrack.innerHTML = single + single + single;   // 3x duplikat → loop tak berujung
+
+    const cards = Array.from(certsTrack.children);
+    const setLen = cards.length / 3;
+    const setWidth = () => cards[setLen] ? (cards[setLen].offsetLeft - cards[0].offsetLeft) : 0;
+    let sw = setWidth();
+    certsTrack.scrollLeft = sw;
+
+    const updateOpacity = () => {
+      if(certsTrack.classList.contains('expanded')) return;
+      const rect = certsTrack.getBoundingClientRect();
+      const center = rect.left + rect.width / 2;
+      cards.forEach(card => {
+        const cr = card.getBoundingClientRect();
+        const dist = Math.abs(center - (cr.left + cr.width / 2));
+        const norm = Math.min(dist / (rect.width / 2), 1);
+        card.style.opacity = String(1 - norm * 0.6);
+      });
+    };
+    const handleLoop = () => {
+      if(certsTrack.classList.contains('expanded')) return;
+      sw = setWidth();
+      if(certsTrack.scrollLeft < sw * 0.5) certsTrack.scrollLeft += sw;
+      else if(certsTrack.scrollLeft > sw * 1.5) certsTrack.scrollLeft -= sw;
+    };
+    let ticking = false;
+    certsTrack.addEventListener('scroll', () => {
+      if(!ticking){ requestAnimationFrame(() => { updateOpacity(); handleLoop(); ticking = false; }); ticking = true; }
+    }, { passive:true });
+
+    if(certsSeeAll){
+      certsSeeAll.addEventListener('click', () => {
+        const isExpanded = certsTrack.classList.toggle('expanded');
+        if(certsViewport) certsViewport.classList.toggle('expanded', isExpanded);
+        certsSeeAll.textContent = isExpanded ? 'See less' : 'See all';
+        if(!isExpanded){ sw = setWidth(); certsTrack.scrollLeft = sw; updateOpacity(); }
+      });
+    }
+
+    // klik satu kartu → detail (reuse openModal, tema sama seperti sertifikat di halaman Projects)
+    certsTrack.querySelectorAll('.am-cert').forEach(card => {
+      let moved = false, sx = 0;
+      card.addEventListener('pointerdown', e => { moved = false; sx = e.clientX; });
+      card.addEventListener('pointermove', e => { if(Math.abs(e.clientX - sx) > 6) moved = true; });
+      card.addEventListener('click', () => {
+        if(moved) return;
+        const ct = certs[+card.dataset.i];
+        if(!ct) return;
+        openModal({ title:ct.title, desc:(ct.issuer?('Issued by '+ct.issuer):''), images:[ct.image], link:ct.url, palette:{ bg:'#3a0f08', fg:'#7FE39A' }, theme:'act' });
+      });
+    });
+
+    // drag-to-scroll pakai mouse
+    let isDown = false, startX = 0, startScroll = 0;
+    certsTrack.addEventListener('pointerdown', e => {
+      if(e.pointerType !== 'mouse' || certsTrack.classList.contains('expanded')) return;
+      isDown = true; startX = e.clientX; startScroll = certsTrack.scrollLeft;
+      certsTrack.classList.add('dragging'); certsTrack.setPointerCapture(e.pointerId);
+    });
+    certsTrack.addEventListener('pointermove', e => {
+      if(!isDown || e.pointerType !== 'mouse') return;
+      certsTrack.scrollLeft = startScroll - (e.clientX - startX);
+    });
+    const endDrag = () => { isDown = false; certsTrack.classList.remove('dragging'); };
+    certsTrack.addEventListener('pointerup', endDrag);
+    certsTrack.addEventListener('pointercancel', endDrag);
+    certsTrack.addEventListener('wheel', e => {
+      if(certsTrack.classList.contains('expanded')) return;
+      if(Math.abs(e.deltaY) > Math.abs(e.deltaX)){ certsTrack.scrollLeft += e.deltaY; e.preventDefault(); }
+    }, { passive:false });
+
+    window.addEventListener('resize', () => {
+      if(certsTrack.classList.contains('expanded')) return;
+      sw = setWidth();
+      if(sw) certsTrack.scrollLeft = sw + (certsTrack.scrollLeft % sw);
+      updateOpacity();
+    });
+
+    updateOpacity();
+  }
+
+  /* ---- Footer CTA → halaman Contact ---- */
+  const footCta = root.querySelector('#amFootCta');
+  if(footCta){
+    footCta.addEventListener('click', (e) => {
+      e.preventDefault();
+      if(window.__goPage) window.__goPage('contact');
+    });
   }
 }
 
@@ -2475,12 +2902,14 @@ function parseMeta(s){
   });
 }
 async function loadFromSupabase(){
-  const [profileArr, projects, certs, acts, eggs] = await Promise.all([
+  const [profileArr, projects, certs, acts, eggs, skills, services] = await Promise.all([
     sbGet('profile?id=eq.1&select=*'),
     sbGet('projects?select=*&order=sort.asc,created_at.asc'),
     sbGet('certificates?select=*&order=sort.asc,created_at.asc'),
     sbGet('activities?select=*&order=sort.asc,created_at.asc'),
-    sbGet('easter_eggs?select=*&order=sort.asc,created_at.asc').catch(() => [])
+    sbGet('easter_eggs?select=*&order=sort.asc,created_at.asc').catch(() => []),
+    sbGet('skills?select=*&order=sort.asc,created_at.asc').catch(() => []),
+    sbGet('services?select=*&order=sort.asc,created_at.asc').catch(() => [])
   ]);
   // easter egg dari admin (boleh banyak foto per kata kunci)
   if(eggs && eggs.length){
@@ -2520,7 +2949,7 @@ async function loadFromSupabase(){
   }
   if(projects && projects.length){
     CONFIG.projects.items = projects.map(r => ({
-      title:r.title||'', cat:r.cat||'tech', feature:!!r.feature, ar:Number(r.ar)||1,
+      title:r.title||'', cat:r.cat||'web', org:r.org||'', feature:!!r.feature, ar:Number(r.ar)||1,
       cover:r.cover_url||'', tags:r.tags||[], description:r.description||'', images:r.images||[], link:r.url||''
     }));
   }
@@ -2529,10 +2958,21 @@ async function loadFromSupabase(){
       title:r.title||'', issuer:r.issuer||'', image:r.image_url||'', url:r.url||''
     }));
   }
+  if(services && services.length){
+    CONFIG.projects.services = services.map(r => ({
+      name:r.name||'', desc:r.description||'', deliverables:r.deliverables||[]
+    }));
+  }
   if(acts && acts.length){
     CONFIG.activity.items = acts.map(r => ({
       title:r.title||'', text:r.text||'', meta:parseMeta(r.meta), photo:r.photo_url||'',
-      modalTitle:r.modal_title||r.title||'', modalDesc:r.modal_desc||'', gallery:r.gallery||[]
+      modalTitle:r.modal_title||r.title||'', modalDesc:r.modal_desc||'', gallery:r.gallery||[],
+      cat:r.cat||'', year:r.year_label||''
+    }));
+  }
+  if(skills && skills.length){
+    CONFIG.activity.skills = skills.map(r => ({
+      title:r.title||'', tags:r.tags||[], photo:r.photo_url||''
     }));
   }
 }
