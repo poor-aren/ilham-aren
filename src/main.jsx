@@ -126,14 +126,12 @@ let stackHost = null, stackRoot = null;
 function GalleryCard({ images }) {
   const list = (images && images.length) ? images : [''];
   const [i, setI] = useState(0);
-  return createElement('div', {
-    style: { position: 'absolute', inset: 0, width: '100%', height: '100%' },
-    onClick: () => { if (list.length > 1) setI(v => v + 1); }
-  }, createElement('img', {
+  return createElement('img', {
     src: list[i % list.length],
     alt: '', draggable: false,
-    style: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }
-  }));
+    style: { width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' },
+    onClick: () => { if (list.length > 1) setI(v => v + 1); }
+  });
 }
 
 function ensureActivityStack(imagesPerItem) {
@@ -168,7 +166,6 @@ window.__mountActivityStack = (container, imagesPerItem, onTop) => {
   ensureActivityStack(imagesPerItem);
   container.innerHTML = '';
   container.appendChild(stackHost);
-  void container.offsetHeight; // paksa reflow: Framer Motion re-measure ukuran box final (bukan cache dari saat prewarm)
 };
 
 window.__unmountActivityStack = () => {}; // no-op: Stack persisten
