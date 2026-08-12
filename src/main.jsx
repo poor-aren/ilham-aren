@@ -129,6 +129,7 @@ function GalleryCard({ images }) {
   return createElement('img', {
     src: list[i % list.length],
     alt: '', draggable: false,
+    style: { width: '100%', height: '100%', objectFit: 'cover' },
     onClick: () => { if (list.length > 1) setI(v => v + 1); }
   });
 }
