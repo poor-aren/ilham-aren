@@ -13,6 +13,7 @@
 }
 
 .card {
+  position: relative;
   border-radius: 22px;
   overflow: hidden;
   width: 100%;

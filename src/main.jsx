@@ -126,12 +126,14 @@ let stackHost = null, stackRoot = null;
 function GalleryCard({ images }) {
   const list = (images && images.length) ? images : [''];
   const [i, setI] = useState(0);
-  return createElement('img', {
+  return createElement('div', {
+    style: { position: 'absolute', inset: 0, width: '100%', height: '100%' },
+    onClick: () => { if (list.length > 1) setI(v => v + 1); }
+  }, createElement('img', {
     src: list[i % list.length],
     alt: '', draggable: false,
-    style: { width: '100%', height: '100%', objectFit: 'cover' },
-    onClick: () => { if (list.length > 1) setI(v => v + 1); }
-  });
+    style: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }
+  }));
 }
 
 function ensureActivityStack(imagesPerItem) {
