@@ -759,7 +759,7 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
     flex-direction: column; text-align: left; gap: 24px; overflow-y: auto;
     justify-content: flex-start; padding-top: clamp(42px, 8vh, 72px);   /* tak mepet, tak butuh lorong khusus */
   }
-  .proj-scroll { padding-top: 48px; }
+  .proj-scroll { padding-top: 0; }
   .cert-item { width: 150px; }
   .feature { flex-direction: column; }
   .feature { padding: 12px; }
@@ -903,7 +903,8 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
   .seg-glass { border: none !important; }
   .seg { border-color: rgba(231,185,150,.22); }
 
-  .proj-scroll { padding-top: 48px !important; }   /* pas di bawah PORTOFOLIO & MENU + */
+  .proj-scroll { padding-top: 0 !important; }
+  .wx-hero { padding-top: calc(48px + clamp(48px,8vh,84px)) !important; }
   .proj-head { margin-top: 0 !important; padding-top: 0 !important; }
 }
 
