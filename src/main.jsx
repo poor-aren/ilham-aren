@@ -168,6 +168,7 @@ window.__mountActivityStack = (container, imagesPerItem, onTop) => {
   ensureActivityStack(imagesPerItem);
   container.innerHTML = '';
   container.appendChild(stackHost);
+  void container.offsetHeight; // paksa reflow: Framer Motion re-measure ukuran box final (bukan cache dari saat prewarm)
 };
 
 window.__unmountActivityStack = () => {}; // no-op: Stack persisten
