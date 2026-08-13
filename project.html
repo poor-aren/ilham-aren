@@ -1447,7 +1447,7 @@ function renderProjects(){
     return `<article class="wx-xp" data-i="${i}">
       <div class="wx-xp-media"><img src="${img(p.cover, p.title, '#1c1c1c', '#5a5148', w, h)}" alt="" loading="lazy"></div>
       <div class="wx-xp-body">
-        <div class="wx-xp-cat">${esc(p.org ? (p.org + ' · ') : '')}${esc(catLabel[p.cat] || p.cat || '')}</div>
+        <div class="wx-xp-cat">${esc(p.org ? (p.org + ' · ') : '')}${esc((Array.isArray(p.cat)?p.cat:[p.cat]).filter(Boolean).map(c=>catLabel[c]||c).join(' · '))}</div>
         <div class="wx-xp-title">${esc(p.title)}</div>
         <p class="wx-xp-desc">${esc(p.description||'')}</p>
         <span class="wx-xp-link">See project</span>
@@ -1456,7 +1456,7 @@ function renderProjects(){
   };
 
   const xpPane = (cat) => {
-    const list = items.filter(p => (p.cat||'') === cat);
+    const list = items.filter(p => (Array.isArray(p.cat)?p.cat:[p.cat]).includes(cat));
     if(!list.length) return `<div class="wx-pane" data-pane="${cat}"><div class="feat-empty">Belum ada karya di kategori ini.</div></div>`;
     return `<div class="wx-pane" data-pane="${cat}"><div class="wx-xp-list">${list.map((p,i)=>xpCard(p,items.indexOf(p))).join('')}</div></div>`;
   };
@@ -1487,7 +1487,7 @@ function renderProjects(){
           <p class="wx-hero-sub">Experience in IoT, machine learning, and digital illustration — projects built and delivered, start to finish.</p>
           <div class="wx-hero-meta">
             <div class="wx-hm-cell"><div class="n">${items.length}+</div><div class="l">Projects completed</div></div>
-            <div class="wx-hm-cell"><div class="n">${new Set(items.map(p=>p.cat).filter(Boolean)).size}</div><div class="l">Disciplines — Web, IoT &amp; Art</div></div>
+            <div class="wx-hm-cell"><div class="n">${new Set(items.flatMap(p=>Array.isArray(p.cat)?p.cat:[p.cat]).filter(Boolean)).size}</div><div class="l">Disciplines — Web, IoT &amp; Art</div></div>
             <div class="wx-hm-cell"><div class="n">${orgCount}</div><div class="l">Institutional partners</div></div>
             <div class="wx-hm-cell"><div class="n">24h</div><div class="l">Average response time</div></div>
           </div>
@@ -2960,7 +2960,7 @@ async function loadFromSupabase(){
   }
   if(projects && projects.length){
     CONFIG.projects.items = projects.map(r => ({
-      title:r.title||'', cat:r.cat||'web', org:r.org||'', feature:!!r.feature, ar:Number(r.ar)||1,
+      title:r.title||'', cat:Array.isArray(r.cat)?r.cat:(r.cat?[r.cat]:['web']), org:r.org||'', feature:!!r.feature, ar:Number(r.ar)||1,
       cover:r.cover_url||'', tags:r.tags||[], description:r.description||'', images:r.images||[], link:r.url||''
     }));
   }

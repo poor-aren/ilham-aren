@@ -218,7 +218,11 @@
         <div id="proj_editTitle" style="font-weight:600;font-size:14px;margin-bottom:12px">Tambah project baru</div>
         <div class="grid2">
           <div class="field"><label>Judul</label><input id="pr_title" type="text"></div>
-          <div class="field"><label>Kategori</label><select id="pr_cat"><option value="web">web</option><option value="iot">iot</option><option value="art">art</option></select></div>
+          <div class="field"><label>Kategori (maks 2)</label>
+            <div class="row-check"><input type="checkbox" id="pr_cat_web" value="web"><label style="margin:0">web</label></div>
+            <div class="row-check"><input type="checkbox" id="pr_cat_iot" value="iot"><label style="margin:0">iot</label></div>
+            <div class="row-check"><input type="checkbox" id="pr_cat_art" value="art"><label style="margin:0">art</label></div>
+          </div>
         </div>
         <div class="grid2">
           <div class="field"><label>Organisasi / klien (tampil di tab Work Experience)</label><input id="pr_org" type="text" placeholder="mis. PT Telkom Indonesia"></div>
@@ -573,17 +577,23 @@ $('pr_gallery_file').addEventListener('change', async e=>{
   for(const f of e.target.files){ try{ toast('Mengunggah…'); prGallery.add(await upload(f,'projects')); }catch(x){ fail(x); } }
   e.target.value=''; toast('Galeri diperbarui');
 });
+const PR_CAT_IDS = { web:'pr_cat_web', iot:'pr_cat_iot', art:'pr_cat_art' };
+const getPrCats = () => Object.keys(PR_CAT_IDS).filter(k => $(PR_CAT_IDS[k]).checked);
+const setPrCats = (arr) => { const set = new Set(arr||[]); Object.keys(PR_CAT_IDS).forEach(k => $(PR_CAT_IDS[k]).checked = set.has(k)); };
+Object.values(PR_CAT_IDS).forEach(id => $(id).addEventListener('change', (e) => {
+  if(getPrCats().length > 2){ e.target.checked=false; toast('Maksimal 2 kategori'); }
+}));
 function prReset(){
   prEditId=null; prCover.url=''; prGallery.set([]);
   $('proj_editTitle').textContent='Tambah project baru';
   ['pr_title','pr_desc','pr_tags','pr_url','pr_org'].forEach(id=>$(id).value='');
-  $('pr_cat').value='web'; $('pr_ar').value='1'; $('pr_sort').value='0'; $('pr_feature').checked=false;
+  setPrCats(['web']); $('pr_ar').value='1'; $('pr_sort').value='0'; $('pr_feature').checked=false;
   $('pr_cover_prev').removeAttribute('src');
 }
 $('pr_reset').addEventListener('click', prReset);
 $('pr_save').addEventListener('click', async ()=>{
   const payload = {
-    title:$('pr_title').value, cat:$('pr_cat').value, feature:$('pr_feature').checked,
+    title:$('pr_title').value, cat:getPrCats(), feature:$('pr_feature').checked,
     ar:parseFloat($('pr_ar').value)||1, tags:splitList($('pr_tags').value),
     description:$('pr_desc').value, cover_url:prCover.url, images:prGallery.get(), url:$('pr_url').value.trim(),
     org:$('pr_org').value.trim(), sort:parseInt($('pr_sort').value)||0
@@ -614,11 +624,11 @@ async function loadProjects(){
     const el=document.createElement('div'); el.className='item';
     el.innerHTML=`<img class="thumb" src="${p.cover_url||''}">
       <div class="meta"><div class="t">${p.title||'(tanpa judul)'} ${p.feature?'★':''}</div>
-      <div class="s">${p.cat}${p.org?' · '+p.org:''} · ${(p.tags||[]).join(', ')}</div></div>
+      <div class="s">${(Array.isArray(p.cat)?p.cat:[p.cat]).filter(Boolean).join(', ')}${p.org?' · '+p.org:''} · ${(p.tags||[]).join(', ')}</div></div>
       <button class="btn outline sm">Edit</button><button class="btn danger sm">Hapus</button>`;
     el.querySelectorAll('button')[0].onclick=()=>{
       prEditId=p.id; $('proj_editTitle').textContent='Edit: '+(p.title||'');
-      $('pr_title').value=p.title||''; $('pr_cat').value=p.cat||'web'; $('pr_ar').value=p.ar||1;
+      $('pr_title').value=p.title||''; setPrCats(Array.isArray(p.cat)?p.cat:[p.cat||'web']); $('pr_ar').value=p.ar||1;
       $('pr_sort').value=p.sort||0; $('pr_feature').checked=!!p.feature; $('pr_tags').value=joinList(p.tags);
       $('pr_desc').value=p.description||''; $('pr_url').value=p.url||''; $('pr_org').value=p.org||''; prCover.url=p.cover_url||'';
       if(p.cover_url) $('pr_cover_prev').src=p.cover_url; else $('pr_cover_prev').removeAttribute('src');
