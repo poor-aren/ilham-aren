@@ -79,7 +79,12 @@
   .chip button { position:absolute; top:2px; right:2px; width:18px; height:18px; border:none; border-radius:50%;
     background:rgba(0,0,0,.7); color:#fff; font-size:12px; line-height:18px; cursor:pointer; padding:0; }
   .gallery-cap-list { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
-  .gallery-cap-row { display:flex; gap:10px; align-items:flex-start; padding:8px; border:1px solid var(--line); border-radius:var(--radius-sm); }
+  .gallery-cap-row { display:flex; gap:10px; align-items:flex-start; padding:8px; border:1px solid var(--line); border-radius:var(--radius-sm); background:#fff; }
+  .gallery-cap-row.dragging { opacity:.9; box-shadow:0 12px 32px rgba(31,36,48,.25); }
+  .gallery-cap-row-placeholder { border:2px dashed var(--accent); border-radius:var(--radius-sm); background:var(--accent-soft); }
+  .gc-drag { flex:0 0 auto; width:20px; display:flex; align-items:center; justify-content:center;
+    color:#999; cursor:grab; font-size:14px; letter-spacing:-2px; touch-action:none; padding-top:14px; }
+  .gc-drag:active { cursor:grabbing; }
   .gallery-cap-row .thumb { flex:0 0 auto; width:52px; height:52px; }
   .gallery-cap-fields { flex:1; min-width:0; display:flex; flex-direction:column; gap:6px; }
   .gallery-cap-fields input, .gallery-cap-fields textarea { font-size:13px; }
@@ -99,7 +104,8 @@
     transition:box-shadow .15s, border-color .15s, opacity .12s; position:relative;
     display:flex; align-items:center; gap:14px; padding:10px 14px 10px 46px; }
   .g-card:hover { box-shadow:0 4px 16px rgba(31,36,48,.06); border-color:var(--accent); }
-  .g-card.dragging { opacity:.4; }
+  .g-card.dragging { opacity:.9; box-shadow:0 12px 32px rgba(31,36,48,.25); cursor:grabbing; }
+  .g-card-placeholder { border:2px dashed var(--accent); border-radius:var(--radius); background:var(--accent-soft); }
   .g-card.drag-over { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent-soft); }
   .g-card .g-thumb { width:64px; height:64px; flex:0 0 auto; border-radius:var(--radius-sm); background:var(--bg-sunken); object-fit:cover; display:block; }
   .g-card .g-thumb-empty { width:64px; height:64px; flex:0 0 auto; border-radius:var(--radius-sm); background:var(--bg-sunken); display:flex;
@@ -537,14 +543,18 @@ function makeGallery(chipsEl){
 
 /* Galeri khusus Projects: tiap foto punya judul + caption opsional (mis. "Demo ke pembimbing" + isi ceritanya).
    Diisi salah satu atau keduanya -> foto ini dirender sebagai section zigzag di modal. Kosong dua-duanya -> masuk bento grid biasa.
-   Menerima data lama (array string URL, atau {url, caption} tanpa title) dan otomatis normalisasi. */
+   Menerima data lama (array string URL, atau {url, caption} tanpa title) dan otomatis normalisasi.
+   Urutan bisa diubah drag lewat handle "⠿" -- ini array in-memory (bagian dari kolom images project),
+   jadi reorder cukup ubah urutan arr, tidak perlu update Supabase terpisah per foto. */
 function makeGalleryWithCaption(listEl){
   let arr = []; // [{url, title, caption}]
+  let dragIdx = null, placeholder = null, startY = 0, startTop = 0;
   const render = ()=>{
     listEl.innerHTML='';
     arr.forEach((item,i)=>{
-      const row=document.createElement('div'); row.className='gallery-cap-row';
+      const row=document.createElement('div'); row.className='gallery-cap-row'; row.dataset.idx=i;
       row.innerHTML=`
+        <span class="gc-drag" title="Tarik untuk mengubah urutan">⠿</span>
         <img class="thumb" src="${item.url}">
         <div class="gallery-cap-fields">
           <input type="text" class="gc-title" placeholder="Judul singkat (mis. Demo ke pembimbing)" value="${(item.title||'').replace(/"/g,'&quot;')}">
@@ -554,6 +564,45 @@ function makeGalleryWithCaption(listEl){
       row.querySelector('.gc-title').addEventListener('input', e => { arr[i].title = e.target.value; });
       row.querySelector('.gc-caption').addEventListener('input', e => { arr[i].caption = e.target.value; });
       row.querySelector('button').onclick = () => { arr.splice(i,1); render(); };
+      row.querySelector('.gc-drag').addEventListener('pointerdown', e => {
+        e.preventDefault();
+        dragIdx = i;
+        const rect = row.getBoundingClientRect();
+        startY = e.clientY; startTop = rect.top;
+        placeholder = document.createElement('div');
+        placeholder.className = 'gallery-cap-row-placeholder';
+        placeholder.style.height = rect.height + 'px';
+        row.after(placeholder);
+        row.classList.add('dragging');
+        row.style.position = 'fixed'; row.style.width = rect.width + 'px';
+        row.style.top = rect.top + 'px'; row.style.left = rect.left + 'px';
+        row.style.zIndex = '999'; row.style.pointerEvents = 'none';
+        e.target.setPointerCapture(e.pointerId);
+        const onMove = ev => {
+          row.style.top = (startTop + (ev.clientY - startY)) + 'px';
+          const others = [...listEl.querySelectorAll('.gallery-cap-row')].filter(r => r !== row);
+          let closest = null, closestDist = Infinity;
+          others.forEach(r => {
+            const rr = r.getBoundingClientRect();
+            const mid = rr.top + rr.height/2;
+            const dist = Math.abs(ev.clientY - mid);
+            if(dist < closestDist){ closestDist = dist; closest = { el:r, before: ev.clientY < mid }; }
+          });
+          if(closest){ if(closest.before) closest.el.before(placeholder); else closest.el.after(placeholder); }
+        };
+        const onUp = () => {
+          document.removeEventListener('pointermove', onMove);
+          document.removeEventListener('pointerup', onUp);
+          const finalOrder = [...listEl.querySelectorAll('.gallery-cap-row, .gallery-cap-row-placeholder')];
+          const newIdx = finalOrder.indexOf(placeholder);
+          const [moved] = arr.splice(dragIdx, 1);
+          arr.splice(newIdx > dragIdx ? newIdx - 1 : newIdx, 0, moved);
+          dragIdx = null; placeholder = null;
+          render();
+        };
+        document.addEventListener('pointermove', onMove);
+        document.addEventListener('pointerup', onUp);
+      });
       listEl.appendChild(row);
     });
   };
@@ -564,39 +613,76 @@ function makeGalleryWithCaption(listEl){
   };
 }
 
+/* Reorder pakai Pointer Events (bukan native HTML5 Drag API).
+   Native drag (dragstart/dragover/drop) sering gagal: <img> di dalam card ikut jadi
+   target drag bawaan browser, gestur beda dari mouse biasa, dan tidak konsisten di
+   berbagai browser/device. Pointer events jauh lebih reliable — sama untuk mouse/touch/pen. */
 function makeReorderableGrid(box, table, reload){
-  let dragEl = null;
-  box.addEventListener('dragstart', e => {
-    const item = e.target.closest('.g-card');
-    if(!item || !e.target.closest('.g-drag')){ e.preventDefault(); return; }
-    dragEl = item; item.classList.add('dragging');
-    e.dataTransfer.effectAllowed = 'move';
-  });
-  box.addEventListener('dragend', () => { if(dragEl) dragEl.classList.remove('dragging'); dragEl = null;
-    box.querySelectorAll('.g-card.drag-over').forEach(el => el.classList.remove('drag-over')); });
-  box.addEventListener('dragover', e => {
-    if(!dragEl) return;
-    e.preventDefault();
-    const over = e.target.closest('.g-card');
-    box.querySelectorAll('.g-card.drag-over').forEach(el => el.classList.remove('drag-over'));
-    if(!over || over === dragEl) return;
-    over.classList.add('drag-over');
-  });
-  box.addEventListener('drop', async e => {
-    e.preventDefault();
-    if(!dragEl) return;
-    const over = e.target.closest('.g-card');
-    box.querySelectorAll('.g-card.drag-over').forEach(el => el.classList.remove('drag-over'));
-    if(!over || over === dragEl) return;
-    const items = [...box.querySelectorAll('.g-card')];
-    const from = items.indexOf(dragEl), to = items.indexOf(over);
-    if(from < to) over.after(dragEl); else over.before(dragEl);
-    const ordered = [...box.querySelectorAll('.g-card')];
-    try{
-      await Promise.all(ordered.map((el, i) => sb.from(table).update({ sort:i }).eq('id', el.dataset.id)));
-      toast('Urutan disimpan');
-    }catch(x){ fail(x); }
-    reload();
+  let dragEl = null, placeholder = null, startY = 0, startTop = 0, cardHeight = 0;
+
+  box.querySelectorAll('.g-drag').forEach(handle => {
+    handle.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      dragEl = handle.closest('.g-card');
+      if(!dragEl) return;
+      const rect = dragEl.getBoundingClientRect();
+      cardHeight = rect.height;
+      startY = e.clientY;
+      startTop = rect.top;
+
+      placeholder = document.createElement('div');
+      placeholder.className = 'g-card-placeholder';
+      placeholder.style.height = cardHeight + 'px';
+      dragEl.after(placeholder);
+
+      dragEl.classList.add('dragging');
+      dragEl.style.position = 'fixed';
+      dragEl.style.width = rect.width + 'px';
+      dragEl.style.top = rect.top + 'px';
+      dragEl.style.left = rect.left + 'px';
+      dragEl.style.zIndex = '999';
+      dragEl.style.pointerEvents = 'none';
+
+      handle.setPointerCapture(e.pointerId);
+
+      const onMove = ev => {
+        if(!dragEl) return;
+        const dy = ev.clientY - startY;
+        dragEl.style.top = (startTop + dy) + 'px';
+        // cari card lain (bukan dragEl) yang posisinya paling dekat dengan titik pointer saat ini
+        const others = [...box.querySelectorAll('.g-card')].filter(c => c !== dragEl);
+        let closest = null, closestDist = Infinity;
+        others.forEach(c => {
+          const r = c.getBoundingClientRect();
+          const mid = r.top + r.height / 2;
+          const dist = Math.abs(ev.clientY - mid);
+          if(dist < closestDist){ closestDist = dist; closest = { el: c, before: ev.clientY < mid }; }
+        });
+        if(closest){
+          if(closest.before) closest.el.before(placeholder);
+          else closest.el.after(placeholder);
+        }
+      };
+      const onUp = async ev => {
+        handle.releasePointerCapture(e.pointerId);
+        document.removeEventListener('pointermove', onMove);
+        document.removeEventListener('pointerup', onUp);
+        if(!dragEl) return;
+        placeholder.replaceWith(dragEl);
+        dragEl.style.position = ''; dragEl.style.width = ''; dragEl.style.top = '';
+        dragEl.style.left = ''; dragEl.style.zIndex = ''; dragEl.style.pointerEvents = '';
+        dragEl.classList.remove('dragging');
+        const ordered = [...box.querySelectorAll('.g-card')];
+        try{
+          await Promise.all(ordered.map((el, i) => sb.from(table).update({ sort:i }).eq('id', el.dataset.id)));
+          toast('Urutan disimpan');
+        }catch(x){ fail(x); }
+        dragEl = null; placeholder = null;
+        reload();
+      };
+      document.addEventListener('pointermove', onMove);
+      document.addEventListener('pointerup', onUp);
+    });
   });
 }
 
@@ -694,7 +780,7 @@ async function loadProjects(){
   if(!data.length){ box.innerHTML='<div class="empty-state">Belum ada project. Klik "+ Tambah Project" untuk mulai.</div>'; return; }
   box.innerHTML='';
   data.forEach(p=>{
-    const el=document.createElement('div'); el.className='g-card'+(p.cover_url?'':' g-noimg'); el.draggable=true; el.dataset.id=p.id;
+    const el=document.createElement('div'); el.className='g-card'+(p.cover_url?'':' g-noimg');  el.dataset.id=p.id;
     const catStr = (Array.isArray(p.cat)?p.cat:[p.cat]).filter(Boolean).join(', ');
     el.innerHTML=`
       <span class="g-drag">⠿</span>
@@ -752,7 +838,7 @@ async function loadCerts(){
   if(!data.length){ box.innerHTML='<div class="empty-state">Belum ada sertifikat.</div>'; return; }
   box.innerHTML='';
   data.forEach(c=>{
-    const el=document.createElement('div'); el.className='g-card'+(c.image_url?'':' g-noimg'); el.draggable=true; el.dataset.id=c.id;
+    const el=document.createElement('div'); el.className='g-card'+(c.image_url?'':' g-noimg');  el.dataset.id=c.id;
     el.innerHTML=`
       <span class="g-drag">⠿</span>
       <div class="g-actions"><button class="g-edit" title="Edit">✎</button><button class="g-del" title="Hapus">🗑</button></div>
@@ -831,7 +917,7 @@ async function loadActs(){
   if(!data.length){ box.innerHTML='<div class="empty-state">Belum ada activity.</div>'; return; }
   box.innerHTML='';
   data.forEach(a=>{
-    const el=document.createElement('div'); el.className='g-card'+(a.photo_url?'':' g-noimg'); el.draggable=true; el.dataset.id=a.id;
+    const el=document.createElement('div'); el.className='g-card'+(a.photo_url?'':' g-noimg');  el.dataset.id=a.id;
     el.innerHTML=`
       <span class="g-drag">⠿</span>
       <div class="g-actions"><button class="g-edit" title="Edit">✎</button><button class="g-del" title="Hapus">🗑</button></div>
@@ -882,7 +968,7 @@ async function loadSkills(){
   if(!data.length){ box.innerHTML='<div class="empty-state">Belum ada skill.</div>'; return; }
   box.innerHTML='';
   data.forEach(s=>{
-    const el=document.createElement('div'); el.className='g-card'+(s.photo_url?'':' g-noimg'); el.draggable=true; el.dataset.id=s.id;
+    const el=document.createElement('div'); el.className='g-card'+(s.photo_url?'':' g-noimg');  el.dataset.id=s.id;
     el.innerHTML=`
       <span class="g-drag">⠿</span>
       <div class="g-actions"><button class="g-edit" title="Edit">✎</button><button class="g-del" title="Hapus">🗑</button></div>
@@ -925,7 +1011,7 @@ async function loadServices(){
   if(!data.length){ box.innerHTML='<div class="empty-state">Belum ada layanan.</div>'; return; }
   box.innerHTML='';
   data.forEach(s=>{
-    const el=document.createElement('div'); el.className='g-card g-noimg'; el.draggable=true; el.dataset.id=s.id;
+    const el=document.createElement('div'); el.className='g-card g-noimg';  el.dataset.id=s.id;
     el.innerHTML=`
       <span class="g-drag">⠿</span>
       <div class="g-actions"><button class="g-edit" title="Edit">✎</button><button class="g-del" title="Hapus">🗑</button></div>
