@@ -716,7 +716,7 @@ body.modal-lock { overflow: hidden; }
 }
 #modalRoot.open { display: flex; }
 .modal-card {
-  width: min(1160px,96vw); margin: auto; border-radius: 20px; overflow: hidden;
+  width: min(720px,94vw); margin: auto; border-radius: 18px; overflow: hidden;
   position: relative;
   background: #0b0b0d; color: #F5E7D8;
   border: 1px solid rgba(245,231,216,.14);
@@ -733,64 +733,52 @@ body.modal-lock { overflow: hidden; }
 }
 .modal-card .m-close:hover { background: #E7B996; border-color:#E7B996; color:#0b0b0d; }
 
-/* Header: eyebrow, judul, info mitra/periode — full width di atas */
+/* Header: eyebrow, judul, tags, info mitra/periode — full width di atas, spacing dirapatkan */
 .modal-card .m-header {
-  padding: clamp(32px,4vw,52px) clamp(28px,4vw,52px) 28px;
+  padding: clamp(22px,3vw,32px) clamp(22px,3vw,32px) 16px;
   border-bottom: 1px solid rgba(245,231,216,.14);
 }
 .modal-card .m-eyebrow {
   font-family:"JetBrains Mono",monospace; font-size:.7rem; letter-spacing:2.5px; text-transform:uppercase;
-  color:#E7B996; margin-bottom:14px; padding-left:14px; position:relative;
+  color:#E7B996; margin-bottom:8px; padding-left:14px; position:relative;
 }
 .modal-card .m-eyebrow::before {
   content:""; position:absolute; left:0; top:2px; bottom:2px; width:3px; background:#E7B996; border-radius:2px;
 }
 .modal-card h3 {
-  font-family:"Playfair Display",serif; font-weight:800; font-size:clamp(1.9rem,3.6vw,3.2rem);
-  line-height:1.06; letter-spacing:-.6px; margin-bottom:20px; color:#F5E7D8; max-width:22ch;
+  font-family:"Playfair Display",serif; font-weight:800; font-size:clamp(1.5rem,2.6vw,2.1rem);
+  line-height:1.1; letter-spacing:-.4px; margin-bottom:10px; color:#F5E7D8; max-width:22ch;
 }
-.modal-card .m-info { display:flex; flex-wrap:wrap; gap:24px 36px; }
-.modal-card .m-info-item { display:flex; flex-direction:column; gap:5px; }
-.modal-card .m-info-item .k { font-family:"JetBrains Mono",monospace; font-size:.63rem; letter-spacing:1.8px; text-transform:uppercase; color:rgba(245,231,216,.5); }
-.modal-card .m-info-item .v { font-size:.92rem; font-weight:600; color:#F5E7D8; }
-
-/* Body: deskripsi, tags, CTA — dibaca dulu SEBELUM galeri, supaya konteks jelas sebelum foto (yang bisa banyak) muncul */
-.modal-card .m-body {
-  padding: 24px clamp(28px,4vw,52px) 8px;
-}
-.modal-card .m-desc { line-height:1.85; font-size:1.05rem; color:rgba(245,231,216,.85); max-width:70ch; }
-.modal-card .m-meta { display:flex; flex-wrap:wrap; gap:8px; margin-top:26px; }
+.modal-card .m-meta { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
 .modal-card .m-meta .tag {
-  font-family:"JetBrains Mono",monospace; font-size:.7rem; letter-spacing:.5px;
-  padding:6px 13px; border-radius:20px; border:1px solid rgba(231,185,150,.4); color:#E7B996;
+  font-family:"JetBrains Mono",monospace; font-size:.68rem; letter-spacing:.5px;
+  padding:5px 11px; border-radius:20px; border:1px solid rgba(231,185,150,.4); color:#E7B996;
 }
-.modal-card .m-link {
-  display:inline-flex; align-items:center; gap:8px; margin-top:30px;
-  font-family:"JetBrains Mono",monospace; font-size:.78rem; letter-spacing:1.5px; text-transform:uppercase;
-  padding:13px 22px; background:#F5E7D8; color:#0b0b0d; border-radius:10px; font-weight:600;
-  transition: background .2s, transform .2s;
+.modal-card .m-info { display:flex; flex-wrap:wrap; gap:14px 28px; }
+.modal-card .m-info-item { display:flex; flex-direction:column; gap:3px; }
+.modal-card .m-info-item .k { font-family:"JetBrains Mono",monospace; font-size:.63rem; letter-spacing:1.8px; text-transform:uppercase; color:rgba(245,231,216,.5); }
+.modal-card .m-info-item .v { font-size:.88rem; font-weight:600; color:#F5E7D8; }
+
+/* Body: deskripsi */
+.modal-card .m-body {
+  padding: 16px clamp(22px,3vw,32px) 20px;
 }
-.modal-card .m-link:hover { background:#E7B996; transform: translateY(-1px); }
-/* CTA fallback: ghost style, bukan primary action palsu */
-.modal-card .m-link-alt {
-  background:transparent; color:#F5E7D8; border:1px solid rgba(245,231,216,.3);
-}
-.modal-card .m-link-alt:hover { background:rgba(231,185,150,.12); color:#E7B996; border-color:#E7B996; }
+.modal-card .m-desc { line-height:1.65; font-size:.98rem; color:rgba(245,231,216,.85); max-width:70ch; }
 
 /* Galeri Pinterest/masonry, DI BAWAH body — cocok buat banyak foto tanpa mengganggu konteks utama di atas */
 .modal-card .m-visual {
-  padding: 28px clamp(28px,4vw,52px) clamp(36px,4vw,52px);
-  columns: 3 220px; column-gap: 14px;
+  padding: 20px clamp(22px,3vw,32px) clamp(24px,3vw,32px);
+  columns: 2 200px; column-gap: 12px;
 }
 .modal-card .m-visual img {
-  width: 100%; display: block; border-radius: 12px; margin-bottom: 14px;
+  width: 100%; display: block; border-radius: 10px; margin-bottom: 12px;
   break-inside: avoid; -webkit-user-drag:none; user-select:none;
 }
 
 @media (max-width:760px){
-  .modal-card .m-visual { columns: 2 140px; padding: 22px 20px 32px; }
-  .modal-card .m-header { padding: 28px 20px 22px; }
-  .modal-card .m-body { padding: 22px 20px 8px; }
+  .modal-card .m-visual { columns: 2 130px; padding: 16px 18px 24px; }
+  .modal-card .m-header { padding: 20px 18px 14px; }
+  .modal-card .m-body { padding: 12px 18px 16px; }
 }
 
 /* ============ MODAL VARIAN "project": TIRU PERSIS style section Work Experience & Services
@@ -800,7 +788,7 @@ body.modal-lock { overflow: hidden; }
 .modal-card--project .m-paper {
   color: #14141a;
   background-color: #dcdcd6;
-  background-image: url(/paper-v2.jpg);
+  background-image: url(/paper-v1.jpg);
   background-size: cover; background-repeat: no-repeat; background-position: center;
 }
 .modal-card--project .m-header { background: transparent; border-bottom: none; }
@@ -817,33 +805,26 @@ body.modal-lock { overflow: hidden; }
 }
 .modal-card--project .m-eyebrow::before { content:none; }
 .modal-card--project .m-eyebrow::after { content:""; flex:0 0 auto; width:38px; height:1px; background:rgba(20,20,26,.3); }
-/* Judul: identik .wx-hero h1 — Playfair Display 800, warna #14141a */
+/* Judul: identik .wx-hero h1 — Playfair Display 800, warna #14141a, dikecilkan biar modal ringkas */
 .modal-card--project h3 {
   font-family:"Playfair Display",serif; font-weight:800; color:#14141a;
-  font-size:clamp(1.9rem,3.6vw,3.2rem); line-height:1.08; letter-spacing:-.5px; max-width:18ch;
+  font-size:clamp(1.5rem,2.6vw,2.1rem); line-height:1.1; letter-spacing:-.4px; max-width:18ch;
 }
 /* Info Mitra/Periode: treatment sama seperti .wx-hm-cell (angka statistik) — Playfair besar + label JetBrains Mono bergaris gold */
-.modal-card--project .m-info { gap:30px 48px; padding-top:20px; margin-top:8px; border-top:1px solid rgba(20,20,26,.14); }
+.modal-card--project .m-info { gap:14px 28px; padding-top:12px; margin-top:0; border-top:1px solid rgba(20,20,26,.14); }
 .modal-card--project .m-info-item .k {
-  order:2; position:relative; margin-top:10px; padding-top:9px;
-  font-family:"JetBrains Mono",monospace; font-size:.66rem; letter-spacing:1.5px; text-transform:uppercase; color:rgba(20,20,26,.55);
+  order:2; position:relative; margin-top:6px; padding-top:7px;
+  font-family:"JetBrains Mono",monospace; font-size:.63rem; letter-spacing:1.5px; text-transform:uppercase; color:rgba(20,20,26,.55);
 }
-.modal-card--project .m-info-item .k::before { content:""; position:absolute; top:0; left:0; width:20px; height:2px; background:#9c7a1f; }
-.modal-card--project .m-info-item .v { order:1; font-family:"Playfair Display",serif; font-weight:800; font-size:1.4rem; color:#14141a; }
+.modal-card--project .m-info-item .k::before { content:""; position:absolute; top:0; left:0; width:16px; height:2px; background:#9c7a1f; }
+.modal-card--project .m-info-item .v { order:1; font-family:"Playfair Display",serif; font-weight:800; font-size:1.1rem; color:#14141a; }
 .modal-card--project .m-info-item { display:flex; flex-direction:column; }
 /* Deskripsi: identik .wx-hero-sub — Inter biasa, TANPA font handwriting */
-.modal-card--project .m-desc { font-family:"Inter",sans-serif; font-weight:400; font-size:1.05rem; line-height:1.7; color: rgba(20,20,26,.72); }
+.modal-card--project .m-desc { font-family:"Inter",sans-serif; font-weight:400; font-size:.95rem; line-height:1.6; color: rgba(20,20,26,.72); }
 .modal-card--project .m-meta .tag {
-  font-family:"JetBrains Mono",monospace; font-size:.7rem; letter-spacing:.5px;
-  padding:6px 13px; border-radius:20px; border:1px solid rgba(156,122,31,.35); color:#9c7a1f; background:transparent;
+  font-family:"JetBrains Mono",monospace; font-size:.68rem; letter-spacing:.5px;
+  padding:5px 11px; border-radius:20px; border:1px solid rgba(156,122,31,.35); color:#9c7a1f; background:transparent;
 }
-.modal-card--project .m-link {
-  font-family:"JetBrains Mono",monospace; font-size:.78rem; letter-spacing:1.5px; text-transform:uppercase;
-  padding:13px 22px; background:#14141a; color:#F5E7D8; border-radius:10px; font-weight:600;
-}
-.modal-card--project .m-link:hover { background:#9c7a1f; }
-.modal-card--project .m-link-alt { background:transparent; color:#14141a; border:1px solid rgba(20,20,26,.25); }
-.modal-card--project .m-link-alt:hover { background: rgba(255,255,255,.5); color:#9c7a1f; border-color:#9c7a1f; }
 .modal-card--project .m-visual { background:#0b0b0d; }
 
 /* Section zigzag "proses" — foto di satu sisi, judul/teks proses di sisi lain, berselang-seling.
@@ -1822,11 +1803,6 @@ function openModal({ title, desc, images, tags, link, org, date, cat, theme }){
   const catList = Array.isArray(cat) ? cat : (cat ? [cat] : []);
   const eyebrowText = catList.length ? catList.map(c => CAT_LABEL[c]||c).join(' · ') : (org && org.trim() ? org : '');
   const eyebrowHtml = eyebrowText ? `<div class="m-eyebrow">${esc(eyebrowText)}</div>` : "";
-  // CTA: link project kalau ada; kalau kosong, fallback ke Contact supaya tiap modal tetap
-  // punya satu jalan keluar yang mengarah ke conversion, bukan berhenti mati di deskripsi.
-  const ctaHtml = (link && link.trim())
-    ? `<a class="m-link" href="${esc(link)}" target="_blank" rel="noopener">Visit project ↗</a>`
-    : `<a class="m-link m-link-alt" href="#contact" id="mCtaContact">Tertarik kerja sama serupa? →</a>`;
   const galleryFallbackHtml = (!isProject && gallery.length) ? `<div class="m-visual">${bentoHtml}</div>` : "";
   modalRoot.innerHTML = `
     <div class="modal-card${isProject ? ' modal-card--project' : ''}">
@@ -1835,12 +1811,11 @@ function openModal({ title, desc, images, tags, link, org, date, cat, theme }){
       <div class="m-header">
         ${eyebrowHtml}
         <h3>${esc(title)}</h3>
+        ${tagHtml}
         ${infoHtml}
       </div>
       <div class="m-body">
         <p class="m-desc">${esc(desc)}</p>
-        ${tagHtml}
-        ${ctaHtml}
       </div>
       ${isProject ? '</div>' : ''}
       ${galleryFallbackHtml}
@@ -1850,8 +1825,6 @@ function openModal({ title, desc, images, tags, link, org, date, cat, theme }){
   modalRoot.classList.add('open');
   document.body.classList.add('modal-lock');
   modalRoot.querySelector('.m-close').onclick = closeModal;
-  const ctaContact = modalRoot.querySelector('#mCtaContact');
-  if(ctaContact) ctaContact.addEventListener('click', e => { e.preventDefault(); closeModal(); if(window.__goPage) window.__goPage('contact'); });
 }
 /* Pop-up: SEMUA sertifikat dalam grid. Klik satu → buka detail + gambar besar. */
 function openCertGrid(list){
