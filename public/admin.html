@@ -4,92 +4,160 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="noindex" />
-<title>Admin — ilham | aren</title>
+<title>Admin, ilham | aren</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600..800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; }
-  :root { --line:#e5e5e5; --muted:#666; --ink:#111; }
-  html,body { margin:0; background:#fff; color:var(--ink);
+  :root {
+    --line:#e5e7eb; --line-soft:#f0f1f3; --muted:#6b7280; --ink:#1f2430;
+    --accent:#5B9BD5; --accent-dark:#3d7bb8; --accent-soft:#eaf3fb;
+    --bg-sunken:#f8f9fb; --bg-app:#ffffff; --danger:#d64545; --danger-soft:#fdecec;
+    --radius:12px; --radius-sm:8px; --sidebar-w:250px;
+  }
+  html,body { margin:0; background:var(--bg-app); color:var(--ink); height:100%;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif; }
   a { color:inherit; }
-  .wrap { max-width:840px; margin:0 auto; padding:28px 20px 80px; }
+  button { font:inherit; }
 
-  header.top { display:flex; align-items:center; justify-content:space-between;
-    padding:16px 20px; border-bottom:1px solid var(--line); position:sticky; top:0; background:#fff; z-index:5; }
-  header.top h1 { font-size:15px; font-weight:600; margin:0; letter-spacing:.3px; }
-  header.top .who { font-size:12px; color:var(--muted); margin-right:12px; }
+  #appView { display:flex; height:100vh; overflow:hidden; }
 
-  nav.tabs { display:flex; flex-wrap:wrap; gap:4px; margin:22px 0 26px; }
-  nav.tabs button { font:inherit; font-size:13px; padding:8px 14px; border:1px solid var(--line);
-    background:#fff; border-radius:999px; cursor:pointer; color:var(--muted); }
-  nav.tabs button.active { background:var(--ink); color:#fff; border-color:var(--ink); }
+  .sidebar { flex:0 0 var(--sidebar-w); background:#3d7bb8; border-right:1px solid var(--line);
+    display:flex; flex-direction:column; height:100%; }
+  .sidebar-head { padding:22px 20px 18px; border-bottom:1px solid rgba(255,255,255,.15); }
+  .sidebar-head h1 { font-family:"Fraunces",serif; font-size:18px; font-weight:700; margin:0 0 2px; color:#fff; letter-spacing:-.3px; }
+  .sidebar-head .who { font-size:11.5px; color:rgba(255,255,255,.7); font-family:"IBM Plex Mono",monospace; }
+  .sidebar-nav { flex:1; overflow-y:auto; padding:16px 12px; }
+  .nav-group-label { font-family:"IBM Plex Mono",monospace; font-size:10px; font-weight:600; letter-spacing:1.2px; text-transform:uppercase;
+    color:rgba(255,255,255,.55); margin:18px 10px 8px; }
+  .nav-group-label:first-child { margin-top:0; }
+  .nav-item { display:flex; align-items:center; gap:10px; width:100%; text-align:left;
+    padding:9px 10px; border-radius:var(--radius-sm); border:none; background:transparent;
+    color:rgba(255,255,255,.8); font-size:13.5px; cursor:pointer; transition:.12s; margin-bottom:2px;
+    border-left:3px solid transparent; }
+  .nav-item:hover { background:rgba(255,255,255,.12); color:#fff; }
+  .nav-item.active { background:#fff; color:#3d7bb8; font-weight:600; border-left-color:#fff; }
+  .sidebar-foot { padding:14px 20px; border-top:1px solid rgba(255,255,255,.15); }
+  .sidebar-foot .btn.outline { background:transparent; color:#fff; border-color:rgba(255,255,255,.4); }
+  .sidebar-foot .btn.outline:hover { background:rgba(255,255,255,.12); }
 
-  section.panel { display:none; }
-  section.panel.active { display:block; }
+  .main { flex:1; overflow-y:auto; height:100%; }
+  .main-inner { max-width:1100px; margin:0 auto; padding:32px 36px 100px; }
+  .main-head { display:flex; align-items:flex-start; justify-content:space-between; gap:20px; margin-bottom:28px; }
+  .main-head h2 { font-family:"Fraunces",serif; font-size:27px; font-weight:700; margin:0 0 6px; letter-spacing:-.3px; }
+  .main-head p.hint { font-size:13.5px; color:var(--muted); margin:0; max-width:56ch; line-height:1.5; }
 
-  h2.sec { font-size:18px; font-weight:600; margin:0 0 4px; }
-  p.hint { font-size:13px; color:var(--muted); margin:0 0 20px; line-height:1.5; }
+  .btn { padding:10px 18px; border-radius:var(--radius-sm); border:1px solid var(--ink);
+    background:var(--ink); color:#fff; cursor:pointer; transition:.15s; white-space:nowrap; }
+  .btn:hover { opacity:.85; }
+  .btn.outline { background:#fff; color:var(--ink); }
+  .btn.danger  { background:#fff; color:var(--danger); border-color:#f3c9c9; }
+  .btn.sm { padding:6px 12px; font-size:13px; }
+  .btn.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .btn:disabled { opacity:.5; cursor:default; }
+  .btn-icon { display:inline-flex; align-items:center; gap:7px; }
 
-  .card { border:1px solid var(--line); border-radius:12px; padding:20px; margin-bottom:18px; }
-  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-  @media (max-width:640px){ .grid2 { grid-template-columns:1fr; } }
-
-  label { display:block; font-size:12.5px; color:var(--muted); margin:0 0 6px; }
+  label { display:block; font-size:12.5px; color:var(--muted); margin:0 0 6px; font-weight:500; }
   .field { margin-bottom:14px; }
   input[type=text], input[type=email], input[type=password], input[type=number], textarea, select {
     width:100%; font:inherit; font-size:14px; padding:10px 12px; border:1px solid var(--line);
-    border-radius:8px; background:#fff; color:var(--ink); }
+    border-radius:var(--radius-sm); background:#fff; color:var(--ink); transition:border-color .15s; }
   textarea { min-height:90px; resize:vertical; line-height:1.5; }
-  input:focus, textarea:focus, select:focus { outline:none; border-color:var(--ink); }
-
+  input:focus, textarea:focus, select:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
   .row-check { display:flex; align-items:center; gap:8px; font-size:14px; }
   .row-check input { width:16px; height:16px; }
-
-  .btn { font:inherit; font-size:14px; padding:10px 18px; border-radius:8px; border:1px solid var(--ink);
-    background:var(--ink); color:#fff; cursor:pointer; }
-  .btn.outline { background:#fff; color:var(--ink); }
-  .btn.danger  { background:#fff; color:#c0392b; border-color:#e3b7b2; }
-  .btn.sm { padding:6px 12px; font-size:13px; }
-  .btn:disabled { opacity:.5; cursor:default; }
-  .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:6px; }
-
-  /* file / preview */
+  .cat-check { display:flex; gap:14px; padding:10px 12px; border:1px solid var(--line); border-radius:var(--radius-sm); background:var(--bg-sunken); }
   .filerow { display:flex; align-items:center; gap:12px; }
-  .thumb { width:52px; height:52px; border:1px solid var(--line); border-radius:8px; object-fit:cover; background:#fafafa; flex:0 0 auto; }
+  .thumb { width:52px; height:52px; border:1px solid var(--line); border-radius:var(--radius-sm); object-fit:cover; background:var(--bg-sunken); flex:0 0 auto; }
   .filename { font-size:12px; color:var(--muted); word-break:break-all; }
-
-  /* chips (galeri) */
   .chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
-  .chip { position:relative; width:64px; height:64px; border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+  .chip { position:relative; width:64px; height:64px; border:1px solid var(--line); border-radius:var(--radius-sm); overflow:hidden; }
   .chip img { width:100%; height:100%; object-fit:cover; display:block; }
   .chip button { position:absolute; top:2px; right:2px; width:18px; height:18px; border:none; border-radius:50%;
     background:rgba(0,0,0,.7); color:#fff; font-size:12px; line-height:18px; cursor:pointer; padding:0; }
+  .gallery-cap-list { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
+  .gallery-cap-row { display:flex; gap:10px; align-items:flex-start; padding:8px; border:1px solid var(--line); border-radius:var(--radius-sm); }
+  .gallery-cap-row .thumb { flex:0 0 auto; width:52px; height:52px; }
+  .gallery-cap-row textarea { flex:1; min-height:44px; font-size:13px; }
+  .gallery-cap-row button { flex:0 0 auto; width:24px; height:24px; border:none; border-radius:50%;
+    background:var(--danger-soft); color:var(--danger); font-size:13px; cursor:pointer; }
+  .divider { height:1px; background:var(--line); margin:22px 0; }
+  .note { font-size:12px; color:var(--muted); margin-top:6px; line-height:1.5; }
 
-  /* list */
-  .list .item { display:flex; align-items:center; gap:14px; padding:12px 0; border-bottom:1px solid var(--line); }
-  .list .item:last-child { border-bottom:none; }
-  .list .item .meta { flex:1; min-width:0; }
-  .list .item .meta .t { font-size:14px; font-weight:600; }
-  .list .item .meta .s { font-size:12px; color:var(--muted); margin-top:2px; }
-  .empty { font-size:13px; color:var(--muted); padding:14px 0; }
+  .card { border:1px solid var(--line); border-radius:var(--radius); padding:24px; background:#fff; margin-bottom:18px; }
+  .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:6px; }
+
+  .reorder-hint { font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--muted); margin:-14px 0 16px; }
+  /* List 1 kolom — bukan grid multi-kolom, biar gak ambigu urutan baca (kiri-ke-kanan vs atas-ke-bawah). */
+  .card-grid { display:flex; flex-direction:column; gap:10px; }
+  .g-card { border:1px solid var(--line); border-radius:var(--radius); background:#fff; overflow:hidden;
+    transition:box-shadow .15s, border-color .15s, opacity .12s; position:relative;
+    display:flex; align-items:center; gap:14px; padding:10px 14px 10px 46px; }
+  .g-card:hover { box-shadow:0 4px 16px rgba(31,36,48,.06); border-color:var(--accent); }
+  .g-card.dragging { opacity:.4; }
+  .g-card.drag-over { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent-soft); }
+  .g-card .g-thumb { width:64px; height:64px; flex:0 0 auto; border-radius:var(--radius-sm); background:var(--bg-sunken); object-fit:cover; display:block; }
+  .g-card .g-thumb-empty { width:64px; height:64px; flex:0 0 auto; border-radius:var(--radius-sm); background:var(--bg-sunken); display:flex;
+    align-items:center; justify-content:center; color:#c5c9d1; font-size:9px; font-family:"IBM Plex Mono",monospace; letter-spacing:.3px; text-align:center; }
+  .g-card .g-body { flex:1; min-width:0; padding:0; }
+  .g-card .g-title { font-size:14px; font-weight:700; margin-bottom:3px; line-height:1.3; }
+  .g-card .g-meta { font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--muted); line-height:1.5; min-height:16px; }
+  .g-card .g-drag { position:absolute; top:50%; left:10px; transform:translateY(-50%); width:26px; height:26px; border-radius:var(--radius-sm);
+    background:transparent; display:flex; align-items:center; justify-content:center;
+    color:#999; cursor:grab; font-size:15px; letter-spacing:-2px; touch-action:none; border:none; }
+  .g-card .g-drag:active { cursor:grabbing; }
+  .g-card .g-actions { flex:0 0 auto; display:flex; gap:6px; position:static; }
+  .g-card .g-actions button { width:30px; height:30px; border-radius:var(--radius-sm); border:1px solid var(--line);
+    background:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    font-size:12px; color:#555; }
+  .g-card .g-actions button:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .g-card .g-actions button.g-del:hover { background:var(--danger); border-color:var(--danger); }
+  .g-card.g-noimg .g-body { padding-top:0; }
+  .empty-state { text-align:center; padding:60px 20px; color:var(--muted); font-size:13.5px; font-family:"IBM Plex Mono",monospace; }
+
+  .drawer-overlay { position:fixed; inset:0; background:rgba(31,36,48,.35); backdrop-filter:blur(2px);
+    z-index:100; opacity:0; pointer-events:none; transition:opacity .22s; }
+  .drawer-overlay.open { opacity:1; pointer-events:auto; }
+  .drawer { position:fixed; top:0; right:0; bottom:0; width:min(480px,94vw); background:#fff;
+    z-index:101; box-shadow:-20px 0 60px rgba(31,36,48,.14); transform:translateX(100%);
+    transition:transform .28s cubic-bezier(.2,.8,.2,1); display:flex; flex-direction:column; }
+  .drawer.open { transform:translateX(0); }
+  .drawer-head { display:flex; align-items:center; justify-content:space-between; padding:20px 24px;
+    border-bottom:1px solid var(--line); flex:none; }
+  .drawer-head .d-title { font-family:"Fraunces",serif; font-weight:700; font-size:19px; }
+  .drawer-close { width:34px; height:34px; border-radius:50%; border:1px solid var(--line); background:#fff;
+    cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px; color:#666; }
+  .drawer-close:hover { background:var(--bg-sunken); }
+  .drawer-body { flex:1; overflow-y:auto; padding:22px 24px; }
+  .drawer-foot { flex:none; padding:16px 24px; border-top:1px solid var(--line); display:flex; gap:10px; }
+  .drawer-foot .btn { flex:1; }
 
   .status { position:fixed; bottom:18px; left:50%; transform:translateX(-50%);
     background:var(--ink); color:#fff; font-size:13px; padding:10px 18px; border-radius:999px;
-    opacity:0; transition:opacity .25s; pointer-events:none; z-index:20; }
+    opacity:0; transition:opacity .25s; pointer-events:none; z-index:200; }
   .status.show { opacity:1; }
-  .status.err { background:#c0392b; }
+  .status.err { background:var(--danger); }
 
-  /* login */
   .login { max-width:360px; margin:12vh auto 0; padding:0 20px; }
-  .login h1 { font-size:20px; margin:0 0 4px; }
+  .login h1 { font-family:"Fraunces",serif; font-size:23px; margin:0 0 4px; }
   .login p { font-size:13px; color:var(--muted); margin:0 0 24px; }
 
-  .divider { height:1px; background:var(--line); margin:26px 0; }
-  .note { font-size:12px; color:var(--muted); margin-top:6px; line-height:1.5; }
+  @media (max-width:860px){
+    #appView { flex-direction:column; }
+    .sidebar { flex:none; width:100%; height:auto; flex-direction:row; overflow-x:auto; border-right:none; border-bottom:1px solid var(--line); }
+    .sidebar-head, .sidebar-foot { display:none; }
+    .sidebar-nav { display:flex; padding:10px; gap:4px; }
+    .nav-group-label { display:none; }
+    .nav-item { white-space:nowrap; border-left:none; border-bottom:3px solid transparent; }
+    .nav-item.active { border-left-color:transparent; border-bottom-color:var(--accent); }
+    .main-inner { padding:22px 18px 90px; }
+    .drawer { width:100%; }
+  }
 </style>
 </head>
 <body>
 
-<!-- ============ LOGIN ============ -->
 <div id="loginView" class="login">
   <h1>Admin</h1>
   <p>Masuk untuk mengelola isi portofolio.</p>
@@ -103,58 +171,69 @@
   </div>
   <button id="loginBtn" class="btn" style="width:100%">Masuk</button>
   <p class="note" id="loginErr" style="color:#c0392b"></p>
-  <p class="note">Belum punya akun admin? Buat user di Supabase → Authentication → Users → Add user.</p>
+  <p class="note">Belum punya akun admin? Buat user di Supabase, Authentication, Users, Add user.</p>
 </div>
 
-<!-- ============ APP ============ -->
 <div id="appView" style="display:none">
-  <header class="top">
-    <h1>Portfolio Admin</h1>
-    <div><span class="who" id="whoami"></span><button id="logoutBtn" class="btn outline sm">Keluar</button></div>
-  </header>
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <h1>Portfolio Admin</h1>
+      <div class="who" id="whoami"></div>
+    </div>
+    <nav class="sidebar-nav" id="sidebarNav">
+      <div class="nav-group-label">Profil</div>
+      <button class="nav-item active" data-tab="profile">Profil &amp; Home</button>
+      <button class="nav-item" data-tab="lanyard">Lanyard</button>
+      <button class="nav-item" data-tab="socials">Sosial</button>
 
-  <div class="wrap">
-    <nav class="tabs">
-      <button data-tab="profile" class="active">Profil &amp; Home</button>
-      <button data-tab="lanyard">Lanyard</button>
-      <button data-tab="socials">Sosial</button>
-      <button data-tab="projects">Projects</button>
-      <button data-tab="certs">Sertifikat</button>
-      <button data-tab="acts">Journey (About Me)</button>
-      <button data-tab="skills">Skills (About Me)</button>
-      <button data-tab="services">Services (Project)</button>
-      <button data-tab="eggs">Easter Egg</button>
+      <div class="nav-group-label">Halaman Project</div>
+      <button class="nav-item" data-tab="projects">Projects</button>
+      <button class="nav-item" data-tab="services">Services</button>
+      <button class="nav-item" data-tab="certs">Sertifikat</button>
+
+      <div class="nav-group-label">Halaman About Me</div>
+      <button class="nav-item" data-tab="acts">Journey &amp; Achievements</button>
+      <button class="nav-item" data-tab="skills">What I Do</button>
+
+      <div class="nav-group-label">Lainnya</div>
+      <button class="nav-item" data-tab="eggs">Easter Egg</button>
     </nav>
+    <div class="sidebar-foot">
+      <button id="logoutBtn" class="btn outline sm" style="width:100%">Keluar</button>
+    </div>
+  </aside>
 
-    <!-- ---------- PROFIL & HOME ---------- -->
-    <section class="panel active" data-panel="profile">
-      <h2 class="sec">Profil &amp; Home</h2>
-      <p class="hint">Nama, peran, deskripsi, foto home, dan CV.</p>
-      <div class="card">
-        <div class="grid2">
-          <div class="field"><label>Nama baris 1</label><input id="p_name1" type="text" placeholder="MUHAMMAD"></div>
-          <div class="field"><label>Nama baris 2</label><input id="p_name2" type="text" placeholder="ILHAM | AREN"></div>
-        </div>
-        <div class="field"><label>Roles (pisahkan dengan koma)</label><input id="p_roles" type="text" placeholder="IoT Engineer, Digital Illustrator, Digital Artist"></div>
-        <div class="field"><label>Deskripsi</label><textarea id="p_desc"></textarea></div>
-        <div class="grid2">
-          <div class="field"><label>Email</label><input id="p_email" type="email" placeholder="nama@email.com"></div>
-          <div class="field"><label>Copyright</label><input id="p_copy" type="text" placeholder="© 2025 ilham | aren"></div>
-        </div>
-        <div class="divider"></div>
-        <div class="grid2">
-          <div class="field">
-            <label>Foto Home (desktop)</label>
-            <div class="filerow">
-              <img class="thumb" id="p_photo_prev" alt="">
-              <div><input type="file" accept="image/*" data-single="home_photo_url" data-prev="p_photo_prev" data-folder="home"><div class="filename" id="p_photo_name"></div></div>
-            </div>
+  <main class="main">
+    <div class="main-inner">
+
+      <section class="panel active" data-panel="profile">
+        <div class="main-head"><div><h2>Profil &amp; Home</h2><p class="hint">Nama, peran, deskripsi, foto home, dan CV.</p></div></div>
+        <div class="card">
+          <div>
+            <div class="field"><label>Nama baris 1</label><input id="p_name1" type="text" placeholder="MUHAMMAD"></div>
+            <div class="field"><label>Nama baris 2</label><input id="p_name2" type="text" placeholder="ILHAM | AREN"></div>
           </div>
-          <div class="field">
-            <label>Foto Home (HP / layar penuh)</label>
-            <div class="filerow">
-              <img class="thumb" id="p_photom_prev" alt="">
-              <div><input type="file" accept="image/*" data-single="home_photo_mobile" data-prev="p_photom_prev" data-folder="home"><div class="filename" id="p_photom_name"></div></div>
+          <div class="field"><label>Roles (pisahkan dengan koma)</label><input id="p_roles" type="text" placeholder="IoT Engineer, Digital Illustrator, Digital Artist"></div>
+          <div class="field"><label>Deskripsi</label><textarea id="p_desc"></textarea></div>
+          <div>
+            <div class="field"><label>Email</label><input id="p_email" type="email" placeholder="nama@email.com"></div>
+            <div class="field"><label>Copyright</label><input id="p_copy" type="text" placeholder="© 2025 ilham | aren"></div>
+          </div>
+          <div class="divider"></div>
+          <div>
+            <div class="field">
+              <label>Foto Home (desktop)</label>
+              <div class="filerow">
+                <img class="thumb" id="p_photo_prev" alt="">
+                <div><input type="file" accept="image/*" data-single="home_photo_url" data-prev="p_photo_prev" data-folder="home"><div class="filename" id="p_photo_name"></div></div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Foto Home (HP / layar penuh)</label>
+              <div class="filerow">
+                <img class="thumb" id="p_photom_prev" alt="">
+                <div><input type="file" accept="image/*" data-single="home_photo_mobile" data-prev="p_photom_prev" data-folder="home"><div class="filename" id="p_photom_name"></div></div>
+              </div>
             </div>
           </div>
           <div class="field">
@@ -164,233 +243,115 @@
             </div>
             <div class="note" id="cv_current"></div>
           </div>
+          <div class="actions"><button class="btn" id="saveProfile">Simpan Profil</button></div>
         </div>
-        <div class="actions"><button class="btn" id="saveProfile">Simpan Profil</button></div>
-      </div>
-    </section>
+      </section>
 
-    <!-- ---------- LANYARD ---------- -->
-    <section class="panel" data-panel="lanyard">
-      <h2 class="sec">Lanyard (kartu 3D di halaman contact)</h2>
-      <p class="hint">Nama, peran, foto kartu, dan gambar tali. GLB kartu diunggah manual ke <code>public/card.glb</code> pada project (opsional).</p>
-      <div class="card">
-        <div class="grid2">
-          <div class="field"><label>Nama di kartu</label><input id="l_name" type="text" placeholder="Muhammad Ilham"></div>
-          <div class="field"><label>Peran di kartu</label><input id="l_role" type="text" placeholder="IoT Engineer · Digital Artist"></div>
+      <section class="panel" data-panel="lanyard">
+        <div class="main-head"><div><h2>Lanyard</h2><p class="hint">Kartu 3D di halaman contact. Nama, peran, foto kartu, dan gambar tali. GLB kartu diunggah manual ke <code>public/card.glb</code> pada project (opsional).</p></div></div>
+        <div class="card">
+          <div>
+            <div class="field"><label>Nama di kartu</label><input id="l_name" type="text" placeholder="Muhammad Ilham"></div>
+            <div class="field"><label>Peran di kartu</label><input id="l_role" type="text" placeholder="IoT Engineer · Digital Artist"></div>
+          </div>
+          <div>
+            <div class="field">
+              <label>Foto kartu</label>
+              <div class="filerow"><img class="thumb" id="l_photo_prev" alt="">
+                <input type="file" accept="image/*" data-single="lanyard_photo_url" data-prev="l_photo_prev" data-folder="lanyard"></div>
+            </div>
+            <div class="field">
+              <label>Gambar tali (band)</label>
+              <div class="filerow"><img class="thumb" id="l_band_prev" alt="">
+                <input type="file" accept="image/*" data-single="lanyard_band_url" data-prev="l_band_prev" data-folder="lanyard"></div>
+            </div>
+            <div class="field">
+              <label>Foto sisi BELAKANG kartu</label>
+              <div class="filerow">
+                <img class="thumb" id="l_back_prev" alt="">
+                <input type="file" accept="image/*" data-single="lanyard_back_url" data-prev="l_back_prev" data-folder="lanyard"></div>
+            </div>
+          </div>
+          <div class="actions"><button class="btn" id="saveLanyard">Simpan Lanyard</button></div>
         </div>
-        <div class="grid2">
-          <div class="field">
-            <label>Foto kartu</label>
-            <div class="filerow"><img class="thumb" id="l_photo_prev" alt="">
-              <input type="file" accept="image/*" data-single="lanyard_photo_url" data-prev="l_photo_prev" data-folder="lanyard"></div>
-          </div>
-          <div class="field">
-            <label>Gambar tali (band)</label>
-            <div class="filerow"><img class="thumb" id="l_band_prev" alt="">
-              <input type="file" accept="image/*" data-single="lanyard_band_url" data-prev="l_band_prev" data-folder="lanyard"></div>
-          </div>
-          <div class="field">
-            <label>Foto sisi BELAKANG kartu</label>
-            <div class="filerow">
-              <img class="thumb" id="l_back_prev" alt="">
-              <input type="file" accept="image/*" data-single="lanyard_back_url" data-prev="l_back_prev" data-folder="lanyard"></div>
-          </div>
-        </div>
-        <div class="actions"><button class="btn" id="saveLanyard">Simpan Lanyard</button></div>
-      </div>
-    </section>
+      </section>
 
-    <!-- ---------- SOSIAL ---------- -->
-    <section class="panel" data-panel="socials">
-      <h2 class="sec">Tautan Sosial</h2>
-      <p class="hint">Isi hanya yang dipakai. Untuk email gunakan format <code>mailto:nama@email.com</code>.</p>
-      <div class="card">
-        <div id="socialForm"></div>
-        <div class="actions"><button class="btn" id="saveSocials">Simpan Sosial</button></div>
-      </div>
-    </section>
+      <section class="panel" data-panel="socials">
+        <div class="main-head"><div><h2>Tautan Sosial</h2><p class="hint">Isi hanya yang dipakai. Untuk email gunakan format <code>mailto:nama@email.com</code>.</p></div></div>
+        <div class="card">
+          <div id="socialForm"></div>
+          <div class="actions"><button class="btn" id="saveSocials">Simpan Sosial</button></div>
+        </div>
+      </section>
 
-    <!-- ---------- PROJECTS ---------- -->
-    <section class="panel" data-panel="projects">
-      <h2 class="sec">Projects</h2>
-      <p class="hint">Kelola karya tech &amp; art. Centang <b>feature</b> untuk menjadikannya sorotan di kategori itu.</p>
-      <div class="card">
-        <div id="proj_editTitle" style="font-weight:600;font-size:14px;margin-bottom:12px">Tambah project baru</div>
-        <div class="grid2">
-          <div class="field"><label>Judul</label><input id="pr_title" type="text"></div>
-          <div class="field"><label>Kategori (maks 2)</label>
-            <div class="row-check"><input type="checkbox" id="pr_cat_web" value="web"><label style="margin:0">web</label></div>
-            <div class="row-check"><input type="checkbox" id="pr_cat_iot" value="iot"><label style="margin:0">iot</label></div>
-            <div class="row-check"><input type="checkbox" id="pr_cat_art" value="art"><label style="margin:0">art</label></div>
-          </div>
+      <section class="panel" data-panel="projects">
+        <div class="main-head">
+          <div><h2>Projects</h2><p class="hint">Kelola karya tech &amp; art. Centang <b>feature</b> untuk menjadikannya sorotan di kategori itu.</p></div>
+          <button class="btn primary btn-icon" id="pr_add">+ Tambah Project</button>
         </div>
-        <div class="grid2">
-          <div class="field"><label>Organisasi / klien (tampil di tab Work Experience)</label><input id="pr_org" type="text" placeholder="mis. PT Telkom Indonesia"></div>
-          <div class="field"><label>Aspect ratio (tinggi ÷ lebar, mis. 1.2)</label><input id="pr_ar" type="number" step="0.01" value="1"></div>
-        </div>
-        <div class="grid2">
-          <div class="field"><label>Urutan (sort)</label><input id="pr_sort" type="number" value="0"></div>
-          <div></div>
-        </div>
-        <div class="field row-check"><input id="pr_feature" type="checkbox"><label style="margin:0">Jadikan feature project</label></div>
-        <div class="field"><label>Tags (pisahkan koma)</label><input id="pr_tags" type="text" placeholder="IoT, ESP32, MQTT"></div>
-        <div class="field"><label>Link projek (opsional) — tombol "Visit project" di pop-up</label><input id="pr_url" type="text" placeholder="https://github.com/... atau https://..."></div>
-        <div class="field"><label>Deskripsi</label><textarea id="pr_desc"></textarea></div>
-        <div class="grid2">
-          <div class="field"><label>Cover</label>
-            <div class="filerow"><img class="thumb" id="pr_cover_prev" alt="">
-              <input type="file" accept="image/*" id="pr_cover_file" data-folder="projects"></div>
-          </div>
-          <div class="field"><label>Galeri (boleh banyak)</label>
-            <input type="file" accept="image/*" multiple id="pr_gallery_file" data-folder="projects">
-            <div class="chips" id="pr_gallery_chips"></div>
-          </div>
-        </div>
-        <div class="actions">
-          <button class="btn" id="pr_save">Simpan</button>
-          <button class="btn outline" id="pr_reset">Batal / Baru</button>
-        </div>
-      </div>
-      <div class="card list" id="proj_list"><div class="empty">Memuat…</div></div>
-    </section>
+        <p class="reorder-hint">Tarik ⠿ pada card untuk mengubah urutan tampil.</p>
+        <div class="card-grid" id="proj_list"></div>
+      </section>
 
-    <!-- ---------- SERTIFIKAT ---------- -->
-    <section class="panel" data-panel="certs">
-      <h2 class="sec">Sertifikat</h2>
-      <p class="hint">Muncul di strip loop halaman Projects.</p>
-      <div class="card">
-        <div id="cert_editTitle" style="font-weight:600;font-size:14px;margin-bottom:12px">Tambah sertifikat baru</div>
-        <div class="grid2">
-          <div class="field"><label>Judul</label><input id="ce_title" type="text"></div>
-          <div class="field"><label>Penerbit (issuer)</label><input id="ce_issuer" type="text"></div>
+      <section class="panel" data-panel="services">
+        <div class="main-head">
+          <div><h2>Services</h2><p class="hint">Ledger layanan di halaman Project: nama layanan, deskripsi singkat, dan daftar deliverable.</p></div>
+          <button class="btn primary btn-icon" id="sv_add">+ Tambah Layanan</button>
         </div>
-        <div class="grid2">
-          <div class="field"><label>Tautan kredensial (opsional)</label><input id="ce_url" type="text" placeholder="https://…"></div>
-          <div class="field"><label>Urutan (sort)</label><input id="ce_sort" type="number" value="0"></div>
-        </div>
-        <div class="field"><label>Gambar</label>
-          <div class="filerow"><img class="thumb" id="ce_img_prev" alt="">
-            <input type="file" accept="image/*" id="ce_img_file" data-folder="certs"></div>
-        </div>
-        <div class="actions">
-          <button class="btn" id="ce_save">Simpan</button>
-          <button class="btn outline" id="ce_reset">Batal / Baru</button>
-        </div>
-      </div>
-      <div class="card list" id="cert_list"><div class="empty">Memuat…</div></div>
-    </section>
+        <p class="reorder-hint">Tarik ⠿ pada card untuk mengubah urutan tampil.</p>
+        <div class="card-grid" id="service_list"></div>
+      </section>
 
-    <!-- ---------- ACTIVITY ---------- -->
-    <section class="panel" data-panel="acts">
-      <h2 class="sec">Journey &amp; Achievements (About Me)</h2>
-      <p class="hint">Kartu Stack (foto drag) di hero, sekaligus kartu di papan pin "Journey &amp; Achievements". Foto utama tampil default; galeri dilihat saat kartu di-tap.</p>
-      <div class="card">
-        <div id="act_editTitle" style="font-weight:600;font-size:14px;margin-bottom:12px">Tambah activity baru</div>
-        <div class="grid2">
-          <div class="field"><label>Judul</label><input id="ac_title" type="text"></div>
-          <div class="field"><label>Meta (mis. tanggal/tempat)</label><input id="ac_meta" type="text"></div>
+      <section class="panel" data-panel="certs">
+        <div class="main-head">
+          <div><h2>Sertifikat</h2><p class="hint">Muncul di strip loop halaman Projects.</p></div>
+          <button class="btn primary btn-icon" id="ce_add">+ Tambah Sertifikat</button>
         </div>
-        <div class="grid2">
-          <div class="field"><label>Kategori pin (mis. Competition, Workshop)</label><input id="ac_cat" type="text" placeholder="Competition"></div>
-          <div class="field"><label>Tahun (badge di papan pin)</label><input id="ac_year" type="text" placeholder="2025"></div>
-        </div>
-        <div class="field"><label>Teks singkat</label><textarea id="ac_text"></textarea></div>
-        <div class="grid2">
-          <div class="field"><label>Judul modal</label><input id="ac_mtitle" type="text"></div>
-          <div class="field"><label>Urutan (sort)</label><input id="ac_sort" type="number" value="0"></div>
-        </div>
-        <div class="field"><label>Deskripsi modal</label><textarea id="ac_mdesc"></textarea></div>
-        <div class="grid2">
-          <div class="field"><label>Foto utama</label>
-            <div class="filerow"><img class="thumb" id="ac_photo_prev" alt="">
-              <input type="file" accept="image/*" id="ac_photo_file" data-folder="activity"></div>
-          </div>
-          <div class="field"><label>Galeri (boleh banyak)</label>
-            <input type="file" accept="image/*" multiple id="ac_gallery_file" data-folder="activity">
-            <div class="chips" id="ac_gallery_chips"></div>
-          </div>
-        </div>
-        <div class="actions">
-          <button class="btn" id="ac_save">Simpan</button>
-          <button class="btn outline" id="ac_reset">Batal / Baru</button>
-        </div>
-      </div>
-      <div class="card list" id="act_list"><div class="empty">Memuat…</div></div>
-    </section>
+        <p class="reorder-hint">Tarik ⠿ pada card untuk mengubah urutan tampil.</p>
+        <div class="card-grid" id="cert_list"></div>
+      </section>
 
-    <section class="panel" data-panel="skills">
-      <h2 class="sec">What I Do (About Me)</h2>
-      <p class="hint">Kartu skill di halaman About Me. Foto jadi latar kartu (efek glassmorphism di atasnya).</p>
-      <div class="card">
-        <div id="sk_editTitle" style="font-weight:600;font-size:14px;margin-bottom:12px">Tambah skill baru</div>
-        <div class="grid2">
-          <div class="field"><label>Judul</label><input id="sk_title" type="text" placeholder="Embedded &amp; IoT"></div>
-          <div class="field"><label>Urutan (sort)</label><input id="sk_sort" type="number" value="0"></div>
+      <section class="panel" data-panel="acts">
+        <div class="main-head">
+          <div><h2>Journey &amp; Achievements</h2><p class="hint">Kartu Stack (foto drag) di hero About Me, sekaligus kartu di papan pin. Foto utama tampil default; galeri dilihat saat kartu di-tap.</p></div>
+          <button class="btn primary btn-icon" id="ac_add">+ Tambah Activity</button>
         </div>
-        <div class="field"><label>Tags (pisah koma)</label><input id="sk_tags" type="text" placeholder="Raspberry Pi, ESP32, MQTT"></div>
-        <div class="field"><label>Foto latar</label>
-          <div class="filerow"><img class="thumb" id="sk_photo_prev" alt="">
-            <input type="file" accept="image/*" id="sk_photo_file" data-folder="skills"></div>
-        </div>
-        <div class="actions">
-          <button class="btn" id="sk_save">Simpan</button>
-          <button class="btn outline" id="sk_reset">Batal / Baru</button>
-        </div>
-      </div>
-      <div class="card list" id="skill_list"><div class="empty">Memuat…</div></div>
-    </section>
+        <p class="reorder-hint">Tarik ⠿ pada card untuk mengubah urutan tampil.</p>
+        <div class="card-grid" id="act_list"></div>
+      </section>
 
-    <section class="panel" data-panel="services">
-      <h2 class="sec">What I Can Do (Project)</h2>
-      <p class="hint">Ledger layanan di halaman Project — nama layanan, deskripsi singkat, dan daftar deliverable.</p>
-      <div class="card">
-        <div id="sv_editTitle" style="font-weight:600;font-size:14px;margin-bottom:12px">Tambah layanan baru</div>
-        <div class="grid2">
-          <div class="field"><label>Nama layanan</label><input id="sv_name" type="text" placeholder="Web App Development"></div>
-          <div class="field"><label>Urutan (sort)</label><input id="sv_sort" type="number" value="0"></div>
+      <section class="panel" data-panel="skills">
+        <div class="main-head">
+          <div><h2>What I Do</h2><p class="hint">Kartu skill di halaman About Me. Foto jadi latar kartu (efek glassmorphism di atasnya).</p></div>
+          <button class="btn primary btn-icon" id="sk_add">+ Tambah Skill</button>
         </div>
-        <div class="field"><label>Deskripsi singkat</label><textarea id="sv_desc"></textarea></div>
-        <div class="field"><label>Deliverables (pisah koma)</label><input id="sv_deliv" type="text" placeholder="Landing page, Dashboard admin, Integrasi API"></div>
-        <div class="actions">
-          <button class="btn" id="sv_save">Simpan</button>
-          <button class="btn outline" id="sv_reset">Batal / Baru</button>
-        </div>
-      </div>
-      <div class="card list" id="service_list"><div class="empty">Memuat…</div></div>
-    </section>
+        <p class="reorder-hint">Tarik ⠿ pada card untuk mengubah urutan tampil.</p>
+        <div class="card-grid" id="skill_list"></div>
+      </section>
 
-    <!-- ---------- EASTER EGG ---------- -->
-    <section class="panel" data-panel="eggs">
-      <h2 class="sec">Easter Egg</h2>
-      <p class="hint">Ketik kata kuncinya di halaman mana pun (bukan di dalam kotak isian) → foto bermunculan.</p>
-      <div class="card">
-        <h3 id="eg_editTitle">Tambah easter egg baru</h3>
-        <div class="grid2">
-          <div class="field"><label>Kata kunci</label><input id="eg_word" type="text" placeholder="mykisah"></div>
-          <div class="field"><label>Gaya</label>
-            <select id="eg_style">
-              <option value="confetti">Confetti (foto biasa)</option>
-              <option value="polaroid">Polaroid (berbingkai)</option>
-            </select>
-          </div>
+      <section class="panel" data-panel="eggs">
+        <div class="main-head">
+          <div><h2>Easter Egg</h2><p class="hint">Ketik kata kuncinya di halaman mana pun (bukan di dalam kotak isian), foto bermunculan.</p></div>
+          <button class="btn primary btn-icon" id="eg_add">+ Tambah Easter Egg</button>
         </div>
-        <div class="grid2">
-          <div class="field"><label>Caption (opsional)</label><input id="eg_caption" type="text"></div>
-          <div class="field"><label>Urutan</label><input id="eg_sort" type="number" value="0"></div>
-        </div>
-        <div class="field">
-          <label>Foto (maksimal 10 — akan tersebar melingkar di layar)</label>
-          <input type="file" accept="image/*" multiple id="eg_gallery_file" data-folder="easter">
-          <div class="chips" id="eg_chips"></div>
-          <p class="hint" id="eg_count">0 foto siap disimpan</p>
-        </div>
-        <div class="row">
-          <button class="btn" id="eg_save">Simpan</button>
-          <button class="btn outline" id="eg_reset">Batal</button>
-        </div>
-      </div>
-      <div class="card"><h3>Daftar easter egg</h3><div id="eg_list"></div></div>
-    </section>
+        <p class="reorder-hint">Tarik ⠿ pada card untuk mengubah urutan tampil.</p>
+        <div class="card-grid" id="eg_list"></div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div class="d-title" id="drawerTitle">Tambah</div>
+    <button class="drawer-close" id="drawerClose" aria-label="Tutup">✕</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-foot">
+    <button class="btn outline" id="drawerCancel">Batal</button>
+    <button class="btn primary" id="drawerSave">Simpan</button>
   </div>
 </div>
 
@@ -399,12 +360,8 @@
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-/* ============================================================
-   1) ISI DUA NILAI DI BAWAH INI (dari Supabase > Project Settings > API)
-   ============================================================ */
 const SUPABASE_URL      = 'https://hlmvvlqgtflrcjkwcufs.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_sDwxXxCoCeo_PVmr-0NbSA_epdrFiLk';
-/* ============================================================ */
 
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const BUCKET = 'media';
@@ -427,11 +384,10 @@ async function upload(file, folder){
 const splitList = (v) => v.split(',').map(s=>s.trim()).filter(Boolean);
 const joinList  = (a) => Array.isArray(a) ? a.join(', ') : '';
 
-/* ---------------- AUTH ---------------- */
 async function refreshAuth(){
   const { data:{ session } } = await sb.auth.getSession();
   if(session){
-    $('loginView').style.display='none'; $('appView').style.display='block';
+    $('loginView').style.display='none'; $('appView').style.display='flex';
     $('whoami').textContent = session.user.email;
     loadAll();
   } else {
@@ -447,17 +403,34 @@ $('loginBtn').addEventListener('click', async ()=>{
 $('loginPass').addEventListener('keydown', e=>{ if(e.key==='Enter') $('loginBtn').click(); });
 $('logoutBtn').addEventListener('click', async ()=>{ await sb.auth.signOut(); refreshAuth(); });
 
-/* ---------------- TABS ---------------- */
-document.querySelectorAll('nav.tabs button').forEach(b=>{
+document.querySelectorAll('.nav-item').forEach(b=>{
   b.addEventListener('click', ()=>{
-    document.querySelectorAll('nav.tabs button').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
     document.querySelectorAll('section.panel').forEach(p=>p.classList.toggle('active', p.dataset.panel===b.dataset.tab));
+    document.querySelector('.main').scrollTop = 0;
   });
 });
 
-/* ---------------- state file tunggal (profil & lanyard) ---------------- */
-const profileFiles = {}; // { column: url }
+const drawer = $('drawer'), drawerOverlay = $('drawerOverlay');
+let drawerSaveHandler = null;
+function openDrawer(title, bodyHtml, onSave){
+  $('drawerTitle').textContent = title;
+  $('drawerBody').innerHTML = bodyHtml;
+  drawer.classList.add('open'); drawerOverlay.classList.add('open');
+  drawerSaveHandler = onSave;
+}
+function closeDrawer(){
+  drawer.classList.remove('open'); drawerOverlay.classList.remove('open');
+  drawerSaveHandler = null;
+}
+$('drawerClose').addEventListener('click', closeDrawer);
+$('drawerCancel').addEventListener('click', closeDrawer);
+$('drawerOverlay').addEventListener('click', closeDrawer);
+$('drawerSave').addEventListener('click', () => { if(drawerSaveHandler) drawerSaveHandler(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape' && drawer.classList.contains('open')) closeDrawer(); });
+
+const profileFiles = {};
 document.querySelectorAll('input[type=file][data-single]').forEach(inp=>{
   inp.addEventListener('change', async ()=>{
     const f = inp.files[0]; if(!f) return;
@@ -471,19 +444,15 @@ document.querySelectorAll('input[type=file][data-single]').forEach(inp=>{
   });
 });
 
-/* ---------------- PROFIL ---------------- */
-let profileRow = null;
 async function loadProfile(){
   const { data, error } = await sb.from('profile').select('*').eq('id',1).single();
   if(error){ fail(error); return; }
-  profileRow = data;
   $('p_name1').value = data.name_line1||''; $('p_name2').value = data.name_line2||'';
   $('p_roles').value = joinList(data.roles); $('p_desc').value = data.description||'';
   $('p_email').value = data.email||''; $('p_copy').value = data.copyright||'';
   if(data.home_photo_url) $('p_photo_prev').src = data.home_photo_url;
   if(data.home_photo_mobile) $('p_photom_prev').src = data.home_photo_mobile;
   $('cv_current').textContent = data.cv_url ? ('CV saat ini: '+data.cv_url) : '';
-  // lanyard
   $('l_name').value = data.lanyard_name||''; $('l_role').value = data.lanyard_role||'';
   if(data.lanyard_photo_url) $('l_photo_prev').src = data.lanyard_photo_url;
   if(data.lanyard_band_url)  $('l_band_prev').src  = data.lanyard_band_url;
@@ -517,7 +486,6 @@ $('saveLanyard').addEventListener('click', async ()=>{
   toast('Lanyard tersimpan'); loadProfile();
 });
 
-/* ---------------- SOSIAL ---------------- */
 const SOCIAL_GROUPS = {
   general: ['linkedin','scholar','instagram','facebook','discord','email'],
   tech:    ['github'],
@@ -527,7 +495,7 @@ function renderSocials(soc){
   const wrap = $('socialForm'); wrap.innerHTML='';
   for(const group of Object.keys(SOCIAL_GROUPS)){
     const h = document.createElement('div');
-    h.style.cssText='font-weight:600;font-size:13px;margin:10px 0 8px;text-transform:uppercase;letter-spacing:1px;color:#333';
+    h.style.cssText='font-weight:700;font-size:12px;margin:14px 0 8px;text-transform:uppercase;letter-spacing:.8px;color:#999';
     h.textContent = group;
     wrap.appendChild(h);
     for(const key of SOCIAL_GROUPS[group]){
@@ -549,7 +517,6 @@ $('saveSocials').addEventListener('click', async ()=>{
   toast('Sosial tersimpan');
 });
 
-/* ---------------- helper galeri chips ---------------- */
 function makeGallery(chipsEl){
   let arr = [];
   const render = ()=>{
@@ -564,345 +531,486 @@ function makeGallery(chipsEl){
   return { get:()=>arr.slice(), set:(a)=>{arr=(a||[]).slice(); render();}, add:(u)=>{arr.push(u); render();} };
 }
 
+/* Galeri khusus Projects: tiap foto punya caption opsional (judul + teks proses).
+   Diisi -> foto ini dirender sebagai section zigzag di modal. Kosong -> masuk bento grid biasa.
+   Menerima data lama (array string URL) dan otomatis normalisasi jadi {url, caption:''}. */
+function makeGalleryWithCaption(listEl){
+  let arr = []; // [{url, caption}]
+  const render = ()=>{
+    listEl.innerHTML='';
+    arr.forEach((item,i)=>{
+      const row=document.createElement('div'); row.className='gallery-cap-row';
+      row.innerHTML=`
+        <img class="thumb" src="${item.url}">
+        <textarea placeholder="Kosongkan supaya foto ini masuk grid biasa. Isi untuk menjadikannya section 'proses' dengan teks di sampingnya.">${item.caption||''}</textarea>
+        <button type="button" title="hapus">×</button>`;
+      row.querySelector('textarea').addEventListener('input', e => { arr[i].caption = e.target.value; });
+      row.querySelector('button').onclick = () => { arr.splice(i,1); render(); };
+      listEl.appendChild(row);
+    });
+  };
+  return {
+    get: () => arr.map(it => ({ url: it.url, caption: it.caption || '' })),
+    set: (a) => { arr = (a||[]).map(it => typeof it === 'string' ? { url: it, caption: '' } : { url: it.url||'', caption: it.caption||'' }); render(); },
+    add: (u) => { arr.push({ url: u, caption: '' }); render(); }
+  };
+}
+
+function makeReorderableGrid(box, table, reload){
+  let dragEl = null;
+  box.addEventListener('dragstart', e => {
+    const item = e.target.closest('.g-card');
+    if(!item || !e.target.closest('.g-drag')){ e.preventDefault(); return; }
+    dragEl = item; item.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  box.addEventListener('dragend', () => { if(dragEl) dragEl.classList.remove('dragging'); dragEl = null;
+    box.querySelectorAll('.g-card.drag-over').forEach(el => el.classList.remove('drag-over')); });
+  box.addEventListener('dragover', e => {
+    if(!dragEl) return;
+    e.preventDefault();
+    const over = e.target.closest('.g-card');
+    box.querySelectorAll('.g-card.drag-over').forEach(el => el.classList.remove('drag-over'));
+    if(!over || over === dragEl) return;
+    over.classList.add('drag-over');
+  });
+  box.addEventListener('drop', async e => {
+    e.preventDefault();
+    if(!dragEl) return;
+    const over = e.target.closest('.g-card');
+    box.querySelectorAll('.g-card.drag-over').forEach(el => el.classList.remove('drag-over'));
+    if(!over || over === dragEl) return;
+    const items = [...box.querySelectorAll('.g-card')];
+    const from = items.indexOf(dragEl), to = items.indexOf(over);
+    if(from < to) over.after(dragEl); else over.before(dragEl);
+    const ordered = [...box.querySelectorAll('.g-card')];
+    try{
+      await Promise.all(ordered.map((el, i) => sb.from(table).update({ sort:i }).eq('id', el.dataset.id)));
+      toast('Urutan disimpan');
+    }catch(x){ fail(x); }
+    reload();
+  });
+}
+
 /* ================= PROJECTS ================= */
 const prCover = { url:'' };
-const prGallery = makeGallery($('pr_gallery_chips'));
-let prEditId = null;
+let prGallery, prEditId = null;
+const PR_CAT_IDS = { web:'d_pr_cat_web', iot:'d_pr_cat_iot', art:'d_pr_cat_art' };
 
-$('pr_cover_file').addEventListener('change', async e=>{
-  const f=e.target.files[0]; if(!f) return;
-  try{ toast('Mengunggah…'); prCover.url=await upload(f,'projects'); $('pr_cover_prev').src=prCover.url; toast('Cover terunggah'); }catch(x){ fail(x); }
-});
-$('pr_gallery_file').addEventListener('change', async e=>{
-  for(const f of e.target.files){ try{ toast('Mengunggah…'); prGallery.add(await upload(f,'projects')); }catch(x){ fail(x); } }
-  e.target.value=''; toast('Galeri diperbarui');
-});
-const PR_CAT_IDS = { web:'pr_cat_web', iot:'pr_cat_iot', art:'pr_cat_art' };
-const getPrCats = () => Object.keys(PR_CAT_IDS).filter(k => $(PR_CAT_IDS[k]).checked);
-const setPrCats = (arr) => { const set = new Set(arr||[]); Object.keys(PR_CAT_IDS).forEach(k => $(PR_CAT_IDS[k]).checked = set.has(k)); };
-Object.values(PR_CAT_IDS).forEach(id => $(id).addEventListener('change', (e) => {
-  if(getPrCats().length > 2){ e.target.checked=false; toast('Maksimal 2 kategori'); }
-}));
-function prReset(){
-  prEditId=null; prCover.url=''; prGallery.set([]);
-  $('proj_editTitle').textContent='Tambah project baru';
-  ['pr_title','pr_desc','pr_tags','pr_url','pr_org'].forEach(id=>$(id).value='');
-  setPrCats(['web']); $('pr_ar').value='1'; $('pr_sort').value='0'; $('pr_feature').checked=false;
-  $('pr_cover_prev').removeAttribute('src');
+function prFormHtml(p){
+  const cats = new Set(p ? (Array.isArray(p.cat)?p.cat:[p.cat]) : ['web']);
+  return `
+    <div class="field"><label>Judul</label><input id="d_pr_title" type="text" value="${(p?.title||'').replace(/"/g,'&quot;')}"></div>
+    <div class="field"><label>Kategori (maks 2)</label>
+      <div class="cat-check">
+        <div class="row-check"><input type="checkbox" id="d_pr_cat_web" ${cats.has('web')?'checked':''}><label style="margin:0">web</label></div>
+        <div class="row-check"><input type="checkbox" id="d_pr_cat_iot" ${cats.has('iot')?'checked':''}><label style="margin:0">iot</label></div>
+        <div class="row-check"><input type="checkbox" id="d_pr_cat_art" ${cats.has('art')?'checked':''}><label style="margin:0">art</label></div>
+      </div>
+    </div>
+    <div>
+      <div class="field"><label>Organisasi / klien</label><input id="d_pr_org" type="text" value="${(p?.org||'').replace(/"/g,'&quot;')}" placeholder="mis. PT Telkom Indonesia"></div>
+      <div class="field"><label>Periode</label><input id="d_pr_date" type="text" value="${(p?.date_label||'').replace(/"/g,'&quot;')}" placeholder="mis. Jan - Mar 2025"></div>
+    </div>
+    <div class="field"><label>Aspect ratio</label><input id="d_pr_ar" type="number" step="0.01" value="${p?.ar||1}"></div>
+    <div class="field row-check"><input id="d_pr_feature" type="checkbox" ${p?.feature?'checked':''}><label style="margin:0">Jadikan feature project</label></div>
+    <div class="field"><label>Tags (pisahkan koma)</label><input id="d_pr_tags" type="text" value="${joinList(p?.tags).replace(/"/g,'&quot;')}" placeholder="IoT, ESP32, MQTT"></div>
+    <div class="field"><label>Link projek (opsional)</label><input id="d_pr_url" type="text" value="${(p?.url||'').replace(/"/g,'&quot;')}" placeholder="https://..."></div>
+    <div class="field"><label>Deskripsi</label><textarea id="d_pr_desc">${p?.description||''}</textarea></div>
+    <div>
+      <div class="field"><label>Cover</label>
+        <div class="filerow"><img class="thumb" id="d_pr_cover_prev" src="${p?.cover_url||''}">
+          <input type="file" accept="image/*" id="d_pr_cover_file" data-folder="projects"></div>
+      </div>
+      <div class="field"><label>Galeri (boleh banyak)</label>
+        <input type="file" accept="image/*" multiple id="d_pr_gallery_file" data-folder="projects">
+        <p class="note">Isi teks di samping foto untuk menjadikannya section "proses" (foto + judul/teks) di modal detail. Kosongkan untuk foto biasa (grid bawah).</p>
+        <div class="gallery-cap-list" id="d_pr_gallery_chips"></div>
+      </div>
+    </div>`;
 }
-$('pr_reset').addEventListener('click', prReset);
-$('pr_save').addEventListener('click', async ()=>{
+function prBindForm(p){
+  prCover.url = p?.cover_url || '';
+  prGallery = makeGalleryWithCaption($('d_pr_gallery_chips'));
+  prGallery.set(p?.images || []);
+  $('d_pr_cover_file').addEventListener('change', async e=>{
+    const f=e.target.files[0]; if(!f) return;
+    try{ toast('Mengunggah…'); prCover.url=await upload(f,'projects'); $('d_pr_cover_prev').src=prCover.url; toast('Cover terunggah'); }catch(x){ fail(x); }
+  });
+  $('d_pr_gallery_file').addEventListener('change', async e=>{
+    for(const f of e.target.files){ try{ toast('Mengunggah…'); prGallery.add(await upload(f,'projects')); }catch(x){ fail(x); } }
+    e.target.value=''; toast('Galeri diperbarui');
+  });
+  Object.values(PR_CAT_IDS).forEach(id => $(id).addEventListener('change', (ev) => {
+    const checked = Object.values(PR_CAT_IDS).filter(cid => $(cid).checked);
+    if(checked.length > 2){ ev.target.checked=false; toast('Maksimal 2 kategori'); }
+  }));
+}
+function prOpenForm(p){
+  prEditId = p ? p.id : null;
+  openDrawer(p ? 'Edit Project' : 'Tambah Project', prFormHtml(p), prSave);
+  prBindForm(p);
+}
+async function prSave(){
+  const cats = Object.entries(PR_CAT_IDS).filter(([k,id]) => $(id).checked).map(([k]) => k);
   const payload = {
-    title:$('pr_title').value, cat:getPrCats(), feature:$('pr_feature').checked,
-    ar:parseFloat($('pr_ar').value)||1, tags:splitList($('pr_tags').value),
-    description:$('pr_desc').value, cover_url:prCover.url, images:prGallery.get(), url:$('pr_url').value.trim(),
-    org:$('pr_org').value.trim(), sort:parseInt($('pr_sort').value)||0
+    title:$('d_pr_title').value, cat:cats, feature:$('d_pr_feature').checked,
+    ar:parseFloat($('d_pr_ar').value)||1, tags:splitList($('d_pr_tags').value),
+    description:$('d_pr_desc').value, cover_url:prCover.url, images:prGallery.get(), url:$('d_pr_url').value.trim(),
+    org:$('d_pr_org').value.trim(), date_label:$('d_pr_date').value.trim()
   };
   const doSave = (pl)=> prEditId ? sb.from('projects').update(pl).eq('id',prEditId) : sb.from('projects').insert(pl);
   let res = await doSave(payload);
   if(res.error && /url/i.test(res.error.message||'')){
-    // kolom 'url' belum ada di DB → simpan tanpa link dulu, biar edit tetap jalan
     const { url, ...rest } = payload;
     res = await doSave(rest);
-    if(!res.error){ toast('Tersimpan (catatan: kolom "url" belum ada — link belum aktif)'); prReset(); loadProjects(); return; }
+    if(!res.error){ toast('Tersimpan (catatan: kolom "url" belum ada, link belum aktif)'); closeDrawer(); loadProjects(); return; }
   }
   if(res.error && /org/i.test(res.error.message||'')){
-    // kolom 'org' belum ada di DB (migrasi belum dijalankan) → simpan tanpa org dulu
     const { org, ...rest } = payload;
     res = await doSave(rest);
-    if(!res.error){ toast('Tersimpan (catatan: kolom "org" belum ada — jalankan migration.sql dulu)'); prReset(); loadProjects(); return; }
+    if(!res.error){ toast('Tersimpan (catatan: kolom "org" belum ada, jalankan migration.sql dulu)'); closeDrawer(); loadProjects(); return; }
+  }
+  if(res.error && /date_label/i.test(res.error.message||'')){
+    const { date_label, ...rest } = payload;
+    res = await doSave(rest);
+    if(!res.error){ toast('Tersimpan (catatan: kolom "date_label" belum ada, jalankan migration_add_project_date.sql dulu)'); closeDrawer(); loadProjects(); return; }
   }
   if(res.error) return fail(res.error);
-  toast('Project tersimpan'); prReset(); loadProjects();
-});
+  toast('Project tersimpan'); closeDrawer(); loadProjects();
+}
+$('pr_add').addEventListener('click', () => prOpenForm(null));
 async function loadProjects(){
   const { data, error } = await sb.from('projects').select('*').order('sort').order('created_at');
-  const box=$('proj_list'); if(error){ box.innerHTML='<div class="empty">Gagal memuat</div>'; return; }
-  if(!data.length){ box.innerHTML='<div class="empty">Belum ada project.</div>'; return; }
+  const box=$('proj_list'); if(error){ box.innerHTML='<div class="empty-state">Gagal memuat</div>'; return; }
+  if(!data.length){ box.innerHTML='<div class="empty-state">Belum ada project. Klik "+ Tambah Project" untuk mulai.</div>'; return; }
   box.innerHTML='';
   data.forEach(p=>{
-    const el=document.createElement('div'); el.className='item';
-    el.innerHTML=`<img class="thumb" src="${p.cover_url||''}">
-      <div class="meta"><div class="t">${p.title||'(tanpa judul)'} ${p.feature?'★':''}</div>
-      <div class="s">${(Array.isArray(p.cat)?p.cat:[p.cat]).filter(Boolean).join(', ')}${p.org?' · '+p.org:''} · ${(p.tags||[]).join(', ')}</div></div>
-      <button class="btn outline sm">Edit</button><button class="btn danger sm">Hapus</button>`;
-    el.querySelectorAll('button')[0].onclick=()=>{
-      prEditId=p.id; $('proj_editTitle').textContent='Edit: '+(p.title||'');
-      $('pr_title').value=p.title||''; setPrCats(Array.isArray(p.cat)?p.cat:[p.cat||'web']); $('pr_ar').value=p.ar||1;
-      $('pr_sort').value=p.sort||0; $('pr_feature').checked=!!p.feature; $('pr_tags').value=joinList(p.tags);
-      $('pr_desc').value=p.description||''; $('pr_url').value=p.url||''; $('pr_org').value=p.org||''; prCover.url=p.cover_url||'';
-      if(p.cover_url) $('pr_cover_prev').src=p.cover_url; else $('pr_cover_prev').removeAttribute('src');
-      prGallery.set(p.images||[]);
-      window.scrollTo({top:0,behavior:'smooth'});
-    };
-    el.querySelectorAll('button')[1].onclick=async ()=>{
+    const el=document.createElement('div'); el.className='g-card'+(p.cover_url?'':' g-noimg'); el.draggable=true; el.dataset.id=p.id;
+    const catStr = (Array.isArray(p.cat)?p.cat:[p.cat]).filter(Boolean).join(', ');
+    el.innerHTML=`
+      <span class="g-drag">⠿</span>
+      <div class="g-actions"><button class="g-edit" title="Edit">✎</button><button class="g-del" title="Hapus">🗑</button></div>
+      ${p.cover_url ? `<img class="g-thumb" src="${p.cover_url}">` : `<div class="g-thumb-empty">NO COVER</div>`}
+      <div class="g-body">
+        <div class="g-title">${p.title||'(tanpa judul)'} ${p.feature?'★':''}</div>
+        <div class="g-meta">${catStr}${p.org?' · '+p.org:''}</div>
+      </div>`;
+    el.querySelector('.g-edit').onclick = () => prOpenForm(p);
+    el.querySelector('.g-del').onclick = async () => {
       if(!confirm('Hapus project ini?')) return;
       const { error } = await sb.from('projects').delete().eq('id',p.id);
       if(error) return fail(error); toast('Terhapus'); loadProjects();
     };
     box.appendChild(el);
   });
+  makeReorderableGrid(box, 'projects', loadProjects);
 }
 
 /* ================= CERTIFICATES ================= */
 const ceImg={url:''}; let ceEditId=null;
-$('ce_img_file').addEventListener('change', async e=>{
-  const f=e.target.files[0]; if(!f) return;
-  try{ toast('Mengunggah…'); ceImg.url=await upload(f,'certs'); $('ce_img_prev').src=ceImg.url; toast('Gambar terunggah'); }catch(x){ fail(x); }
-});
-function ceReset(){ ceEditId=null; ceImg.url=''; $('cert_editTitle').textContent='Tambah sertifikat baru';
-  ['ce_title','ce_issuer','ce_url'].forEach(id=>$(id).value=''); $('ce_sort').value='0'; $('ce_img_prev').removeAttribute('src'); }
-$('ce_reset').addEventListener('click', ceReset);
-$('ce_save').addEventListener('click', async ()=>{
-  const payload={ title:$('ce_title').value, issuer:$('ce_issuer').value, url:$('ce_url').value,
-    image_url:ceImg.url, sort:parseInt($('ce_sort').value)||0 };
+function ceFormHtml(c){
+  return `
+    <div>
+      <div class="field"><label>Judul</label><input id="d_ce_title" type="text" value="${(c?.title||'').replace(/"/g,'&quot;')}"></div>
+      <div class="field"><label>Penerbit (issuer)</label><input id="d_ce_issuer" type="text" value="${(c?.issuer||'').replace(/"/g,'&quot;')}"></div>
+    </div>
+    <div class="field"><label>Tautan kredensial (opsional)</label><input id="d_ce_url" type="text" value="${(c?.url||'').replace(/"/g,'&quot;')}" placeholder="https://…"></div>
+    <div class="field"><label>Gambar</label>
+      <div class="filerow"><img class="thumb" id="d_ce_img_prev" src="${c?.image_url||''}">
+        <input type="file" accept="image/*" id="d_ce_img_file" data-folder="certs"></div>
+    </div>`;
+}
+function ceOpenForm(c){
+  ceEditId = c ? c.id : null;
+  openDrawer(c ? 'Edit Sertifikat' : 'Tambah Sertifikat', ceFormHtml(c), ceSave);
+  ceImg.url = c?.image_url || '';
+  $('d_ce_img_file').addEventListener('change', async e=>{
+    const f=e.target.files[0]; if(!f) return;
+    try{ toast('Mengunggah…'); ceImg.url=await upload(f,'certs'); $('d_ce_img_prev').src=ceImg.url; toast('Gambar terunggah'); }catch(x){ fail(x); }
+  });
+}
+async function ceSave(){
+  const payload={ title:$('d_ce_title').value, issuer:$('d_ce_issuer').value, url:$('d_ce_url').value, image_url:ceImg.url };
   let error;
   if(ceEditId) ({error}=await sb.from('certificates').update(payload).eq('id',ceEditId));
   else         ({error}=await sb.from('certificates').insert(payload));
-  if(error) return fail(error); toast('Sertifikat tersimpan'); ceReset(); loadCerts();
-});
+  if(error) return fail(error); toast('Sertifikat tersimpan'); closeDrawer(); loadCerts();
+}
+$('ce_add').addEventListener('click', () => ceOpenForm(null));
 async function loadCerts(){
   const { data, error } = await sb.from('certificates').select('*').order('sort').order('created_at');
-  const box=$('cert_list'); if(error){ box.innerHTML='<div class="empty">Gagal memuat</div>'; return; }
-  if(!data.length){ box.innerHTML='<div class="empty">Belum ada sertifikat.</div>'; return; }
+  const box=$('cert_list'); if(error){ box.innerHTML='<div class="empty-state">Gagal memuat</div>'; return; }
+  if(!data.length){ box.innerHTML='<div class="empty-state">Belum ada sertifikat.</div>'; return; }
   box.innerHTML='';
   data.forEach(c=>{
-    const el=document.createElement('div'); el.className='item';
-    el.innerHTML=`<img class="thumb" src="${c.image_url||''}">
-      <div class="meta"><div class="t">${c.title||'(tanpa judul)'}</div><div class="s">${c.issuer||''}</div></div>
-      <button class="btn outline sm">Edit</button><button class="btn danger sm">Hapus</button>`;
-    el.querySelectorAll('button')[0].onclick=()=>{
-      ceEditId=c.id; $('cert_editTitle').textContent='Edit: '+(c.title||'');
-      $('ce_title').value=c.title||''; $('ce_issuer').value=c.issuer||''; $('ce_url').value=c.url||'';
-      $('ce_sort').value=c.sort||0; ceImg.url=c.image_url||'';
-      if(c.image_url) $('ce_img_prev').src=c.image_url; else $('ce_img_prev').removeAttribute('src');
-      window.scrollTo({top:0,behavior:'smooth'});
-    };
-    el.querySelectorAll('button')[1].onclick=async ()=>{
+    const el=document.createElement('div'); el.className='g-card'+(c.image_url?'':' g-noimg'); el.draggable=true; el.dataset.id=c.id;
+    el.innerHTML=`
+      <span class="g-drag">⠿</span>
+      <div class="g-actions"><button class="g-edit" title="Edit">✎</button><button class="g-del" title="Hapus">🗑</button></div>
+      ${c.image_url ? `<img class="g-thumb" src="${c.image_url}">` : `<div class="g-thumb-empty">NO IMAGE</div>`}
+      <div class="g-body"><div class="g-title">${c.title||'(tanpa judul)'}</div><div class="g-meta">${c.issuer||''}</div></div>`;
+    el.querySelector('.g-edit').onclick = () => ceOpenForm(c);
+    el.querySelector('.g-del').onclick = async () => {
       if(!confirm('Hapus sertifikat ini?')) return;
       const { error } = await sb.from('certificates').delete().eq('id',c.id);
       if(error) return fail(error); toast('Terhapus'); loadCerts();
     };
     box.appendChild(el);
   });
+  makeReorderableGrid(box, 'certificates', loadCerts);
 }
 
 /* ================= ACTIVITIES ================= */
-const acPhoto={url:''}; const acGallery=makeGallery($('ac_gallery_chips')); let acEditId=null;
-$('ac_photo_file').addEventListener('change', async e=>{
-  const f=e.target.files[0]; if(!f) return;
-  try{ toast('Mengunggah…'); acPhoto.url=await upload(f,'activity'); $('ac_photo_prev').src=acPhoto.url; toast('Foto terunggah'); }catch(x){ fail(x); }
-});
-$('ac_gallery_file').addEventListener('change', async e=>{
-  for(const f of e.target.files){ try{ toast('Mengunggah…'); acGallery.add(await upload(f,'activity')); }catch(x){ fail(x); } }
-  e.target.value=''; toast('Galeri diperbarui');
-});
-function acReset(){ acEditId=null; acPhoto.url=''; acGallery.set([]);
-  $('act_editTitle').textContent='Tambah activity baru';
-  ['ac_title','ac_meta','ac_text','ac_mtitle','ac_mdesc','ac_cat','ac_year'].forEach(id=>$(id).value=''); $('ac_sort').value='0';
-  $('ac_photo_prev').removeAttribute('src'); }
-$('ac_reset').addEventListener('click', acReset);
-$('ac_save').addEventListener('click', async ()=>{
-  const payload={ title:$('ac_title').value, meta:$('ac_meta').value, text:$('ac_text').value,
-    modal_title:$('ac_mtitle').value, modal_desc:$('ac_mdesc').value,
-    cat:$('ac_cat').value, year_label:$('ac_year').value,
-    photo_url:acPhoto.url, gallery:acGallery.get(), sort:parseInt($('ac_sort').value)||0 };
+const acPhoto={url:''}; let acGallery, acEditId=null;
+function acFormHtml(a){
+  return `
+    <div>
+      <div class="field"><label>Judul</label><input id="d_ac_title" type="text" value="${(a?.title||'').replace(/"/g,'&quot;')}"></div>
+      <div class="field"><label>Meta (mis. tanggal/tempat)</label><input id="d_ac_meta" type="text" value="${(a?.meta||'').replace(/"/g,'&quot;')}"></div>
+    </div>
+    <div>
+      <div class="field"><label>Kategori pin</label><input id="d_ac_cat" type="text" value="${(a?.cat||'').replace(/"/g,'&quot;')}" placeholder="Competition"></div>
+      <div class="field"><label>Tahun (badge)</label><input id="d_ac_year" type="text" value="${(a?.year_label||'').replace(/"/g,'&quot;')}" placeholder="2025"></div>
+    </div>
+    <div class="field"><label>Teks singkat</label><textarea id="d_ac_text">${a?.text||''}</textarea></div>
+    <div class="field"><label>Judul modal</label><input id="d_ac_mtitle" type="text" value="${(a?.modal_title||'').replace(/"/g,'&quot;')}"></div>
+    <div class="field"><label>Deskripsi modal</label><textarea id="d_ac_mdesc">${a?.modal_desc||''}</textarea></div>
+    <div>
+      <div class="field"><label>Foto utama</label>
+        <div class="filerow"><img class="thumb" id="d_ac_photo_prev" src="${a?.photo_url||''}">
+          <input type="file" accept="image/*" id="d_ac_photo_file" data-folder="activity"></div>
+      </div>
+      <div class="field"><label>Galeri (boleh banyak)</label>
+        <input type="file" accept="image/*" multiple id="d_ac_gallery_file" data-folder="activity">
+        <div class="chips" id="d_ac_gallery_chips"></div>
+      </div>
+    </div>`;
+}
+function acOpenForm(a){
+  acEditId = a ? a.id : null;
+  openDrawer(a ? 'Edit Activity' : 'Tambah Activity', acFormHtml(a), acSave);
+  acPhoto.url = a?.photo_url || '';
+  acGallery = makeGallery($('d_ac_gallery_chips'));
+  acGallery.set(a?.gallery || []);
+  $('d_ac_photo_file').addEventListener('change', async e=>{
+    const f=e.target.files[0]; if(!f) return;
+    try{ toast('Mengunggah…'); acPhoto.url=await upload(f,'activity'); $('d_ac_photo_prev').src=acPhoto.url; toast('Foto terunggah'); }catch(x){ fail(x); }
+  });
+  $('d_ac_gallery_file').addEventListener('change', async e=>{
+    for(const f of e.target.files){ try{ toast('Mengunggah…'); acGallery.add(await upload(f,'activity')); }catch(x){ fail(x); } }
+    e.target.value=''; toast('Galeri diperbarui');
+  });
+}
+async function acSave(){
+  const payload={ title:$('d_ac_title').value, meta:$('d_ac_meta').value, text:$('d_ac_text').value,
+    modal_title:$('d_ac_mtitle').value, modal_desc:$('d_ac_mdesc').value,
+    cat:$('d_ac_cat').value, year_label:$('d_ac_year').value,
+    photo_url:acPhoto.url, gallery:acGallery.get() };
   const doSave = (pl)=> acEditId ? sb.from('activities').update(pl).eq('id',acEditId) : sb.from('activities').insert(pl);
   let res = await doSave(payload);
   if(res.error && /cat|year_label/i.test(res.error.message||'')){
-    // kolom cat/year_label belum ada di DB (migrasi belum dijalankan) → simpan tanpa itu dulu
     const { cat, year_label, ...rest } = payload;
     res = await doSave(rest);
-    if(!res.error){ toast('Tersimpan (catatan: jalankan migration.sql agar kategori/tahun aktif)'); acReset(); loadActs(); return; }
+    if(!res.error){ toast('Tersimpan (catatan: jalankan migration.sql agar kategori/tahun aktif)'); closeDrawer(); loadActs(); return; }
   }
-  if(res.error) return fail(res.error); toast('Activity tersimpan'); acReset(); loadActs();
-});
+  if(res.error) return fail(res.error); toast('Activity tersimpan'); closeDrawer(); loadActs();
+}
+$('ac_add').addEventListener('click', () => acOpenForm(null));
 async function loadActs(){
   const { data, error } = await sb.from('activities').select('*').order('sort').order('created_at');
-  const box=$('act_list'); if(error){ box.innerHTML='<div class="empty">Gagal memuat</div>'; return; }
-  if(!data.length){ box.innerHTML='<div class="empty">Belum ada activity.</div>'; return; }
+  const box=$('act_list'); if(error){ box.innerHTML='<div class="empty-state">Gagal memuat</div>'; return; }
+  if(!data.length){ box.innerHTML='<div class="empty-state">Belum ada activity.</div>'; return; }
   box.innerHTML='';
   data.forEach(a=>{
-    const el=document.createElement('div'); el.className='item';
-    el.innerHTML=`<img class="thumb" src="${a.photo_url||''}">
-      <div class="meta"><div class="t">${a.title||'(tanpa judul)'}</div><div class="s">${[a.cat,a.year_label,a.meta].filter(Boolean).join(' · ')}</div></div>
-      <button class="btn outline sm">Edit</button><button class="btn danger sm">Hapus</button>`;
-    el.querySelectorAll('button')[0].onclick=()=>{
-      acEditId=a.id; $('act_editTitle').textContent='Edit: '+(a.title||'');
-      $('ac_title').value=a.title||''; $('ac_meta').value=a.meta||''; $('ac_text').value=a.text||'';
-      $('ac_mtitle').value=a.modal_title||''; $('ac_mdesc').value=a.modal_desc||''; $('ac_sort').value=a.sort||0;
-      $('ac_cat').value=a.cat||''; $('ac_year').value=a.year_label||'';
-      acPhoto.url=a.photo_url||''; if(a.photo_url) $('ac_photo_prev').src=a.photo_url; else $('ac_photo_prev').removeAttribute('src');
-      acGallery.set(a.gallery||[]);
-      window.scrollTo({top:0,behavior:'smooth'});
-    };
-    el.querySelectorAll('button')[1].onclick=async ()=>{
+    const el=document.createElement('div'); el.className='g-card'+(a.photo_url?'':' g-noimg'); el.draggable=true; el.dataset.id=a.id;
+    el.innerHTML=`
+      <span class="g-drag">⠿</span>
+      <div class="g-actions"><button class="g-edit" title="Edit">✎</button><button class="g-del" title="Hapus">🗑</button></div>
+      ${a.photo_url ? `<img class="g-thumb" src="${a.photo_url}">` : `<div class="g-thumb-empty">NO PHOTO</div>`}
+      <div class="g-body"><div class="g-title">${a.title||'(tanpa judul)'}</div><div class="g-meta">${[a.cat,a.year_label,a.meta].filter(Boolean).join(' · ')}</div></div>`;
+    el.querySelector('.g-edit').onclick = () => acOpenForm(a);
+    el.querySelector('.g-del').onclick = async () => {
       if(!confirm('Hapus activity ini?')) return;
       const { error } = await sb.from('activities').delete().eq('id',a.id);
       if(error) return fail(error); toast('Terhapus'); loadActs();
     };
     box.appendChild(el);
   });
+  makeReorderableGrid(box, 'activities', loadActs);
 }
 
-/* ================= SKILLS (About Me — "What I Do") ================= */
+/* ================= SKILLS ================= */
 const skPhoto={url:''}; let skEditId=null;
-$('sk_photo_file').addEventListener('change', async e=>{
-  const f=e.target.files[0]; if(!f) return;
-  try{ toast('Mengunggah…'); skPhoto.url=await upload(f,'skills'); $('sk_photo_prev').src=skPhoto.url; toast('Foto terunggah'); }catch(x){ fail(x); }
-});
-function skReset(){ skEditId=null; skPhoto.url='';
-  $('sk_editTitle').textContent='Tambah skill baru';
-  ['sk_title','sk_tags'].forEach(id=>$(id).value=''); $('sk_sort').value='0';
-  $('sk_photo_prev').removeAttribute('src'); }
-$('sk_reset').addEventListener('click', skReset);
-$('sk_save').addEventListener('click', async ()=>{
-  const payload={ title:$('sk_title').value, tags:splitList($('sk_tags').value),
-    photo_url:skPhoto.url, sort:parseInt($('sk_sort').value)||0 };
+function skFormHtml(s){
+  return `
+    <div class="field"><label>Judul</label><input id="d_sk_title" type="text" value="${(s?.title||'').replace(/"/g,'&quot;')}" placeholder="Embedded &amp; IoT"></div>
+    <div class="field"><label>Tags (pisah koma)</label><input id="d_sk_tags" type="text" value="${joinList(s?.tags).replace(/"/g,'&quot;')}" placeholder="Raspberry Pi, ESP32, MQTT"></div>
+    <div class="field"><label>Foto latar</label>
+      <div class="filerow"><img class="thumb" id="d_sk_photo_prev" src="${s?.photo_url||''}">
+        <input type="file" accept="image/*" id="d_sk_photo_file" data-folder="skills"></div>
+    </div>`;
+}
+function skOpenForm(s){
+  skEditId = s ? s.id : null;
+  openDrawer(s ? 'Edit Skill' : 'Tambah Skill', skFormHtml(s), skSave);
+  skPhoto.url = s?.photo_url || '';
+  $('d_sk_photo_file').addEventListener('change', async e=>{
+    const f=e.target.files[0]; if(!f) return;
+    try{ toast('Mengunggah…'); skPhoto.url=await upload(f,'skills'); $('d_sk_photo_prev').src=skPhoto.url; toast('Foto terunggah'); }catch(x){ fail(x); }
+  });
+}
+async function skSave(){
+  const payload={ title:$('d_sk_title').value, tags:splitList($('d_sk_tags').value), photo_url:skPhoto.url };
   let error;
   if(skEditId) ({error}=await sb.from('skills').update(payload).eq('id',skEditId));
   else         ({error}=await sb.from('skills').insert(payload));
-  if(error) return fail(error); toast('Skill tersimpan'); skReset(); loadSkills();
-});
+  if(error) return fail(error); toast('Skill tersimpan'); closeDrawer(); loadSkills();
+}
+$('sk_add').addEventListener('click', () => skOpenForm(null));
 async function loadSkills(){
   const { data, error } = await sb.from('skills').select('*').order('sort').order('created_at');
-  const box=$('skill_list'); if(error){ box.innerHTML='<div class="empty">Gagal memuat (jalankan migration.sql dulu jika tabel belum ada)</div>'; return; }
-  if(!data.length){ box.innerHTML='<div class="empty">Belum ada skill.</div>'; return; }
+  const box=$('skill_list'); if(error){ box.innerHTML='<div class="empty-state">Gagal memuat (jalankan migration.sql dulu jika tabel belum ada)</div>'; return; }
+  if(!data.length){ box.innerHTML='<div class="empty-state">Belum ada skill.</div>'; return; }
   box.innerHTML='';
   data.forEach(s=>{
-    const el=document.createElement('div'); el.className='item';
-    el.innerHTML=`<img class="thumb" src="${s.photo_url||''}">
-      <div class="meta"><div class="t">${s.title||'(tanpa judul)'}</div><div class="s">${(s.tags||[]).join(', ')}</div></div>
-      <button class="btn outline sm">Edit</button><button class="btn danger sm">Hapus</button>`;
-    el.querySelectorAll('button')[0].onclick=()=>{
-      skEditId=s.id; $('sk_editTitle').textContent='Edit: '+(s.title||'');
-      $('sk_title').value=s.title||''; $('sk_tags').value=joinList(s.tags); $('sk_sort').value=s.sort||0;
-      skPhoto.url=s.photo_url||''; if(s.photo_url) $('sk_photo_prev').src=s.photo_url; else $('sk_photo_prev').removeAttribute('src');
-      window.scrollTo({top:0,behavior:'smooth'});
-    };
-    el.querySelectorAll('button')[1].onclick=async ()=>{
+    const el=document.createElement('div'); el.className='g-card'+(s.photo_url?'':' g-noimg'); el.draggable=true; el.dataset.id=s.id;
+    el.innerHTML=`
+      <span class="g-drag">⠿</span>
+      <div class="g-actions"><button class="g-edit" title="Edit">✎</button><button class="g-del" title="Hapus">🗑</button></div>
+      ${s.photo_url ? `<img class="g-thumb" src="${s.photo_url}">` : `<div class="g-thumb-empty">NO PHOTO</div>`}
+      <div class="g-body"><div class="g-title">${s.title||'(tanpa judul)'}</div><div class="g-meta">${(s.tags||[]).join(', ')}</div></div>`;
+    el.querySelector('.g-edit').onclick = () => skOpenForm(s);
+    el.querySelector('.g-del').onclick = async () => {
       if(!confirm('Hapus skill ini?')) return;
       const { error } = await sb.from('skills').delete().eq('id',s.id);
       if(error) return fail(error); toast('Terhapus'); loadSkills();
     };
     box.appendChild(el);
   });
+  makeReorderableGrid(box, 'skills', loadSkills);
 }
 
-/* ================= SERVICES (Project — "What I Can Do") ================= */
+/* ================= SERVICES ================= */
 let svEditId=null;
-function svReset(){ svEditId=null;
-  $('sv_editTitle').textContent='Tambah layanan baru';
-  ['sv_name','sv_desc','sv_deliv'].forEach(id=>$(id).value=''); $('sv_sort').value='0'; }
-$('sv_reset').addEventListener('click', svReset);
-$('sv_save').addEventListener('click', async ()=>{
-  const payload={ name:$('sv_name').value, description:$('sv_desc').value,
-    deliverables:splitList($('sv_deliv').value), sort:parseInt($('sv_sort').value)||0 };
+function svFormHtml(s){
+  return `
+    <div class="field"><label>Nama layanan</label><input id="d_sv_name" type="text" value="${(s?.name||'').replace(/"/g,'&quot;')}" placeholder="Web App Development"></div>
+    <div class="field"><label>Deskripsi singkat</label><textarea id="d_sv_desc">${s?.description||''}</textarea></div>
+    <div class="field"><label>Deliverables (pisah koma)</label><input id="d_sv_deliv" type="text" value="${joinList(s?.deliverables).replace(/"/g,'&quot;')}" placeholder="Landing page, Dashboard admin, Integrasi API"></div>`;
+}
+function svOpenForm(s){
+  svEditId = s ? s.id : null;
+  openDrawer(s ? 'Edit Layanan' : 'Tambah Layanan', svFormHtml(s), svSave);
+}
+async function svSave(){
+  const payload={ name:$('d_sv_name').value, description:$('d_sv_desc').value, deliverables:splitList($('d_sv_deliv').value) };
   let error;
   if(svEditId) ({error}=await sb.from('services').update(payload).eq('id',svEditId));
   else         ({error}=await sb.from('services').insert(payload));
-  if(error) return fail(error); toast('Layanan tersimpan'); svReset(); loadServices();
-});
+  if(error) return fail(error); toast('Layanan tersimpan'); closeDrawer(); loadServices();
+}
+$('sv_add').addEventListener('click', () => svOpenForm(null));
 async function loadServices(){
   const { data, error } = await sb.from('services').select('*').order('sort').order('created_at');
-  const box=$('service_list'); if(error){ box.innerHTML='<div class="empty">Gagal memuat (jalankan migration.sql dulu jika tabel belum ada)</div>'; return; }
-  if(!data.length){ box.innerHTML='<div class="empty">Belum ada layanan.</div>'; return; }
+  const box=$('service_list'); if(error){ box.innerHTML='<div class="empty-state">Gagal memuat (jalankan migration.sql dulu jika tabel belum ada)</div>'; return; }
+  if(!data.length){ box.innerHTML='<div class="empty-state">Belum ada layanan.</div>'; return; }
   box.innerHTML='';
   data.forEach(s=>{
-    const el=document.createElement('div'); el.className='item';
-    el.innerHTML=`<div class="meta"><div class="t">${s.name||'(tanpa nama)'}</div><div class="s">${(s.deliverables||[]).join(', ')}</div></div>
-      <button class="btn outline sm">Edit</button><button class="btn danger sm">Hapus</button>`;
-    el.querySelectorAll('button')[0].onclick=()=>{
-      svEditId=s.id; $('sv_editTitle').textContent='Edit: '+(s.name||'');
-      $('sv_name').value=s.name||''; $('sv_desc').value=s.description||''; $('sv_deliv').value=joinList(s.deliverables); $('sv_sort').value=s.sort||0;
-      window.scrollTo({top:0,behavior:'smooth'});
-    };
-    el.querySelectorAll('button')[1].onclick=async ()=>{
+    const el=document.createElement('div'); el.className='g-card g-noimg'; el.draggable=true; el.dataset.id=s.id;
+    el.innerHTML=`
+      <span class="g-drag">⠿</span>
+      <div class="g-actions"><button class="g-edit" title="Edit">✎</button><button class="g-del" title="Hapus">🗑</button></div>
+      <div class="g-body"><div class="g-title">${s.name||'(tanpa nama)'}</div><div class="g-meta">${(s.deliverables||[]).join(', ')}</div></div>`;
+    el.querySelector('.g-edit').onclick = () => svOpenForm(s);
+    el.querySelector('.g-del').onclick = async () => {
       if(!confirm('Hapus layanan ini?')) return;
       const { error } = await sb.from('services').delete().eq('id',s.id);
       if(error) return fail(error); toast('Terhapus'); loadServices();
     };
     box.appendChild(el);
   });
+  makeReorderableGrid(box, 'services', loadServices);
 }
-
 
 /* ---------------- EASTER EGG ---------------- */
-const egGallery = makeGallery($('eg_chips')); let egEditId = null;
-
-$('eg_gallery_file').addEventListener('change', async e => {
-  const files = [...e.target.files];
-  if(!files.length) return;
-  const sisa = 10 - egGallery.get().length;
-  if(sisa <= 0){ e.target.value = ''; return alert('Maksimal 10 foto per easter egg.'); }
-  if(files.length > sisa) alert('Maksimal 10 foto. Hanya ' + sisa + ' foto pertama yang diunggah.');
-  let ok = 0;
-  for(const f of files.slice(0, sisa)){
-    try { toast('Mengunggah ' + (ok + 1) + '/' + files.length + '…'); egGallery.add(await upload(f, 'easter')); ok++; }
-    catch(x){ fail(x); }
-  }
-  e.target.value = '';
-  egCount();
-  toast(ok + ' foto terunggah');
-});
-
-// penanda jumlah foto yang sudah siap disimpan
-function egCount(){
-  const el = $('eg_count');
-  if(el) el.textContent = egGallery.get().length + ' / 10 foto siap disimpan';
+let egGallery, egEditId = null;
+function egFormHtml(e){
+  return `
+    <div>
+      <div class="field"><label>Kata kunci</label><input id="d_eg_word" type="text" value="${(e?.word||'').replace(/"/g,'&quot;')}" placeholder="mykisah"></div>
+      <div class="field"><label>Gaya</label>
+        <select id="d_eg_style">
+          <option value="confetti" ${(!e||e.style==='confetti')?'selected':''}>Confetti (foto biasa)</option>
+          <option value="polaroid" ${e?.style==='polaroid'?'selected':''}>Polaroid (berbingkai)</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>Caption (opsional)</label><input id="d_eg_caption" type="text" value="${(e?.caption||'').replace(/"/g,'&quot;')}"></div>
+    <div class="field">
+      <label>Foto (maksimal 10, akan tersebar melingkar di layar)</label>
+      <input type="file" accept="image/*" multiple id="d_eg_gallery_file" data-folder="easter">
+      <div class="chips" id="d_eg_chips"></div>
+      <p class="note" id="d_eg_count">0 foto siap disimpan</p>
+    </div>`;
 }
-function egReset(){
-  egEditId = null;
-  $('eg_editTitle').textContent = 'Tambah easter egg baru';
-  ['eg_word','eg_caption'].forEach(id => $(id).value = '');
-  $('eg_style').value = 'confetti'; $('eg_sort').value = '0';
-  egGallery.set([]);
+function egCount(){ const el = $('d_eg_count'); if(el) el.textContent = egGallery.get().length + ' / 10 foto siap disimpan'; }
+function egOpenForm(e){
+  egEditId = e ? e.id : null;
+  openDrawer(e ? 'Edit Easter Egg' : 'Tambah Easter Egg', egFormHtml(e), egSave);
+  egGallery = makeGallery($('d_eg_chips'));
+  egGallery.set(e?.images || []);
   egCount();
+  $('d_eg_gallery_file').addEventListener('change', async ev => {
+    const files = [...ev.target.files];
+    if(!files.length) return;
+    const sisa = 10 - egGallery.get().length;
+    if(sisa <= 0){ ev.target.value = ''; return alert('Maksimal 10 foto per easter egg.'); }
+    if(files.length > sisa) alert('Maksimal 10 foto. Hanya ' + sisa + ' foto pertama yang diunggah.');
+    let ok = 0;
+    for(const f of files.slice(0, sisa)){
+      try { toast('Mengunggah ' + (ok + 1) + '/' + files.length + '…'); egGallery.add(await upload(f, 'easter')); ok++; }
+      catch(x){ fail(x); }
+    }
+    ev.target.value = ''; egCount(); toast(ok + ' foto terunggah');
+  });
 }
-$('eg_reset').addEventListener('click', egReset);
-$('eg_save').addEventListener('click', async () => {
-  const word = ($('eg_word').value || '').trim().toLowerCase();
+async function egSave(){
+  const word = ($('d_eg_word').value || '').trim().toLowerCase();
   if(!word) return alert('Kata kunci wajib diisi.');
-  const payload = {
-    word, style: $('eg_style').value, caption: $('eg_caption').value,
-    images: egGallery.get(), sort: parseInt($('eg_sort').value) || 0
-  };
+  const payload = { word, style: $('d_eg_style').value, caption: $('d_eg_caption').value, images: egGallery.get() };
   let error;
   if(egEditId) ({ error } = await sb.from('easter_eggs').update(payload).eq('id', egEditId));
   else         ({ error } = await sb.from('easter_eggs').insert(payload));
   if(error) return fail(error);
-  toast('Easter egg tersimpan'); egReset(); loadEggs();
-});
+  toast('Easter egg tersimpan'); closeDrawer(); loadEggs();
+}
+$('eg_add').addEventListener('click', () => egOpenForm(null));
 async function loadEggs(){
   const { data, error } = await sb.from('easter_eggs').select('*').order('sort').order('created_at');
   const box = $('eg_list'); if(!box) return;
-  if(error){ box.innerHTML = '<div class="empty">Gagal memuat</div>'; return; }
-  if(!data.length){ box.innerHTML = '<div class="empty">Belum ada easter egg.</div>'; return; }
+  if(error){ box.innerHTML = '<div class="empty-state">Gagal memuat</div>'; return; }
+  if(!data.length){ box.innerHTML = '<div class="empty-state">Belum ada easter egg.</div>'; return; }
   box.innerHTML = '';
   data.forEach(e => {
-    const el = document.createElement('div'); el.className = 'item';
-    el.innerHTML = `<img class="thumb" src="${(e.images && e.images[0]) || ''}">
-      <div class="meta"><div class="t">${e.word || ''}</div>
-      <div class="s">${(e.images || []).length} foto · ${e.style || 'confetti'}</div></div>
-      <button class="btn outline sm">Edit</button><button class="btn danger sm">Hapus</button>`;
-    el.querySelectorAll('button')[0].onclick = () => {
-      egEditId = e.id; $('eg_editTitle').textContent = 'Edit: ' + (e.word || '');
-      $('eg_word').value = e.word || ''; $('eg_style').value = e.style || 'confetti';
-      $('eg_caption').value = e.caption || ''; $('eg_sort').value = e.sort || 0;
-      egGallery.set(e.images || []);
-      egCount();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-    el.querySelectorAll('button')[1].onclick = async () => {
+    const img0 = (e.images && e.images[0]) || '';
+    const el = document.createElement('div'); el.className = 'g-card'+(img0?'':' g-noimg'); el.draggable = true; el.dataset.id = e.id;
+    el.innerHTML = `
+      <span class="g-drag">⠿</span>
+      <div class="g-actions"><button class="g-edit" title="Edit">✎</button><button class="g-del" title="Hapus">🗑</button></div>
+      ${img0 ? `<img class="g-thumb" src="${img0}">` : `<div class="g-thumb-empty">NO PHOTO</div>`}
+      <div class="g-body"><div class="g-title">${e.word || ''}</div><div class="g-meta">${(e.images || []).length} foto · ${e.style || 'confetti'}</div></div>`;
+    el.querySelector('.g-edit').onclick = () => egOpenForm(e);
+    el.querySelector('.g-del').onclick = async () => {
       if(!confirm('Hapus easter egg ini?')) return;
       const { error } = await sb.from('easter_eggs').delete().eq('id', e.id);
       if(error) return fail(error); toast('Terhapus'); loadEggs();
     };
     box.appendChild(el);
   });
+  makeReorderableGrid(box, 'easter_eggs', loadEggs);
 }
 
-/* ---------------- load semua ---------------- */
 function loadAll(){ loadProfile(); loadProjects(); loadCerts(); loadActs(); loadSkills(); loadServices(); loadEggs(); }
 
 refreshAuth();

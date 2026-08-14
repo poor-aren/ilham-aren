@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Muhammad Ilham | Aren — Portfolio</title>
+<title>Muhammad Ilham | Aren, Portfolio</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -706,48 +706,167 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 .contact-form .note.ok { color:#dfffdf; }
 .contact-form .note.err { color:#ffdcdc; }
 
-/* ============ MODAL ============ */
+/* ============ MODAL — desain ulang v5: warna ikut palette project.html (dark/krem/gold), foto masonry di bawah ============ */
+body.modal-lock { overflow: hidden; }
 #modalRoot {
-  position: fixed; inset: 0; z-index: 50; display: none;
-  align-items: center; justify-content: center; padding: 24px;
-  background: rgba(6,6,8,.62); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  position: fixed; inset: 0; z-index: 200; display: none;
+  align-items: flex-start; justify-content: center; padding: clamp(16px,3vw,48px);
+  background: rgba(4,4,5,.72); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  overflow-y: auto;
 }
 #modalRoot.open { display: flex; }
 .modal-card {
-  width: min(920px,96vw); max-height: 88vh; border-radius: 22px; overflow: hidden;
-  display: flex; flex-direction: column; position: relative;
-  background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.035));
-  backdrop-filter: blur(30px) saturate(1.7) brightness(1.05); -webkit-backdrop-filter: blur(30px) saturate(1.7) brightness(1.05);
-  border: 1px solid rgba(255,255,255,.2);
-  box-shadow: 0 30px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.22);
-  animation: modalIn .32s cubic-bezier(.2,.8,.2,1);
+  width: min(1160px,96vw); margin: auto; border-radius: 20px; overflow: hidden;
+  position: relative;
+  background: #0b0b0d; color: #F5E7D8;
+  border: 1px solid rgba(245,231,216,.14);
+  box-shadow: 0 30px 90px rgba(0,0,0,.55);
+  animation: modalIn .36s cubic-bezier(.16,.9,.24,1);
 }
-.modal-card::before {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: radial-gradient(120% 80% at 20% 0%, rgba(255,255,255,.08), transparent 55%);
+@keyframes modalIn { from{opacity:0; transform: translateY(28px) scale(.98);} }
+.modal-card .m-close {
+  position:absolute; top:20px; right:20px; z-index:5;
+  flex:none; width:40px; height:40px; border-radius:50%;
+  border:1px solid rgba(245,231,216,.3); background:rgba(11,11,13,.6); backdrop-filter:blur(6px);
+  color:#F5E7D8; cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center;
+  transition: background .2s, border-color .2s, color .2s;
 }
-.modal-card > * { position: relative; z-index: 1; }
-@keyframes modalIn { from{opacity:0; transform: translateY(18px) scale(.98);} }
-.modal-card .m-head { display:flex; align-items:flex-start; justify-content:space-between; padding:28px 30px 14px; gap:20px; }
-.modal-card h3 { font-family:"Playfair Display",serif; font-weight:800; font-size:clamp(1.6rem,3vw,2.4rem); line-height:1.1; }
-.modal-card .m-close { flex:none; width:42px; height:42px; border-radius:50%; border:1.5px solid currentColor; background:transparent; color:inherit; cursor:pointer; font-size:1.1rem; display:flex; align-items:center; justify-content:center; transition: background .2s; }
-.modal-card .m-close:hover { background: rgba(255,255,255,.1); }
-.modal-card .m-body { padding: 0 30px 20px; overflow-y:auto; scrollbar-width:none; -ms-overflow-style:none; }
-.modal-card .m-body::-webkit-scrollbar { width:0; height:0; display:none; }
-.modal-card .m-desc { line-height:1.75; font-size:1.03rem; opacity:.92; }
+.modal-card .m-close:hover { background: #E7B996; border-color:#E7B996; color:#0b0b0d; }
+
+/* Header: eyebrow, judul, info mitra/periode — full width di atas */
+.modal-card .m-header {
+  padding: clamp(32px,4vw,52px) clamp(28px,4vw,52px) 28px;
+  border-bottom: 1px solid rgba(245,231,216,.14);
+}
+.modal-card .m-eyebrow {
+  font-family:"JetBrains Mono",monospace; font-size:.7rem; letter-spacing:2.5px; text-transform:uppercase;
+  color:#E7B996; margin-bottom:14px; padding-left:14px; position:relative;
+}
+.modal-card .m-eyebrow::before {
+  content:""; position:absolute; left:0; top:2px; bottom:2px; width:3px; background:#E7B996; border-radius:2px;
+}
+.modal-card h3 {
+  font-family:"Playfair Display",serif; font-weight:800; font-size:clamp(1.9rem,3.6vw,3.2rem);
+  line-height:1.06; letter-spacing:-.6px; margin-bottom:20px; color:#F5E7D8; max-width:22ch;
+}
+.modal-card .m-info { display:flex; flex-wrap:wrap; gap:24px 36px; }
+.modal-card .m-info-item { display:flex; flex-direction:column; gap:5px; }
+.modal-card .m-info-item .k { font-family:"JetBrains Mono",monospace; font-size:.63rem; letter-spacing:1.8px; text-transform:uppercase; color:rgba(245,231,216,.5); }
+.modal-card .m-info-item .v { font-size:.92rem; font-weight:600; color:#F5E7D8; }
+
+/* Body: deskripsi, tags, CTA — dibaca dulu SEBELUM galeri, supaya konteks jelas sebelum foto (yang bisa banyak) muncul */
+.modal-card .m-body {
+  padding: 24px clamp(28px,4vw,52px) 8px;
+}
+.modal-card .m-desc { line-height:1.85; font-size:1.05rem; color:rgba(245,231,216,.85); max-width:70ch; }
+.modal-card .m-meta { display:flex; flex-wrap:wrap; gap:8px; margin-top:26px; }
+.modal-card .m-meta .tag {
+  font-family:"JetBrains Mono",monospace; font-size:.7rem; letter-spacing:.5px;
+  padding:6px 13px; border-radius:20px; border:1px solid rgba(231,185,150,.4); color:#E7B996;
+}
 .modal-card .m-link {
-  display:inline-block; margin-top:18px; font-family:"JetBrains Mono",monospace; font-size:.76rem;
-  letter-spacing:1.5px; text-transform:uppercase; padding:10px 18px; border:1px solid currentColor;
-  border-radius:10px; transition: background .2s, opacity .2s; opacity:.9;
+  display:inline-flex; align-items:center; gap:8px; margin-top:30px;
+  font-family:"JetBrains Mono",monospace; font-size:.78rem; letter-spacing:1.5px; text-transform:uppercase;
+  padding:13px 22px; background:#F5E7D8; color:#0b0b0d; border-radius:10px; font-weight:600;
+  transition: background .2s, transform .2s;
 }
-.modal-card .m-link:hover { background: rgba(255,255,255,.12); opacity:1; }
-.modal-card .m-meta { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
-.modal-card .m-meta .tag { font-family:"JetBrains Mono",monospace; font-size:.7rem; letter-spacing:.5px; padding:4px 10px; border-radius:20px; border:1px solid currentColor; opacity:.8; }
-.modal-card .m-gallery { display:flex; gap:14px; overflow-x:auto; padding:22px 30px 30px; scrollbar-width:none; -ms-overflow-style:none; }
-.modal-card .m-gallery::-webkit-scrollbar { width:0; height:0; display:none; }
-.modal-card .m-gallery.loop { cursor:grab; }
-.modal-card .m-gallery.loop.dragging { cursor:grabbing; }
-.modal-card .m-gallery img { height: min(46vh, 360px); width:auto; border-radius:0; flex:none; object-fit:cover; -webkit-user-drag:none; user-select:none; }
+.modal-card .m-link:hover { background:#E7B996; transform: translateY(-1px); }
+/* CTA fallback: ghost style, bukan primary action palsu */
+.modal-card .m-link-alt {
+  background:transparent; color:#F5E7D8; border:1px solid rgba(245,231,216,.3);
+}
+.modal-card .m-link-alt:hover { background:rgba(231,185,150,.12); color:#E7B996; border-color:#E7B996; }
+
+/* Galeri Pinterest/masonry, DI BAWAH body — cocok buat banyak foto tanpa mengganggu konteks utama di atas */
+.modal-card .m-visual {
+  padding: 28px clamp(28px,4vw,52px) clamp(36px,4vw,52px);
+  columns: 3 220px; column-gap: 14px;
+}
+.modal-card .m-visual img {
+  width: 100%; display: block; border-radius: 12px; margin-bottom: 14px;
+  break-inside: avoid; -webkit-user-drag:none; user-select:none;
+}
+
+@media (max-width:760px){
+  .modal-card .m-visual { columns: 2 140px; padding: 22px 20px 32px; }
+  .modal-card .m-header { padding: 28px 20px 22px; }
+  .modal-card .m-body { padding: 22px 20px 8px; }
+}
+
+/* ============ MODAL VARIAN "project": TIRU PERSIS style section Work Experience & Services
+   (.wx-hero, .wx-eyebrow, .wx-hm-cell) — sama font, sama warna, sama treatment.
+   Tidak ada font atau warna baru di luar yang sudah dipakai section itu. ============ */
+.modal-card--project { background: #0b0b0d; }
+.modal-card--project .m-paper {
+  color: #14141a;
+  background-color: #dcdcd6;
+  background-image: url(/paper-v2.jpg);
+  background-size: cover; background-repeat: no-repeat; background-position: center;
+}
+.modal-card--project .m-header { background: transparent; border-bottom: none; }
+.modal-card--project .m-body { background: transparent; padding-top: 4px; padding-bottom: clamp(28px,4vw,44px); }
+.modal-card--project .m-close {
+  border-color: rgba(20,20,26,.2); background: rgba(244,242,238,.7); color: #14141a;
+}
+.modal-card--project .m-close:hover { background: #14141a; border-color:#14141a; color:#f4f2ee; }
+/* Eyebrow: identik .wx-eyebrow — JetBrains Mono, uppercase, garis horizontal (bukan garis vertikal/prefix apapun) */
+.modal-card--project .m-eyebrow {
+  font-family:"JetBrains Mono",monospace; font-size:.7rem; letter-spacing:3px; text-transform:uppercase;
+  color:rgba(20,20,26,.6); display:flex; align-items:center; gap:12px;
+  margin-bottom:0; padding-left:0;
+}
+.modal-card--project .m-eyebrow::before { content:none; }
+.modal-card--project .m-eyebrow::after { content:""; flex:0 0 auto; width:38px; height:1px; background:rgba(20,20,26,.3); }
+/* Judul: identik .wx-hero h1 — Playfair Display 800, warna #14141a */
+.modal-card--project h3 {
+  font-family:"Playfair Display",serif; font-weight:800; color:#14141a;
+  font-size:clamp(1.9rem,3.6vw,3.2rem); line-height:1.08; letter-spacing:-.5px; max-width:18ch;
+}
+/* Info Mitra/Periode: treatment sama seperti .wx-hm-cell (angka statistik) — Playfair besar + label JetBrains Mono bergaris gold */
+.modal-card--project .m-info { gap:30px 48px; padding-top:20px; margin-top:8px; border-top:1px solid rgba(20,20,26,.14); }
+.modal-card--project .m-info-item .k {
+  order:2; position:relative; margin-top:10px; padding-top:9px;
+  font-family:"JetBrains Mono",monospace; font-size:.66rem; letter-spacing:1.5px; text-transform:uppercase; color:rgba(20,20,26,.55);
+}
+.modal-card--project .m-info-item .k::before { content:""; position:absolute; top:0; left:0; width:20px; height:2px; background:#9c7a1f; }
+.modal-card--project .m-info-item .v { order:1; font-family:"Playfair Display",serif; font-weight:800; font-size:1.4rem; color:#14141a; }
+.modal-card--project .m-info-item { display:flex; flex-direction:column; }
+/* Deskripsi: identik .wx-hero-sub — Inter biasa, TANPA font handwriting */
+.modal-card--project .m-desc { font-family:"Inter",sans-serif; font-weight:400; font-size:1.05rem; line-height:1.7; color: rgba(20,20,26,.72); }
+.modal-card--project .m-meta .tag {
+  font-family:"JetBrains Mono",monospace; font-size:.7rem; letter-spacing:.5px;
+  padding:6px 13px; border-radius:20px; border:1px solid rgba(156,122,31,.35); color:#9c7a1f; background:transparent;
+}
+.modal-card--project .m-link {
+  font-family:"JetBrains Mono",monospace; font-size:.78rem; letter-spacing:1.5px; text-transform:uppercase;
+  padding:13px 22px; background:#14141a; color:#F5E7D8; border-radius:10px; font-weight:600;
+}
+.modal-card--project .m-link:hover { background:#9c7a1f; }
+.modal-card--project .m-link-alt { background:transparent; color:#14141a; border:1px solid rgba(20,20,26,.25); }
+.modal-card--project .m-link-alt:hover { background: rgba(255,255,255,.5); color:#9c7a1f; border-color:#9c7a1f; }
+.modal-card--project .m-visual { background:#0b0b0d; }
+
+/* Section zigzag "proses" — foto di satu sisi, judul/teks proses di sisi lain, berselang-seling.
+   Dipakai untuk foto yang dikasih caption di admin; sisanya tetap bento/masonry biasa di .m-visual. */
+.m-story {
+  display: flex; align-items: stretch; gap: clamp(24px,4vw,56px);
+  padding: clamp(28px,4vw,48px) clamp(28px,4vw,52px);
+  background: #0b0b0d; color: #F5E7D8;
+  border-top: 1px solid rgba(245,231,216,.1);
+}
+.m-story--rev { flex-direction: row-reverse; }
+.m-story-media { flex: 1 1 46%; min-width: 0; border-radius: 14px; overflow: hidden; }
+.m-story-media img { width: 100%; height: 100%; object-fit: cover; display: block; -webkit-user-drag:none; user-select:none; }
+.m-story-text { flex: 1 1 54%; min-width: 0; display: flex; align-items: center; }
+.m-story-text p {
+  font-family: "Inter", sans-serif; font-size: 1.05rem; line-height: 1.85; color: rgba(245,231,216,.85);
+  max-width: 46ch;
+}
+@media (max-width: 760px) {
+  .m-story, .m-story--rev { flex-direction: column; padding: 22px 20px; gap: 18px; }
+  .m-story-media { aspect-ratio: 16/11; }
+}
+
 
 /* ============ RESPONSIVE ============ */
 @media (max-width: 820px) {
@@ -876,16 +995,6 @@ body[data-lanyard-up="1"] #lanyard-root { transform: translateY(-118%); opacity:
 .cg-title { margin-top:8px; font-family:"Inter",sans-serif; font-weight:600; font-size:.82rem; color:#14141a; }
 .cg-issuer { margin-top:2px; font-family:"Inter",sans-serif; font-size:.72rem; color:rgba(20,20,26,.55); }
 @media (max-width:820px){ .cg-grid { grid-template-columns: repeat(2, 1fr); gap:12px; padding:8px 18px 22px; } }
-
-/* Modal Activity: teks hijau, kaca kemerahan */
-.modal-card.act {
-  background: linear-gradient(135deg, rgba(160,40,25,.34), rgba(90,14,8,.42));
-  backdrop-filter: blur(30px) saturate(1.6); -webkit-backdrop-filter: blur(30px) saturate(1.6);
-  border: 1px solid rgba(255,180,150,.26);
-  box-shadow: 0 30px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.18);
-}
-.modal-card.act .m-title, .modal-card.act .m-desc, .modal-card.act .m-close { color: #7FE39A; }
-.modal-card.act .m-meta .tag { color: #7FE39A; border-color: rgba(127,227,154,.4); }
 
 /* Kaca (GlassSurface) — netral (Projects kini putih) */
 .seg-glass { position: relative; }
@@ -1212,26 +1321,26 @@ const CONFIG = {
         description: "An automated hydroponics controller monitoring pH, EC, water temperature, and light. Sensor data streams over MQTT to a live dashboard, and dosing pumps correct nutrient levels automatically. Built around an ESP32 with a custom PCB.",
         images: ["","",""] },
       { title: "Gundam Repaint", cat:"art", org:"Personal project", feature:true, ar:0.8, cover: "", tags:["Illustration","Procreate"],
-        description: "A personal series exploring lighting, panel-lining, and metallic rendering on mecha subjects — each piece rendered in layers to study reflection and material.",
+        description: "A personal series exploring lighting, panel-lining, and metallic rendering on mecha subjects, each piece rendered in layers to study reflection and material.",
         images: ["","",""] },
       { title: "Home Energy Meter", cat:"iot", org:"", ar:1.0, cover: "", tags:["Embedded","C++","InfluxDB"],
         description: "A clamp-based current sensor feeding an ESP32 that computes real power and logs to InfluxDB, with Grafana panels showing consumption trends and estimated cost.",
         images: ["",""] },
       { title: "Character Sticker Pack", cat:"art", org:"Personal project", ar:1.25, cover: "", tags:["Character","Vector"],
-        description: "A set of expressive original characters designed as a cohesive sticker pack — consistent proportions, a limited palette, and readable silhouettes at small sizes.",
+        description: "A set of expressive original characters designed as a cohesive sticker pack, consistent proportions, a limited palette, and readable silhouettes at small sizes.",
         images: ["","","",""] },
       { title: "Portfolio Dashboard", cat:"web", org:"", ar:0.9, cover: "", tags:["React","Supabase"],
-        description: "A client-facing dashboard for managing content — projects, activity, and certificates — without touching code.",
+        description: "A client-facing dashboard for managing content: projects, activity, and certificates, without touching code.",
         images: ["",""] },
       { title: "3D Prop Studies", cat:"art", org:"Personal project", ar:1.15, cover: "", tags:["Blender","3D"],
-        description: "Weekly 3D modelling studies — hard-surface props rendered with careful attention to materials, bevels, and lighting.",
+        description: "Weekly 3D modelling studies, hard-surface props rendered with careful attention to materials, bevels, and lighting.",
         images: ["",""] }
     ],
     // "What I Can Do" (Project) — placeholder sampai tabel `services` diisi lewat admin
     services: [
       { name:"Web Development", desc:"Custom websites and web apps, from landing pages to dashboards with real-time data.",
         deliverables:["Landing page & profile site","Web app / dashboard","API & database integration"] },
-      { name:"IoT & Embedded Systems", desc:"Internet-connected devices and sensors — from prototype to something ready for the field.",
+      { name:"IoT & Embedded Systems", desc:"Internet-connected devices and sensors, from prototype to something ready for the field.",
         deliverables:["ESP32 / microcontroller firmware","MQTT monitoring dashboard","Basic PCB design"] },
       { name:"Mobile & Desktop Apps", desc:"Lightweight, pleasant-to-use cross-platform apps for business or research needs.",
         deliverables:["Mobile app (Android/iOS)","Lightweight desktop app","Maintenance & updates"] },
@@ -1246,7 +1355,7 @@ const CONFIG = {
     name: "Muhammad Ilham Aren",
     location: "Aceh, Indonesia",
     focus: "Embedded · IoT · Web",
-    bio: "A Computer Engineering graduate from Universitas Syiah Kuala. I build systems that connect hardware with software — from field sensors to dashboards people use every day. This page walks through the journey and the work behind it.",
+    bio: "A Computer Engineering graduate from Universitas Syiah Kuala. I build systems that connect hardware with software, from field sensors to dashboards people use every day. This page walks through the journey and the work behind it.",
     bioShort: "Computer Engineering graduate connecting hardware with software.",
     items: [
       { title: "Robotics Expo 2025",
@@ -1254,10 +1363,10 @@ const CONFIG = {
         meta: [ {k:"Penyelenggara", v:"Robotics Society"}, {k:"Role", v:"Team Lead"} ],
         photo: "", cat: "Competition", year: "2025",
         modalTitle: "Robotics Expo 2025",
-        modalDesc: "A closer look at the expo — the rig, the booth, and the crowd. Equal parts engineer and fan.",
+        modalDesc: "A closer look at the expo: the rig, the booth, and the crowd. Equal parts engineer and fan.",
         gallery: ["","",""] },
       { title: "Illustration Workshop",
-        text: "Ran a weekend digital illustration workshop for students — from silhouette thumbnails to final rendering, teaching how to build a character that reads clearly at any size.",
+        text: "Ran a weekend digital illustration workshop for students, from silhouette thumbnails to final rendering, teaching how to build a character that reads clearly at any size.",
         meta: [ {k:"Panitia", v:"Art Community"}, {k:"Role", v:"Instructor"}, {k:"Attendees", v:"30+"} ],
         photo: "", cat: "Workshop", year: "2025",
         modalTitle: "Illustration Workshop",
@@ -1276,7 +1385,7 @@ const CONFIG = {
   contact: {
     heading1: "LET'S",
     heading2: "CONNECT",
-    sub: "Tell me what you're dreaming up — I'd love to help you bring it to life.",
+    sub: "Tell me what you're dreaming up, I'd love to help you bring it to life.",
     formEndpoint: "",              // kosong = tombol Send buka aplikasi email (mailto)
     web3formsKey: "239dde7e-a379-4740-be78-9b76c2532d8b",              // ISI dgn access key dari web3forms.com → pesan langsung ke Gmail-mu
     email: "iil.ilham241@gmail.com",
@@ -1484,10 +1593,10 @@ function renderProjects(){
         <section class="wx-hero"><div class="wx-wrap">
           <div class="wx-eyebrow">Work Experience &amp; Services</div>
           <h1>Projects already built, and <em>already booked</em>.</h1>
-          <p class="wx-hero-sub">Experience in IoT, machine learning, and digital illustration — projects built and delivered, start to finish.</p>
+          <p class="wx-hero-sub">Experience in IoT, machine learning, and digital illustration, projects built and delivered, start to finish.</p>
           <div class="wx-hero-meta">
             <div class="wx-hm-cell"><div class="n">${items.length}+</div><div class="l">Projects completed</div></div>
-            <div class="wx-hm-cell"><div class="n">${new Set(items.flatMap(p=>Array.isArray(p.cat)?p.cat:[p.cat]).filter(Boolean)).size}</div><div class="l">Disciplines — Web, IoT &amp; Art</div></div>
+            <div class="wx-hm-cell"><div class="n">${new Set(items.flatMap(p=>Array.isArray(p.cat)?p.cat:[p.cat]).filter(Boolean)).size}</div><div class="l">Disciplines: Web, IoT &amp; Art</div></div>
             <div class="wx-hm-cell"><div class="n">${orgCount}</div><div class="l">Institutional partners</div></div>
             <div class="wx-hm-cell"><div class="n">24h</div><div class="l">Average response time</div></div>
           </div>
@@ -1533,7 +1642,7 @@ function renderProjects(){
         <section class="wx-cta-band"><div class="wx-wrap">
           <div class="wx-eyebrow">Ready To Start</div>
           <h2>Got a project<br>in mind?</h2>
-          <p>Tell me what you need — an IoT system, a web app, or an illustration. I'll help take it from idea to something real.</p>
+          <p>Tell me what you need: an IoT system, a web app, or an illustration. I'll help take it from idea to something real.</p>
           <a class="wx-cta-btn" href="#contact" id="wxCta">
             Get In Touch
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
@@ -1681,22 +1790,68 @@ const N = PAGES.length;
    MODAL
    ===================================================================== */
 const modalRoot = document.getElementById('modalRoot');
-function openModal({ title, desc, images, tags, palette, link, theme }){
-  const pal = palette || { bg:'#1c1c1c', fg:'#E7B996' };
-  const one = (images||[]).map(src => `<img src="${img(src,'image',pal.bg,pal.fg,700,540)}" alt="" draggable="false">`).join("");
-  const loop = (images||[]).length > 1;
-  const galleryInner = loop ? (one + one + one) : one;
+const CAT_LABEL = { web:'Web', iot:'IoT & Embedded', art:'Art' };
+function openModal({ title, desc, images, tags, link, org, date, cat, theme }){
+  // Normalisasi: elemen array `images` bisa string URL polos (data lama) atau objek {url, caption} (baru).
+  const normalized = (images||[]).map(it => typeof it === 'string' ? { url: it, caption: '' } : (it || {}));
+  const gallery = normalized.filter(it => it.url && String(it.url).trim());
+  const isProject = theme === 'project';
+  // Foto dengan caption terisi → section zigzag (foto + judul/teks proses) sesuai urutan aslinya.
+  // Foto tanpa caption → bento/masonry grid biasa di bagian bawah.
+  const storyItems = isProject ? gallery.filter(it => it.caption && it.caption.trim()) : [];
+  const bentoItems = isProject ? gallery.filter(it => !(it.caption && it.caption.trim())) : gallery;
+  const storyHtml = storyItems.map((it, i) => {
+    const src = img(it.url,'image','#1c1c1c','#a9773f',900,700);
+    const reversed = i % 2 === 1;
+    return `<div class="m-story${reversed?' m-story--rev':''}">
+      <div class="m-story-media"><img src="${src}" alt="" draggable="false"></div>
+      <div class="m-story-text"><p>${esc(it.caption)}</p></div>
+    </div>`;
+  }).join("");
+  const bentoHtml = bentoItems.map(it => `<img src="${img(it.url,'image', isProject ? '#1c1c1c' : '#141414', '#a9773f',700,540)}" alt="" draggable="false">`).join("");
   const tagHtml = (tags && tags.length) ? `<div class="m-meta">${tags.map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>` : "";
-  const linkHtml = (link && link.trim()) ? `<a class="m-link" href="${esc(link)}" target="_blank" rel="noopener">Visit project →</a>` : "";
+  const infoItems = [
+    org  && org.trim()  ? { k:'Mitra',   v:org }  : null,
+    date && date.trim() ? { k:'Periode', v:date } : null,
+  ].filter(Boolean);
+  const infoHtml = infoItems.length
+    ? `<div class="m-info">${infoItems.map(it => `<div class="m-info-item"><span class="k">${esc(it.k)}</span><span class="v">${esc(it.v)}</span></div>`).join("")}</div>`
+    : "";
+  // Eyebrow: kategori spesifik kalau ada, fallback ke mitra, dihilangkan kalau dua-duanya kosong
+  // (label generik "Project" gak nambah informasi buat user yang sudah tau dia lagi lihat project).
+  const catList = Array.isArray(cat) ? cat : (cat ? [cat] : []);
+  const eyebrowText = catList.length ? catList.map(c => CAT_LABEL[c]||c).join(' · ') : (org && org.trim() ? org : '');
+  const eyebrowHtml = eyebrowText ? `<div class="m-eyebrow">${esc(eyebrowText)}</div>` : "";
+  // CTA: link project kalau ada; kalau kosong, fallback ke Contact supaya tiap modal tetap
+  // punya satu jalan keluar yang mengarah ke conversion, bukan berhenti mati di deskripsi.
+  const ctaHtml = (link && link.trim())
+    ? `<a class="m-link" href="${esc(link)}" target="_blank" rel="noopener">Visit project ↗</a>`
+    : `<a class="m-link m-link-alt" href="#contact" id="mCtaContact">Tertarik kerja sama serupa? →</a>`;
+  const galleryFallbackHtml = (!isProject && gallery.length) ? `<div class="m-visual">${bentoHtml}</div>` : "";
   modalRoot.innerHTML = `
-    <div class="modal-card${theme ? " " + theme : ""}" style="color:${pal.fg}">
-      <div class="m-head"><h3>${esc(title)}</h3><button class="m-close" aria-label="Close">✕</button></div>
-      <div class="m-body">${tagHtml}<p class="m-desc">${esc(desc)}</p>${linkHtml}</div>
-      ${one ? `<div class="m-gallery${loop?' loop':''}">${galleryInner}</div>` : ""}
+    <div class="modal-card${isProject ? ' modal-card--project' : ''}">
+      <button class="m-close" aria-label="Close">✕</button>
+      ${isProject ? '<div class="m-paper">' : ''}
+      <div class="m-header">
+        ${eyebrowHtml}
+        <h3>${esc(title)}</h3>
+        ${infoHtml}
+      </div>
+      <div class="m-body">
+        <p class="m-desc">${esc(desc)}</p>
+        ${tagHtml}
+        ${ctaHtml}
+      </div>
+      ${isProject ? '</div>' : ''}
+      ${galleryFallbackHtml}
+      ${storyHtml}
+      ${isProject && bentoHtml ? `<div class="m-visual">${bentoHtml}</div>` : ""}
     </div>`;
   modalRoot.classList.add('open');
+  document.body.classList.add('modal-lock');
   modalRoot.querySelector('.m-close').onclick = closeModal;
-  if(loop) initModalGallery(modalRoot.querySelector('.m-gallery'));
+  const ctaContact = modalRoot.querySelector('#mCtaContact');
+  if(ctaContact) ctaContact.addEventListener('click', e => { e.preventDefault(); closeModal(); if(window.__goPage) window.__goPage('contact'); });
 }
 /* Pop-up: SEMUA sertifikat dalam grid. Klik satu → buka detail + gambar besar. */
 function openCertGrid(list){
@@ -1720,7 +1875,7 @@ function openCertGrid(list){
   modalRoot.querySelectorAll('.cg-cell').forEach(cell => {
     cell.addEventListener('click', () => {
       const ct = list[+cell.dataset.i];
-      openModal({ title:ct.title, desc:(ct.issuer? ('Issued by ' + ct.issuer) : ''), images:[ct.image], link:ct.url, palette:{ bg:'#141414', fg:'#E7B996' } });
+      openModal({ title:ct.title, desc:(ct.issuer? ('Issued by ' + ct.issuer) : ''), images:[ct.image], link:ct.url });
     });
   });
 }
@@ -1744,7 +1899,7 @@ function initModalGallery(track){
   track.addEventListener('click', e=>{ if(moved){ e.preventDefault(); e.stopPropagation(); } }, true);
   track.addEventListener('wheel', e=>{ stop(); track.scrollLeft += (Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX); wrap(); e.preventDefault(); }, { passive:false });
 }
-function closeModal(){ modalRoot.classList.remove('open'); modalRoot.innerHTML=""; }
+function closeModal(){ modalRoot.classList.remove('open'); modalRoot.innerHTML=""; document.body.classList.remove('modal-lock'); }
 modalRoot.addEventListener('click', e => { if(e.target === modalRoot) closeModal(); });
 document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
 
@@ -1867,7 +2022,7 @@ function initProjects(root){
   const openItem = (i) => {
     const p = items[i];
     if(!p) return;
-    openModal({ title:p.title, desc:p.description, images:(p.images&&p.images.length?p.images:[p.cover]), tags:p.tags, link:p.link, palette:{ bg:'#0b0b0d', fg:'#F5E7D8' } });
+    openModal({ title:p.title, desc:p.description, images:(p.images&&p.images.length?p.images:[p.cover]), tags:p.tags, link:p.link, org:p.org, date:p.date, cat:p.cat, theme:'project' });
   };
   root.querySelectorAll('.wx-xp[data-i]').forEach(elm => {
     elm.addEventListener('click', () => openItem(+elm.dataset.i));
@@ -2097,28 +2252,6 @@ function initActivity(root){
     startProximity(root);
     // Stack React persisten dipindah ke sini (instan). Swipe=ganti projek, tap=ganti gambar.
     window.__mountActivityStack(stackEl, imagesPerItem, (topId) => setText((topId - 1 + items.length) % items.length));
-
-    // Tekan gambar (tanpa geser) → buka detail + semua gambarnya
-    if(stackEl){
-      let px = 0, py = 0, drag = false;
-      stackEl.addEventListener('pointerdown', e => { px = e.clientX; py = e.clientY; drag = false; });
-      stackEl.addEventListener('pointermove', e => {
-        if(Math.hypot(e.clientX - px, e.clientY - py) > 6) drag = true;
-      });
-      stackEl.addEventListener('pointerup', () => {
-        if(drag) return;
-        const i = ((window.__activityTopId || 1) - 1 + items.length) % items.length;
-        const it = items[i];
-        if(!it) return;
-        openModal({
-          title: it.title,
-          desc: it.text,
-          images: imagesPerItem[i] || [],
-          palette: { bg:'#3a0f08', fg:'#7FE39A' },
-          theme: 'act'
-        });
-      });
-    }
   } else if(stackEl){
     // Sliver / fallback: gambar utama statis
     stackEl.innerHTML = '';
@@ -2197,7 +2330,7 @@ function initAboutMeSections(root){
   if(activityCount){
     const years = items.map(it => parseInt(it.year,10)).filter(n => !isNaN(n));
     const minYear = years.length ? Math.min(...years) : new Date().getFullYear();
-    activityCount.textContent = `${items.length} activit${items.length===1?'y':'ies'} · ${minYear} — ${new Date().getFullYear()}`;
+    activityCount.textContent = `${items.length} activit${items.length===1?'y':'ies'} · ${minYear} to ${new Date().getFullYear()}`;
   }
   const pinsSeeMore = root.querySelector('#amPinsSeeMore');
   if(pinsSeeMore){
@@ -2272,7 +2405,7 @@ function initAboutMeSections(root){
         if(moved) return;
         const ct = certs[+card.dataset.i];
         if(!ct) return;
-        openModal({ title:ct.title, desc:(ct.issuer?('Issued by '+ct.issuer):''), images:[ct.image], link:ct.url, palette:{ bg:'#3a0f08', fg:'#7FE39A' }, theme:'act' });
+        openModal({ title:ct.title, desc:(ct.issuer?('Issued by '+ct.issuer):''), images:[ct.image], link:ct.url });
       });
     });
 
@@ -2343,7 +2476,7 @@ function initContact(root){
           body: JSON.stringify(payload)
         });
         const j = await res.json().catch(() => ({}));
-        if(j.success){ form.reset(); note.textContent = "Thanks — your message is on its way!"; note.className = "note ok"; }
+        if(j.success){ form.reset(); note.textContent = "Thanks, your message is on its way!"; note.className = "note ok"; }
         else { note.textContent = "Something went wrong. Please try again."; note.className = "note err"; }
       } catch { note.textContent = "Network error. Please try again."; note.className = "note err"; }
       finally { btn.disabled = false; if(lbl) lbl.textContent = "Send"; }
@@ -2353,14 +2486,14 @@ function initContact(root){
     const endpoint = CONFIG.contact.formEndpoint;
     if(!endpoint || !endpoint.trim()){
       const subject = encodeURIComponent(`Portfolio message from ${data.name}`);
-      const body = encodeURIComponent(`${data.message}\n\n— ${data.name} (${data.email})`);
+      const body = encodeURIComponent(`${data.message}\n\nFrom: ${data.name} (${data.email})`);
       window.location.href = `mailto:${CONFIG.contact.email}?subject=${subject}&body=${body}`;
       note.textContent = "Opening your email app…"; note.className = "note ok"; return;
     }
     try {
       btn.disabled = true; if(lbl) lbl.textContent = "Sending…";
       const res = await fetch(endpoint, { method:"POST", headers:{ "Accept":"application/json", "Content-Type":"application/json" }, body: JSON.stringify(data) });
-      if(res.ok){ form.reset(); note.textContent = "Thanks — your message is on its way!"; note.className = "note ok"; }
+      if(res.ok){ form.reset(); note.textContent = "Thanks, your message is on its way!"; note.className = "note ok"; }
       else { note.textContent = "Something went wrong. Try again or email me directly."; note.className = "note err"; }
     } catch { note.textContent = "Network error. Try again or email me directly."; note.className = "note err"; }
     finally { btn.disabled = false; if(lbl) lbl.textContent = "Send"; }
@@ -2961,7 +3094,7 @@ async function loadFromSupabase(){
   if(projects && projects.length){
     CONFIG.projects.items = projects.map(r => ({
       title:r.title||'', cat:Array.isArray(r.cat)?r.cat:(r.cat?[r.cat]:['web']), org:r.org||'', feature:!!r.feature, ar:Number(r.ar)||1,
-      cover:r.cover_url||'', tags:r.tags||[], description:r.description||'', images:r.images||[], link:r.url||''
+      cover:r.cover_url||'', tags:r.tags||[], description:r.description||'', images:r.images||[], link:r.url||'', date:r.date_label||''
     }));
   }
   if(certs && certs.length){
@@ -3007,6 +3140,17 @@ async function loadFromSupabase(){
   window.addEventListener('page-changed', () => document.body.classList.remove('scroll-veil'));
 })();
 
+/* ---- Re-render halaman aktif kalau data Supabase baru selesai dimuat SETELAH
+   halaman itu sudah sempat dirender duluan (race: user pindah halaman sebelum
+   fetch selesai). Tanpa ini, Projects/Activity bisa nyangkut di data lama/kosong
+   sampai user memicu render ulang secara tidak sengaja (klik tab, dst). ---- */
+window.addEventListener('app-data-ready', () => {
+  const idx = state.base;
+  if(idx == null) return;
+  const key = PAGES[idx].key;
+  if(key === 'projects' || key === 'activity') buildBase(idx);
+});
+
 /* START */
 window.LANYARD_CONFIG = CONFIG.contact.lanyard; // default sinkron untuk React (di-update setelah fetch)
 
@@ -3041,10 +3185,10 @@ window.LANYARD_CONFIG = CONFIG.contact.lanyard; // default sinkron untuk React (
 
   // Judul tab mengikuti halaman aktif
   const PAGE_TITLE = {
-    home: 'Muhammad Ilham | Aren — Portfolio',
-    projects: 'Project | Aren — Portfolio',
-    activity: 'About Me | Aren — Portfolio',
-    contact: 'Contact | Aren — Portfolio',
+    home: 'Muhammad Ilham | Aren, Portfolio',
+    projects: 'Project | Aren, Portfolio',
+    activity: 'About Me | Aren, Portfolio',
+    contact: 'Contact | Aren, Portfolio',
   };
   const syncTitle = (key) => { document.title = PAGE_TITLE[key] || PAGE_TITLE.home; };
   syncTitle(startKey);
