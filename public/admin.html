@@ -81,7 +81,9 @@
   .gallery-cap-list { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
   .gallery-cap-row { display:flex; gap:10px; align-items:flex-start; padding:8px; border:1px solid var(--line); border-radius:var(--radius-sm); }
   .gallery-cap-row .thumb { flex:0 0 auto; width:52px; height:52px; }
-  .gallery-cap-row textarea { flex:1; min-height:44px; font-size:13px; }
+  .gallery-cap-fields { flex:1; min-width:0; display:flex; flex-direction:column; gap:6px; }
+  .gallery-cap-fields input, .gallery-cap-fields textarea { font-size:13px; }
+  .gallery-cap-fields textarea { min-height:44px; }
   .gallery-cap-row button { flex:0 0 auto; width:24px; height:24px; border:none; border-radius:50%;
     background:var(--danger-soft); color:var(--danger); font-size:13px; cursor:pointer; }
   .divider { height:1px; background:var(--line); margin:22px 0; }
@@ -533,28 +535,32 @@ function makeGallery(chipsEl){
   return { get:()=>arr.slice(), set:(a)=>{arr=(a||[]).slice(); render();}, add:(u)=>{arr.push(u); render();} };
 }
 
-/* Galeri khusus Projects: tiap foto punya caption opsional (judul + teks proses).
-   Diisi -> foto ini dirender sebagai section zigzag di modal. Kosong -> masuk bento grid biasa.
-   Menerima data lama (array string URL) dan otomatis normalisasi jadi {url, caption:''}. */
+/* Galeri khusus Projects: tiap foto punya judul + caption opsional (mis. "Demo ke pembimbing" + isi ceritanya).
+   Diisi salah satu atau keduanya -> foto ini dirender sebagai section zigzag di modal. Kosong dua-duanya -> masuk bento grid biasa.
+   Menerima data lama (array string URL, atau {url, caption} tanpa title) dan otomatis normalisasi. */
 function makeGalleryWithCaption(listEl){
-  let arr = []; // [{url, caption}]
+  let arr = []; // [{url, title, caption}]
   const render = ()=>{
     listEl.innerHTML='';
     arr.forEach((item,i)=>{
       const row=document.createElement('div'); row.className='gallery-cap-row';
       row.innerHTML=`
         <img class="thumb" src="${item.url}">
-        <textarea placeholder="Kosongkan supaya foto ini masuk grid biasa. Isi untuk menjadikannya section 'proses' dengan teks di sampingnya.">${item.caption||''}</textarea>
+        <div class="gallery-cap-fields">
+          <input type="text" class="gc-title" placeholder="Judul singkat (mis. Demo ke pembimbing)" value="${(item.title||'').replace(/"/g,'&quot;')}">
+          <textarea class="gc-caption" placeholder="Kosongkan semua supaya foto ini masuk grid biasa. Isi untuk menjadikannya section 'proses' dengan judul & teks di sampingnya.">${item.caption||''}</textarea>
+        </div>
         <button type="button" title="hapus">×</button>`;
-      row.querySelector('textarea').addEventListener('input', e => { arr[i].caption = e.target.value; });
+      row.querySelector('.gc-title').addEventListener('input', e => { arr[i].title = e.target.value; });
+      row.querySelector('.gc-caption').addEventListener('input', e => { arr[i].caption = e.target.value; });
       row.querySelector('button').onclick = () => { arr.splice(i,1); render(); };
       listEl.appendChild(row);
     });
   };
   return {
-    get: () => arr.map(it => ({ url: it.url, caption: it.caption || '' })),
-    set: (a) => { arr = (a||[]).map(it => typeof it === 'string' ? { url: it, caption: '' } : { url: it.url||'', caption: it.caption||'' }); render(); },
-    add: (u) => { arr.push({ url: u, caption: '' }); render(); }
+    get: () => arr.map(it => ({ url: it.url, title: it.title || '', caption: it.caption || '' })),
+    set: (a) => { arr = (a||[]).map(it => typeof it === 'string' ? { url: it, title: '', caption: '' } : { url: it.url||'', title: it.title||'', caption: it.caption||'' }); render(); },
+    add: (u) => { arr.push({ url: u, title: '', caption: '' }); render(); }
   };
 }
 

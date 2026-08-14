@@ -838,10 +838,14 @@ body.modal-lock { overflow: hidden; }
 .m-story--rev { flex-direction: row-reverse; }
 .m-story-media { flex: 1 1 46%; min-width: 0; border-radius: 14px; overflow: hidden; }
 .m-story-media img { width: 100%; height: 100%; object-fit: cover; display: block; -webkit-user-drag:none; user-select:none; }
-.m-story-text { flex: 1 1 54%; min-width: 0; display: flex; align-items: center; }
+.m-story-text { flex: 1 1 54%; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 10px; }
+.m-story-text h4 {
+  font-family: "Playfair Display", serif; font-weight: 800; font-size: 1.15rem; line-height: 1.25;
+  color: #F5E7D8; max-width: 46ch;
+}
 .m-story-text p {
   font-family: "Inter", sans-serif; font-size: 1.05rem; line-height: 1.85; color: rgba(245,231,216,.85);
-  max-width: 46ch;
+  max-width: 46ch; overflow-wrap: break-word; word-break: break-word;
 }
 @media (max-width: 760px) {
   .m-story, .m-story--rev { flex-direction: column; padding: 22px 20px; gap: 18px; }
@@ -1773,20 +1777,23 @@ const N = PAGES.length;
 const modalRoot = document.getElementById('modalRoot');
 const CAT_LABEL = { web:'Web', iot:'IoT & Embedded', art:'Art' };
 function openModal({ title, desc, images, tags, link, org, date, cat, theme }){
-  // Normalisasi: elemen array `images` bisa string URL polos (data lama) atau objek {url, caption} (baru).
-  const normalized = (images||[]).map(it => typeof it === 'string' ? { url: it, caption: '' } : (it || {}));
+  // Normalisasi: elemen array `images` bisa string URL polos (data lama) atau objek {url, title, caption} (baru).
+  const normalized = (images||[]).map(it => typeof it === 'string' ? { url: it, title: '', caption: '' } : (it || {}));
   const gallery = normalized.filter(it => it.url && String(it.url).trim());
   const isProject = theme === 'project';
-  // Foto dengan caption terisi → section zigzag (foto + judul/teks proses) sesuai urutan aslinya.
-  // Foto tanpa caption → bento/masonry grid biasa di bagian bawah.
-  const storyItems = isProject ? gallery.filter(it => it.caption && it.caption.trim()) : [];
-  const bentoItems = isProject ? gallery.filter(it => !(it.caption && it.caption.trim())) : gallery;
+  // Foto dengan judul dan/atau caption terisi → section zigzag (foto + judul & teks proses) sesuai urutan aslinya.
+  // Foto tanpa keduanya → bento/masonry grid biasa di bagian bawah.
+  const hasStory = it => (it.title && it.title.trim()) || (it.caption && it.caption.trim());
+  const storyItems = isProject ? gallery.filter(hasStory) : [];
+  const bentoItems = isProject ? gallery.filter(it => !hasStory(it)) : gallery;
   const storyHtml = storyItems.map((it, i) => {
     const src = img(it.url,'image','#1c1c1c','#a9773f',900,700);
     const reversed = i % 2 === 1;
+    const titleHtml = it.title && it.title.trim() ? `<h4>${esc(it.title)}</h4>` : "";
+    const captionHtml = it.caption && it.caption.trim() ? `<p>${esc(it.caption)}</p>` : "";
     return `<div class="m-story${reversed?' m-story--rev':''}">
       <div class="m-story-media"><img src="${src}" alt="" draggable="false"></div>
-      <div class="m-story-text"><p>${esc(it.caption)}</p></div>
+      <div class="m-story-text">${titleHtml}${captionHtml}</div>
     </div>`;
   }).join("");
   const bentoHtml = bentoItems.map(it => `<img src="${img(it.url,'image', isProject ? '#1c1c1c' : '#141414', '#a9773f',700,540)}" alt="" draggable="false">`).join("");
