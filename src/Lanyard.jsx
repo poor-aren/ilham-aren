@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unknown-property */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, extend, useFrame } from '@react-three/fiber';
-import { useGLTF, useTexture, Environment, Lightformer } from '@react-three/drei';
+import { useGLTF, useTexture, Environment, Lightformer, PerformanceMonitor } from '@react-three/drei';
 import { BallCollider, CuboidCollider, Physics, RigidBody, useRopeJoint, useSphericalJoint } from '@react-three/rapier';
 import { MeshLineGeometry, MeshLineMaterial } from 'meshline';
 import * as THREE from 'three';
@@ -29,6 +29,13 @@ export default function Lanyard({
 }) {
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768);
 
+  // Resolusi render adaptif: mulai penuh, turun otomatis kalau FPS perangkat pengunjung jeblok
+  // (laptop lemah), naik lagi kalau lancar. Perangkat kuat tidak kehilangan kualitas.
+  const maxDpr = isMobile ? 1.5 : 2;
+  const [dpr, setDpr] = useState(maxDpr);
+  // Hemat: begitu kartu sudah diam, render berhenti (frameloop "demand"); bangun lagi saat di-hover/di-drag.
+  const [idle, setIdle] = useState(false);
+
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', handleResize);
@@ -39,13 +46,20 @@ export default function Lanyard({
     <div className="lanyard-wrapper">
       <Canvas
         camera={{ position: position, fov: fov }}
-        dpr={[1, isMobile ? 1.5 : 2]}
+        dpr={[1, Math.min(dpr, maxDpr)] /* rentang: layar biasa tetap 1×, layar retina maks dpr */}
+        frameloop={idle ? 'demand' : 'always'}
         gl={{ alpha: transparent }}
         eventSource={typeof document !== 'undefined' ? document.body : undefined}
         eventPrefix="client"
         style={{ pointerEvents: 'none' }}
         onCreated={({ gl }) => gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1)}
       >
+        <PerformanceMonitor
+          onDecline={() => setDpr(1)}
+          onIncline={() => setDpr(maxDpr)}
+          flipflops={3}
+          onFallback={() => setDpr(1)}
+        />
         <ambientLight intensity={Math.PI} />
         <Physics gravity={gravity} timeStep={isMobile ? 1 / 30 : 1 / 60}>
           <Band
@@ -56,6 +70,7 @@ export default function Lanyard({
             backImage={backImage}
             imageFit={imageFit}
             lanyardWidth={lanyardWidth}
+            onIdleChange={setIdle}
           />
         </Physics>
         <Environment blur={0.75}>
@@ -70,6 +85,7 @@ export default function Lanyard({
 }
 
 function Band({
+  onIdleChange = () => {},
   maxSpeed = 50,
   minSpeed = 0,
   isMobile = false,
@@ -137,6 +153,7 @@ function Band({
   );
   const [dragged, drag] = useState(false);
   const [hovered, hover] = useState(false);
+  const lastActive = useRef(0);
 
   useRopeJoint(fixed, j1, [[0, 0, 0], [0, 0, 0], 0.8]);
   useRopeJoint(j1, j2, [[0, 0, 0], [0, 0, 0], 0.8]);
@@ -172,6 +189,11 @@ function Band({
       ang.copy(card.current.angvel());
       rot.copy(card.current.rotation());
       card.current.setAngvel({ x: ang.x, y: ang.y - rot.y * 0.25, z: ang.z });
+
+      // 6 detik tanpa hover/drag → render dijeda (kartu sudah tenang di perangkat normal;
+      // di perangkat lambat ini sekaligus menghentikan ayunan fisika yang tidak stabil).
+      if (dragged || hovered) lastActive.current = state.clock.elapsedTime;
+      else if (state.clock.elapsedTime - lastActive.current > 6) onIdleChange(true);
     }
   });
 
@@ -196,10 +218,11 @@ function Band({
           <group
             scale={2.25}
             position={[0, -1.2, -0.05]}
-            onPointerOver={() => hover(true)}
+            onPointerOver={() => (hover(true), onIdleChange(false))}   /* bangunkan render */
             onPointerOut={() => hover(false)}
             onPointerUp={e => (e.target.releasePointerCapture(e.pointerId), drag(false))}
             onPointerDown={e => (
+              onIdleChange(false),
               e.target.setPointerCapture(e.pointerId),
               drag(new THREE.Vector3().copy(e.point).sub(vec.copy(card.current.translation())))
             )}

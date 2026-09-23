@@ -93,6 +93,28 @@
     background:var(--danger-soft); color:var(--danger); font-size:13px; cursor:pointer; }
   .divider { height:1px; background:var(--line); margin:22px 0; }
   .note { font-size:12px; color:var(--muted); margin-top:6px; line-height:1.5; }
+  /* Picker logo tools (form Project) */
+  .logo-picker { margin-top:8px; padding:10px 12px; border:1px solid var(--line); border-radius:var(--radius-sm); background:var(--bg-sunken); max-height:320px; overflow-y:auto; }
+  .lp-group { font-size:11.5px; font-weight:600; color:var(--muted); margin:10px 0 6px; }
+  .lp-group:first-child { margin-top:0; }
+  .lp-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(92px,1fr)); gap:6px; }
+  .lp-item { display:flex; align-items:center; gap:6px; padding:6px 8px; border:1px solid var(--line); border-radius:var(--radius-sm);
+    background:#fff; cursor:pointer; font:inherit; font-size:11.5px; color:var(--ink); text-align:left; transition:.15s; }
+  .lp-item:hover { border-color:var(--accent); }
+  .lp-item.on { border-color:var(--accent); background:var(--accent-soft); }
+  .lp-icon { flex:0 0 auto; width:16px; height:16px; background-color:var(--ink);
+    -webkit-mask:var(--logo) center/contain no-repeat; mask:var(--logo) center/contain no-repeat; }
+  .lp-item.on .lp-icon { background-color:var(--accent-dark); }
+  .lp-name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  /* Daftar penulis (form Publications) */
+  .au-list { display:flex; flex-direction:column; gap:6px; }
+  .au-row { display:flex; align-items:center; gap:6px; }
+  .au-n { flex:0 0 70px; font-size:12px; color:var(--muted); }
+  .au-row .au-input { flex:1; }
+  .au-btn { flex:0 0 auto; width:32px; height:36px; border:1px solid var(--line); border-radius:var(--radius-sm); background:#fff; cursor:pointer; color:var(--ink); }
+  .au-btn:hover:not(:disabled) { border-color:var(--accent); color:var(--accent-dark); }
+  .au-btn:disabled { opacity:.35; cursor:default; }
+  .opt-log { margin-top:16px; max-height:340px; overflow:auto; padding:12px 14px; background:var(--bg-sunken); border:1px solid var(--line); border-radius:var(--radius-sm); font-family:"IBM Plex Mono",monospace; font-size:12px; line-height:1.6; white-space:pre-wrap; color:var(--ink); }
 
   .card { border:1px solid var(--line); border-radius:var(--radius); padding:24px; background:#fff; margin-bottom:18px; }
   .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:6px; }
@@ -204,9 +226,11 @@
       <div class="nav-group-label">Halaman About Me</div>
       <button class="nav-item" data-tab="acts">Journey &amp; Achievements</button>
       <button class="nav-item" data-tab="skills">What I Do</button>
+      <button class="nav-item" data-tab="pubs">Publications</button>
 
       <div class="nav-group-label">Lainnya</div>
       <button class="nav-item" data-tab="eggs">Easter Egg</button>
+      <button class="nav-item" data-tab="optimize">Optimasi Foto</button>
     </nav>
     <div class="sidebar-foot">
       <button id="logoutBtn" class="btn outline sm" style="width:100%">Keluar</button>
@@ -312,6 +336,15 @@
         <div class="card-grid" id="service_list"></div>
       </section>
 
+      <section class="panel" data-panel="pubs">
+        <div class="main-head">
+          <div><h2>Publications</h2><p class="hint">Daftar paper di halaman About Me: judul, penulis (berurutan), jurnal/konferensi, tahun, dan link paper.</p></div>
+          <button class="btn primary btn-icon" id="pb_add">+ Tambah Paper</button>
+        </div>
+        <p class="reorder-hint">Tarik ⠿ pada card untuk mengubah urutan tampil.</p>
+        <div class="card-grid" id="pub_list"></div>
+      </section>
+
       <section class="panel" data-panel="certs">
         <div class="main-head">
           <div><h2>Sertifikat</h2><p class="hint">Muncul di strip loop halaman Projects.</p></div>
@@ -348,6 +381,20 @@
         <div class="card-grid" id="eg_list"></div>
       </section>
 
+      <section class="panel" data-panel="optimize">
+        <div class="main-head">
+          <div><h2>Optimasi Foto</h2><p class="hint">Mengecilkan foto lama yang sudah terlanjur besar (foto kamera 2–6 MB) supaya web ringan di laptop/HP lemah. Foto baru yang di-upload sekarang otomatis dikecilkan, jadi ini cukup dijalankan sekali.</p></div>
+        </div>
+        <div class="card">
+          <p class="note" style="margin-top:0">Yang dilakukan: setiap foto di atas 400 KB diunduh, dikecilkan (maks 2000px, WebP), di-upload sebagai file baru, lalu link-nya di database diganti. <b>File asli tidak dihapus</b> — tetap ada di Storage kalau suatu saat dibutuhkan.</p>
+          <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+            <button class="btn outline" id="opt_scan">1. Cek ukuran foto</button>
+            <button class="btn primary" id="opt_run" disabled>2. Kecilkan semua</button>
+          </div>
+          <pre class="opt-log" id="opt_log">Klik "Cek ukuran foto" dulu.</pre>
+        </div>
+      </section>
+
     </div>
   </main>
 </div>
@@ -367,6 +414,7 @@
 
 <div class="status" id="status"></div>
 
+<script src="/tool-logos.js"></script>
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
@@ -384,7 +432,25 @@ function toast(msg, err=false){
 }
 function fail(e){ console.error(e); toast((e && e.message) ? e.message : 'Terjadi kesalahan', true); }
 
+/* Kompres foto sebelum upload: sisi terpanjang maks 2000px, format WebP (~90% lebih kecil dari
+   foto kamera, beda kualitas tak terlihat di layar). Bukan gambar (PDF, dll.), GIF/SVG, atau hasil
+   yang malah lebih besar → file asli yang dipakai. Orientasi foto HP (EXIF) ikut dibaca. */
+const IMG_MAX_SIDE = 2000, IMG_QUALITY = 0.82;
+async function compressImage(file){
+  if(!/^image\/(jpeg|png|webp)$/i.test(file.type)) return file;
+  try{
+    const bmp = await createImageBitmap(file, { imageOrientation:'from-image' });
+    const scale = Math.min(1, IMG_MAX_SIDE / Math.max(bmp.width, bmp.height));
+    const w = Math.round(bmp.width * scale), h = Math.round(bmp.height * scale);
+    const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+    cv.getContext('2d').drawImage(bmp, 0, 0, w, h); bmp.close();
+    const blob = await new Promise(res => cv.toBlob(res, 'image/webp', IMG_QUALITY));
+    if(!blob || blob.size >= file.size) return file;
+    return new File([blob], file.name.replace(/\.[^.]+$/, '') + '.webp', { type:'image/webp' });
+  }catch(e){ return file; }   // browser tak bisa membaca formatnya → upload apa adanya
+}
 async function upload(file, folder){
+  file = await compressImage(file);
   const safe = file.name.replace(/[^a-z0-9.\-_]/gi,'_');
   const path = `${folder}/${Date.now()}-${safe}`;
   const { error } = await sb.storage.from(BUCKET).upload(path, file, { cacheControl:'3600', upsert:false });
@@ -708,7 +774,10 @@ function prFormHtml(p){
     </div>
     <div class="field"><label>Aspect ratio</label><input id="d_pr_ar" type="number" step="0.01" value="${p?.ar||1}"></div>
     <div class="field row-check"><input id="d_pr_feature" type="checkbox" ${p?.feature?'checked':''}><label style="margin:0">Jadikan feature project</label></div>
-    <div class="field"><label>Tags (pisahkan koma)</label><input id="d_pr_tags" type="text" value="${joinList(p?.tags).replace(/"/g,'&quot;')}" placeholder="IoT, ESP32, MQTT"></div>
+    <div class="field"><label>Tags (pisahkan koma)</label><input id="d_pr_tags" type="text" value="${joinList(p?.tags).replace(/"/g,'&quot;')}" placeholder="IoT, ESP32, MQTT">
+      <p class="note">Klik logo di bawah untuk menambah/menghapus tag tool — yang punya logo akan tampil di kartu proyek.</p>
+      <div class="logo-picker" id="d_pr_logo_picker"></div>
+    </div>
     <div class="field"><label>Link projek (opsional)</label><input id="d_pr_url" type="text" value="${(p?.url||'').replace(/"/g,'&quot;')}" placeholder="https://..."></div>
     <div class="field"><label>Deskripsi</label><textarea id="d_pr_desc">${p?.description||''}</textarea></div>
     <div>
@@ -723,7 +792,31 @@ function prFormHtml(p){
       </div>
     </div>`;
 }
+// Picker logo: klik → toggle nama tool di input tags; status "on" ikut isi input (juga saat diketik manual).
+function bindLogoPicker(pickerEl, inputEl){
+  const tools = window.TOOL_LOGOS || [];
+  pickerEl.innerHTML = (window.TOOL_GROUPS || []).map(g => `
+    <div class="lp-group">${g}</div>
+    <div class="lp-grid">${tools.filter(t => t.group === g).map(t =>
+      `<button type="button" class="lp-item" data-name="${t.name}" title="${t.name}"><span class="lp-icon" style="--logo:url(${t.url})"></span><span class="lp-name">${t.name}</span></button>`).join('')}</div>`).join('');
+  const current = () => splitList(inputEl.value);
+  const sync = () => {
+    const on = new Set(current().map(t => window.findToolLogo(t)?.name).filter(Boolean));
+    pickerEl.querySelectorAll('.lp-item').forEach(b => b.classList.toggle('on', on.has(b.dataset.name)));
+  };
+  pickerEl.addEventListener('click', e => {
+    const b = e.target.closest('.lp-item'); if(!b) return;
+    const name = b.dataset.name, tags = current();
+    const idx = tags.findIndex(t => window.findToolLogo(t)?.name === name);
+    if(idx >= 0) tags.splice(idx, 1); else tags.push(name);
+    inputEl.value = tags.join(', ');
+    sync();
+  });
+  inputEl.addEventListener('input', sync);
+  sync();
+}
 function prBindForm(p){
+  bindLogoPicker($('d_pr_logo_picker'), $('d_pr_tags'));
   prCover.url = p?.cover_url || '';
   prGallery = makeGalleryWithCaption($('d_pr_gallery_chips'));
   prGallery.set(p?.images || []);
@@ -1027,6 +1120,161 @@ async function loadServices(){
   makeReorderableGrid(box, 'services', loadServices);
 }
 
+/* ================= OPTIMASI FOTO LAMA =================
+   Cari semua link foto di database → yang > 400 KB dikompres ulang (compressImage), di-upload sebagai
+   file baru, lalu link di baris database diganti. File asli di Storage TIDAK dihapus (bisa dikembalikan). */
+const OPT_MIN_BYTES = 400 * 1024;
+const OPT_SOURCES = [   // tabel → kolom yang berisi foto (string, atau array string/objek {url})
+  { table:'profile',      cols:['home_photo_url','home_photo_mobile','lanyard_photo_url','lanyard_back_url','lanyard_front_url','lanyard_band_url'] },
+  { table:'projects',     cols:['cover_url','images'] },
+  { table:'activities',   cols:['photo_url','gallery'] },
+  { table:'certificates', cols:['image_url'] },
+  { table:'skills',       cols:['photo_url'] },
+  { table:'easter_eggs',  cols:['images'] },
+];
+let optPlan = null;
+const optLog = (msg) => { const el = $('opt_log'); el.textContent += '\n' + msg; el.scrollTop = el.scrollHeight; };
+const mb = (b) => (b / 1048576).toFixed(2) + ' MB';
+const isOurImage = (u) => typeof u === 'string' && u.includes('/storage/v1/object/public/' + BUCKET + '/') && /\.(jpe?g|png|webp)(\?|$)/i.test(u);
+const urlsIn = (v) => typeof v === 'string' ? [v] : Array.isArray(v) ? v.map(x => typeof x === 'string' ? x : x && x.url).filter(Boolean) : [];
+const swapUrls = (v, map) => typeof v === 'string' ? (map[v] || v)
+  : Array.isArray(v) ? v.map(x => typeof x === 'string' ? (map[x] || x) : (x && map[x.url] ? { ...x, url: map[x.url] } : x)) : v;
+
+$('opt_scan').addEventListener('click', async () => {
+  $('opt_log').textContent = 'Memeriksa foto…'; $('opt_run').disabled = true;
+  const rows = [], urls = new Set();
+  for(const src of OPT_SOURCES){
+    const { data, error } = await sb.from(src.table).select('*');
+    if(error){ optLog(`(lewati ${src.table}: ${error.message})`); continue; }
+    data.forEach(row => { rows.push({ src, row }); src.cols.forEach(c => urlsIn(row[c]).filter(isOurImage).forEach(u => urls.add(u))); });
+  }
+  const sizes = {};
+  await Promise.all([...urls].map(async u => {
+    try{ const r = await fetch(u, { method:'HEAD' }); sizes[u] = +r.headers.get('content-length') || 0; }catch{ sizes[u] = 0; }
+  }));
+  const big = [...urls].filter(u => sizes[u] > OPT_MIN_BYTES).sort((a,b) => sizes[b] - sizes[a]);
+  const total = Object.values(sizes).reduce((s,b) => s + b, 0), bigTotal = big.reduce((s,u) => s + sizes[u], 0);
+  optPlan = { rows, big, sizes };
+  $('opt_log').textContent = `${urls.size} foto ditemukan, total ${mb(total)}.\n${big.length} foto di atas 400 KB (total ${mb(bigTotal)}) akan dikecilkan:`;
+  big.slice(0, 40).forEach(u => optLog(`  ${mb(sizes[u]).padStart(9)}  ${decodeURIComponent(u.split('/').pop())}`));
+  if(big.length > 40) optLog(`  …dan ${big.length - 40} lainnya`);
+  $('opt_run').disabled = !big.length;
+  if(!big.length) optLog('\nSemua foto sudah kecil. Tidak ada yang perlu dikecilkan ✓');
+});
+
+$('opt_run').addEventListener('click', async () => {
+  if(!optPlan || !optPlan.big.length) return;
+  if(!confirm(`Kecilkan ${optPlan.big.length} foto sekarang? File asli tetap disimpan di Storage.`)) return;
+  $('opt_run').disabled = true; $('opt_scan').disabled = true;
+  optLog('\nMulai…');
+  const map = {}; let before = 0, after = 0, i = 0;
+  for(const u of optPlan.big){
+    i++;
+    try{
+      const blob = await (await fetch(u)).blob();
+      const name = decodeURIComponent(u.split('/').pop()).replace(/^\d+-/, '');
+      const small = await compressImage(new File([blob], name, { type: blob.type || 'image/jpeg' }));
+      if(small.size >= blob.size){ optLog(`[${i}/${optPlan.big.length}] ${name}: sudah optimal, dilewati`); continue; }
+      const folder = u.split('/public/' + BUCKET + '/')[1].split('/').slice(0, -1).join('/') || 'optimized';
+      const path = `${folder}/${Date.now()}-${small.name.replace(/[^a-z0-9.\-_]/gi,'_')}`;
+      const { error } = await sb.storage.from(BUCKET).upload(path, small, { cacheControl:'3600', upsert:false });
+      if(error) throw error;
+      map[u] = sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+      before += blob.size; after += small.size;
+      optLog(`[${i}/${optPlan.big.length}] ${name}: ${mb(blob.size)} → ${mb(small.size)}`);
+    }catch(e){ optLog(`[${i}/${optPlan.big.length}] GAGAL ${u.split('/').pop()}: ${e.message || e}`); }
+  }
+  // ganti link di database, baris per baris (hanya kolom yang berubah)
+  let updated = 0;
+  for(const { src, row } of optPlan.rows){
+    const patch = {};
+    src.cols.forEach(c => { if(row[c] == null) return; const nv = swapUrls(row[c], map); if(JSON.stringify(nv) !== JSON.stringify(row[c])) patch[c] = nv; });
+    if(!Object.keys(patch).length) continue;
+    const { error } = await sb.from(src.table).update(patch).eq('id', row.id);
+    if(error) optLog(`GAGAL update ${src.table} ${row.id}: ${error.message}`); else updated++;
+  }
+  optLog(`\nSelesai ✓  ${Object.keys(map).length} foto dikecilkan: ${mb(before)} → ${mb(after)} (hemat ${before ? Math.round((1 - after / before) * 100) : 0}%). ${updated} baris database diperbarui.`);
+  $('opt_scan').disabled = false; optPlan = null;
+});
+
+/* ================= PUBLICATIONS ================= */
+let pbEditId=null;
+const esq = v => String(v||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+function pbAuthorRow(name){
+  return `<div class="au-row"><span class="au-n"></span><input type="text" class="au-input" value="${esq(name)}" placeholder="Nama penulis">
+    <button type="button" class="au-btn au-up" title="Naikkan">↑</button><button type="button" class="au-btn au-down" title="Turunkan">↓</button><button type="button" class="au-btn au-del" title="Hapus">✕</button></div>`;
+}
+function pbFormHtml(p){
+  const authors = (p?.authors && p.authors.length) ? p.authors : [''];
+  return `
+    <div class="field"><label>Judul paper</label><textarea id="d_pb_title" rows="2">${esq(p?.title)}</textarea></div>
+    <div class="field"><label>Penulis (urutan = penulis pertama, kedua, ketiga, dst.)</label>
+      <div class="au-list" id="d_pb_authors">${authors.map(pbAuthorRow).join('')}</div>
+      <button type="button" class="btn outline sm" id="d_pb_add_author" style="margin-top:8px">+ Tambah penulis</button>
+    </div>
+    <div class="field"><label>Jurnal / konferensi</label><input id="d_pb_venue" type="text" value="${esq(p?.venue)}" placeholder="mis. Jurnal Rekayasa Elektrika"></div>
+    <div class="field"><label>Tahun</label><input id="d_pb_year" type="text" value="${esq(p?.year_label)}" placeholder="2025"></div>
+    <div class="field"><label>Link paper</label><input id="d_pb_url" type="text" value="${esq(p?.url)}" placeholder="https://doi.org/... atau link PDF"></div>`;
+}
+function pbBindForm(){
+  const list = $('d_pb_authors');
+  const renumber = () => [...list.children].forEach((row,i) => {
+    row.querySelector('.au-n').textContent = `Penulis ${i+1}`;
+    row.querySelector('.au-up').disabled = i === 0;
+    row.querySelector('.au-down').disabled = i === list.children.length - 1;
+  });
+  list.addEventListener('click', e => {
+    const row = e.target.closest('.au-row'); if(!row) return;
+    if(e.target.closest('.au-up') && row.previousElementSibling) list.insertBefore(row, row.previousElementSibling);
+    else if(e.target.closest('.au-down') && row.nextElementSibling) list.insertBefore(row.nextElementSibling, row);
+    else if(e.target.closest('.au-del')){ if(list.children.length > 1) row.remove(); else row.querySelector('.au-input').value = ''; }
+    renumber();
+  });
+  $('d_pb_add_author').addEventListener('click', () => {
+    list.insertAdjacentHTML('beforeend', pbAuthorRow('')); renumber(); list.lastElementChild.querySelector('.au-input').focus();
+  });
+  renumber();
+}
+function pbOpenForm(p){
+  pbEditId = p ? p.id : null;
+  openDrawer(p ? 'Edit Paper' : 'Tambah Paper', pbFormHtml(p), pbSave);
+  pbBindForm();
+}
+async function pbSave(){
+  const payload = {
+    title: $('d_pb_title').value.trim(),
+    authors: [...document.querySelectorAll('#d_pb_authors .au-input')].map(i => i.value.trim()).filter(Boolean),
+    venue: $('d_pb_venue').value.trim(), year_label: $('d_pb_year').value.trim(), url: $('d_pb_url').value.trim()
+  };
+  if(!payload.title) return toast('Judul paper wajib diisi');
+  let error;
+  if(pbEditId) ({error}=await sb.from('publications').update(payload).eq('id',pbEditId));
+  else         ({error}=await sb.from('publications').insert(payload));
+  if(error) return fail(error); toast('Paper tersimpan'); closeDrawer(); loadPubs();
+}
+$('pb_add').addEventListener('click', () => pbOpenForm(null));
+async function loadPubs(){
+  const { data, error } = await sb.from('publications').select('*').order('sort').order('created_at');
+  const box=$('pub_list'); if(error){ box.innerHTML='<div class="empty-state">Gagal memuat — jalankan migration_add_publications.sql di Supabase dulu.</div>'; return; }
+  if(!data.length){ box.innerHTML='<div class="empty-state">Belum ada paper.</div>'; return; }
+  box.innerHTML='';
+  data.forEach(p=>{
+    const el=document.createElement('div'); el.className='g-card g-noimg'; el.dataset.id=p.id;
+    el.innerHTML=`
+      <span class="g-drag">⠿</span>
+      <div class="g-actions"><button class="g-edit" title="Edit">✎</button><button class="g-del" title="Hapus">🗑</button></div>
+      <div class="g-body"><div class="g-title">${esq(p.title)||'(tanpa judul)'}</div><div class="g-meta">${esq((p.authors||[]).join(', '))}${p.year_label ? ' · ' + esq(p.year_label) : ''}</div></div>`;
+    el.querySelector('.g-edit').onclick = () => pbOpenForm(p);
+    el.querySelector('.g-del').onclick = async () => {
+      if(!confirm('Hapus paper ini?')) return;
+      const { error } = await sb.from('publications').delete().eq('id',p.id);
+      if(error) return fail(error); toast('Terhapus'); loadPubs();
+    };
+    box.appendChild(el);
+  });
+  makeReorderableGrid(box, 'publications', loadPubs);
+}
+
 /* ---------------- EASTER EGG ---------------- */
 let egGallery, egEditId = null;
 function egFormHtml(e){
@@ -1105,7 +1353,7 @@ async function loadEggs(){
   makeReorderableGrid(box, 'easter_eggs', loadEggs);
 }
 
-function loadAll(){ loadProfile(); loadProjects(); loadCerts(); loadActs(); loadSkills(); loadServices(); loadEggs(); }
+function loadAll(){ loadProfile(); loadProjects(); loadCerts(); loadActs(); loadSkills(); loadServices(); loadPubs(); loadEggs(); }
 
 refreshAuth();
 </script>

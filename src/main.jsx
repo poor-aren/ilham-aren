@@ -3,7 +3,6 @@ import { createRoot } from 'react-dom/client';
 import Lanyard from './Lanyard.jsx';
 import StaggeredMenu from './StaggeredMenu.jsx';
 import Stack from './Stack.jsx';
-import Waves from './Waves.jsx';
 import GlassSurface from './GlassSurface.jsx';
 import Masonry from './Masonry.jsx';
 
@@ -167,27 +166,17 @@ window.__mountActivityStack = (container, imagesPerItem, onTop) => {
   container.innerHTML = '';
   container.appendChild(stackHost);
 };
+// Ditembak begitu Stack engine siap dipakai — index.html dengar ini untuk
+// upgrade dari foto statis (fallback race saat hard refresh) ke Stack asli.
+window.dispatchEvent(new Event('activity-engine-ready'));
 
 window.__unmountActivityStack = () => {}; // no-op: Stack persisten
 
 /* ---- Home: background dikosongkan (putih polos) ---- */
 window.__mountHomeLiquid = () => {}; // no-op
 
-/* ---- Waves (canvas 2D) untuk halaman Projects — instan, muncul juga saat mengintip ---- */
 let waveRoots = [];
-window.__mountProjLiquid = (container) => {
-  if (!container) return;
-  const root = createRoot(container);
-  waveRoots.push(root);
-  root.render(createElement(Waves, {
-    lineColor: 'rgba(231,185,150,0.32)',   // krim emas lembut
-    backgroundColor: 'transparent',
-    waveSpeedX: 0.014, waveSpeedY: 0.008,
-    waveAmpX: 36, waveAmpY: 18,
-    xGap: 26, yGap: 62,          // grid lebih kasar → jauh lebih ringan (garis & titik jauh lebih sedikit)
-    friction: 0.9, tension: 0.008, maxCursorMove: 110
-  }));
-};
+window.__mountProjLiquid = () => {}; // no-op
 window.__unmountProjWaves = () => {
   waveRoots.forEach(r => { try { r.unmount(); } catch (_) {} });
   waveRoots = [];
@@ -246,12 +235,20 @@ window.__unmountProjExtras = () => {
   if (window.__unmountProjWaves) window.__unmountProjWaves();
 };
 
-// Pre-warm Stack setelah data final (event dari index) → kunjungan pertama instan
-function prewarm() {
+// Pre-warm Stack setelah data final (event dari index) → kunjungan pertama About Me tetap instan.
+// Hemat: kalau pengunjung TIDAK sedang di About Me, pre-warm (yang ikut mengunduh foto Activity)
+// ditunda sampai halaman yang sedang dibuka selesai dimuat & browser senggang.
+function prewarmNow() {
   try {
     const imgs = window.__activityImages;
     if (imgs && imgs.length) ensureActivityStack(imgs);
   } catch (_) {}
+}
+function prewarm() {
+  if (document.body.dataset.page === 'activity') return prewarmNow();
+  const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 1));
+  const later = () => setTimeout(() => idle(prewarmNow, { timeout: 4000 }), 2500);
+  if (document.readyState === 'complete') later(); else window.addEventListener('load', later, { once: true });
 }
 if (window.__activityImages) prewarm();
 window.addEventListener('app-data-ready', prewarm);
@@ -266,7 +263,11 @@ if (el) createRoot(el).render(<App />);
    ===================================================================== */
 const PAGE_ORDER = ['home', 'projects', 'activity', 'contact'];
 const PAGE_BG = { home: '#0b0b0b', projects: '#ffffff', activity: '#871003', contact: '#57A45B' };
+// Dipakai buat teks PANEL menu (latarnya PAGE_BG di atas) — Projects panelnya putih, jadi teksnya gelap.
 const PAGE_FG = { home: '#ffffff', projects: '#14141a', activity: '#F5E7D8', contact: '#0e2a10' };
+// Dipakai buat tombol "MENU +" saat TERTUTUP — ikut warna bagian PALING ATAS halaman itu sendiri
+// (beda dari PAGE_FG karena hero Projects sekarang gelap, walau halamannya sendiri dominan putih).
+const BTN_FG = { home: '#ffffff', projects: '#F5E7D8', activity: '#F5E7D8', contact: '#0e2a10' };
 const MENU_ITEMS = [
   { key: 'home', label: 'Home' },
   { key: 'projects', label: 'Projects' },
@@ -291,7 +292,7 @@ const MENU_ITEMS = [
       panelBg: nextBg,
       panelFg: PAGE_FG[next],
       accent: '#E7B996',
-      btnColor: PAGE_FG[cur],
+      btnColor: BTN_FG[cur],
       onSelect: (key) => { if (window.__goPage) window.__goPage(key); }
     }));
   };
